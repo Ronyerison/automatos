@@ -45,9 +45,10 @@
 				font-size: 1em;
 			}
 		</style>
-
+		
 		<script>
 			$(function(){
+				var nodesVar = document.getElementById('form:nodes').value;
 				var cy = window.cy = cytoscape({
 					container: document.getElementById('cy'),
           boxSelectionEnabled: false,
@@ -78,24 +79,24 @@
 					],
 					elements: {
 						nodes: [
-							{ data: { id: 'n0' } },
-							{ data: { id: 'n1' } },
-							{ data: { id: 'n2' } },
-							{ data: { id: 'n3' } },
-							{ data: { id: 'n4' } },
-							{ data: { id: 'n5' } },
-							{ data: { id: 'n6' } },
-							{ data: { id: 'n7' } },
-							{ data: { id: 'n8' } },
-							{ data: { id: 'n9' } },
-							{ data: { id: 'n10' } },
-							{ data: { id: 'n11' } },
-							{ data: { id: 'n12' } },
-							{ data: { id: 'n13' } },
-							{ data: { id: 'n14' } },
-							{ data: { id: 'n15' } },
-							{ data: { id: 'n16' } }
-						],
+								{ data: { id: 'n0' } },
+								{ data: { id: 'n1' } },
+								{ data: { id: 'n2' } },
+								{ data: { id: 'n3' } },
+								{ data: { id: 'n4' } },
+								{ data: { id: 'n5' } },
+								{ data: { id: 'n6' } },
+								{ data: { id: 'n7' } },
+								{ data: { id: 'n8' } },
+								{ data: { id: 'n9' } },
+								{ data: { id: 'n10' } },
+								{ data: { id: 'n11' } },
+								{ data: { id: 'n12' } },
+								{ data: { id: 'n13' } },
+								{ data: { id: 'n14' } },
+								{ data: { id: 'n15' } },
+								{ data: { id: 'n16' } }
+							],
 						edges: [
 							{ data: { source: 'n0', target: 'n1' } },
 							{ data: { source: 'n1', target: 'n2' } },
@@ -123,6 +124,10 @@
 		<h1 class="titulo">PROJETO WEB AUTOMATOS</h1>
 	</div>
 	
+	<h:form id="form">
+		<h:inputHidden id="nodes" value="#{homeController.nodesJson}" />
+	</h:form>
+
 	<div id="cy"></div>
 </h:body>
 </html>

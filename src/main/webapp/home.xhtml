@@ -17,10 +17,17 @@
 </h:head>
 
 <h:body>
+	
+	<h:form id="form">
+		<h:inputHidden id="nodes" value="#{homeController.nodesJson}" />
+	</h:form>
 
 	<div id="paper"></div>
 	
 	<script type="text/javascript">
+		var nodesVar = document.getElementById('form:nodes').value;
+		var obj = JSON.parse(nodesVar);
+		var labelNode = obj[1].data.id;
 		var graph = new joint.dia.Graph();
 	
 		var paper = new joint.dia.Paper({
