@@ -1,14 +1,14 @@
 package br.ufpi.automatos.modelo;
 
-public class Data {
+public class InfoEstado {
 	private String id;
 	private int x;
 	private int y;
 
-	public Data() {
+	public InfoEstado() {
 	}
 	
-	public Data(String id, int x, int y) {
+	public InfoEstado(String id, int x, int y) {
 		super();
 		this.id = id;
 		this.x = x;

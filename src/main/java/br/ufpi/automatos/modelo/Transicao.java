@@ -1,16 +1,16 @@
 package br.ufpi.automatos.modelo;
 
-public class Transicao<E, V> {
-	private E info;
-	private Estado<V> origem;
-	private Estado<V> destino;
+public class Transicao<T, E> {
+	private T info;
+	private Estado<E> origem;
+	private Estado<E> destino;
 	
 	/**
 	 * @param info
 	 * @param origem
 	 * @param destino
 	 */
-	public Transicao(E info, Estado<V> origem, Estado<V> destino) {
+	public Transicao(T info, Estado<E> origem, Estado<E> destino) {
 		this.info = info;
 		this.origem = origem;
 		this.destino = destino;
@@ -19,42 +19,42 @@ public class Transicao<E, V> {
 	/**
 	 * @return the info
 	 */
-	public E getInfo() {
+	public T getInfo() {
 		return info;
 	}
 
 	/**
 	 * @param info the info to set
 	 */
-	public void setInfo(E info) {
+	public void setInfo(T info) {
 		this.info = info;
 	}
 
 	/**
 	 * @return the origem
 	 */
-	public Estado<V> getOrigem() {
+	public Estado<E> getOrigem() {
 		return origem;
 	}
 
 	/**
 	 * @param origem the origem to set
 	 */
-	public void setOrigem(Estado<V> origem) {
+	public void setOrigem(Estado<E> origem) {
 		this.origem = origem;
 	}
 
 	/**
 	 * @return the destino
 	 */
-	public Estado<V> getDestino() {
+	public Estado<E> getDestino() {
 		return destino;
 	}
 
 	/**
 	 * @param destino the destino to set
 	 */
-	public void setDestino(Estado<V> destino) {
+	public void setDestino(Estado<E> destino) {
 		this.destino = destino;
 	}
 
@@ -91,7 +91,7 @@ public class Transicao<E, V> {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Transicao<E, V> other = (Transicao<E, V>) obj;
+		Transicao<T, E> other = (Transicao<T, E>) obj;
 		if (destino == null) {
 			if (other.destino != null)
 				return false;
