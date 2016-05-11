@@ -23,6 +23,28 @@ public class Automato<E, T> {
 		this.estadosMarcados = estadosMarcados;
 		this.estadoInicial = estadoInicial;
 	}
+	
+	public void addEstado(Estado<E> estado){
+		this.estados.add(estado);
+		if(estado.isInicial()){
+			this.estadoInicial = estado;
+		}
+		if(estado.isMarcado()){
+			this.estadosMarcados.add(estado);
+		}
+	}
+	
+	public void addTransicao(Transicao<T, E> transicao){
+		if(!this.transicoes.contains(transicao)){
+			this.transicoes.add(transicao);
+		}
+		if(!this.estados.contains(transicao.getOrigem())){
+			addEstado(transicao.getOrigem());
+		}
+		if(!this.estados.contains(transicao.getDestino())){
+			addEstado(transicao.getDestino());
+		}
+	}
 
 	public List<Estado<E>> getEstados() {
 		return estados;
@@ -58,10 +80,7 @@ public class Automato<E, T> {
 
 	@Override
 	public String toString() {
-		return "Automato [estados=" + estados + ", transicoes=" + transicoes + ", estadosMarcados=" + estadosMarcados
-				+ ", estadoInicial=" + estadoInicial + "]";
+		return "Automato [estados=" + estados + ", transicoes=" + transicoes + ", estadoInicial=" + estadoInicial + "]";
 	}
-	
-	
 	
 }
