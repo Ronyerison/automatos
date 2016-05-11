@@ -1,0 +1,98 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/Layout.xhtml">
+
+	<ui:define name="content">
+
+		<h:form id="form" style="margin-top:30px">
+			<p:growl id="messages" showDetail="true" style="margin-top:30px"/>
+			<h1 class="aw-page-title">Algoritmos Autômatos</h1>
+			<h:inputHidden id="automato" value="#{homeController.nodesJson}" />
+			<p:fileUpload fileUploadListener="#{homeController.uploadArquivo}"
+				multiple="true" mode="advanced" dragDropSupport="true" update=":#{p:component('messages')}"
+				sizeLimit="100000" />
+
+			<p:panel header="Visualização Automato"
+				style="width: 820px; height: 650px; border-color: blue">
+				<div id="paper"></div>
+			</p:panel>
+		</h:form>
+
+		<script type="text/javascript">
+		var jsonAutomato = document.getElementById('form:automato').value;
+		var automato = JSON.parse(jsonAutomato);
+		var estados = automato.estados;
+		var graph = new joint.dia.Graph();
+	
+		var paper = new joint.dia.Paper({
+		    el: $('#paper'),
+		    width: 800,
+		    height: 600,
+		    gridSize: 1,
+		    model: graph
+		});
+	
+		function state(x, y, label) {
+		    
+		    var cell = new joint.shapes.fsa.State({
+		        position: { x: x, y: y },
+		        size: { width: 60, height: 60 },
+		        attrs: {
+		            text : { text: label, fill: '#000000', 'font-weight': 'normal' },
+		            'circle': {
+		                fill: '#f6f6f6',
+		                stroke: '#000000',
+		                'stroke-width': 2
+		            }
+		        }
+		    });
+		    graph.addCell(cell);
+		    return cell;
+		}
+	
+		function link(source, target, label, vertices) {
+		    
+		    var cell = new joint.shapes.fsa.Arrow({
+		        source: { id: source.id },
+		        target: { id: target.id },
+		        labels: [{ position: 0.5, attrs: { text: { text: label || '', 'font-weight': 'bold' } } }],
+		        vertices: vertices || []
+		    });
+		    graph.addCell(cell);
+		    return cell;
+		}
+
+
+		var start = new joint.shapes.fsa.StartState({ position: { x: 50, y: 530 } });
+		graph.addCell(start);
+	
+		var estadoInicial = state(automato.estadoInicial.info.x, automato.estadoInicial.info.y, automato.estadoInicial.info.label);
+		var l = link(start, estadoInicial, 'start');
+		var i = 0;
+		while(i != automato.transicoes.length) {
+			var source = state(automato.transicoes[i].origem.info.x, automato.transicoes[i].origem.info.y, automato.transicoes[i].origem.info.label);
+			var target = state(automato.transicoes[i].destino.info.x, automato.transicoes[i].destino.info.y, automato.transicoes[i].destino.info.label);
+			var l = link(source, target, automato.transicoes[i].info);
+			i++;
+		}
+		
+// 		link(start, code,  'start');
+// 		link(code,  slash, '/');
+// 		link(slash, code,  'other', [{x: 270, y: 300}]);
+// 		link(slash, line,  '/');
+// 		link(line,  code,  'new\n line');
+// 		link(slash, block, '*');
+// 		link(block, star,  '*');
+// 		link(star,  block, 'other', [{x: 650, y: 290}]);
+// 		link(star,  code,  '/',     [{x: 490, y: 310}]);
+// 		link(line,  line,  'other', [{x: 115,y: 100}, {x: 250, y: 50}]);
+// 		link(block, block, 'other', [{x: 485,y: 140}, {x: 620, y: 90}]);
+// 		link(code,  code,  'other', [{x: 180,y: 500}, {x: 305, y: 450}]);
+	</script>
+
+	</ui:define>
+
+</ui:composition>

@@ -3,11 +3,19 @@
  */
 package br.ufpi.automatos.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.inject.Named;
+
+import org.primefaces.event.FileUploadEvent;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -16,6 +24,7 @@ import br.ufpi.automatos.modelo.Automato;
 import br.ufpi.automatos.modelo.Estado;
 import br.ufpi.automatos.modelo.InfoEstado;
 import br.ufpi.automatos.modelo.Transicao;
+import br.ufpi.automatos.util.FileUtil;
 
 /**
  * @author rony
@@ -31,11 +40,14 @@ public class HomeController implements Serializable {
 	
 	private Automato<InfoEstado, String> automato;
 	
+	private List<File> arquivosEntrada;
+	
 	public HomeController() {
 	}
 	
 	@PostConstruct
 	private void init(){
+		this.arquivosEntrada = new ArrayList<File>();
 		this.automato = new Automato<InfoEstado, String>();
 		Estado<InfoEstado> code = new Estado<InfoEstado>(new InfoEstado(1L, "code", 180, 390));
 		code.setInicial(true);
@@ -67,6 +79,16 @@ public class HomeController implements Serializable {
 		
 	}
 	
+	public void uploadArquivo(FileUploadEvent event){
+		FacesMessage message = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
+        FacesContext.getCurrentInstance().addMessage(null, message);
+        try {
+			this.arquivosEntrada.add(FileUtil.uploadedFileToFile(event.getFile()));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public String getNodesJson(){
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		return gson.toJson(automato);
@@ -78,6 +100,14 @@ public class HomeController implements Serializable {
 
 	public void setAutomato(Automato<InfoEstado, String> automato) {
 		this.automato = automato;
+	}
+
+	public List<File> getArquivosEntrada() {
+		return arquivosEntrada;
+	}
+
+	public void setArquivosEntrada(List<File> arquivosEntrada) {
+		this.arquivosEntrada = arquivosEntrada;
 	}
 
 }
