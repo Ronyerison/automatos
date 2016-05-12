@@ -24,7 +24,6 @@
 		<script type="text/javascript">
 		var jsonAutomato = document.getElementById('form:automato').value;
 		var automato = JSON.parse(jsonAutomato);
-		var estados = automato.estados;
 		var graph = new joint.dia.Graph();
 	
 		var paper = new joint.dia.Paper({
@@ -49,7 +48,7 @@
 		            }
 		        }
 		    });
-		    graph.addCell(cell);
+			graph.addCell(cell);
 		    return cell;
 		}
 	
@@ -69,15 +68,24 @@
 		var start = new joint.shapes.fsa.StartState({ position: { x: 50, y: 530 } });
 		graph.addCell(start);
 	
+		var estados = new Array();
 		var estadoInicial = state(automato.estadoInicial.info.x, automato.estadoInicial.info.y, automato.estadoInicial.info.label);
+		estados[automato.estadoInicial.info.label] = estadoInicial;
 		var l = link(start, estadoInicial, 'start');
 		var i = 0;
-		while(i != automato.transicoes.length) {
-			var source = state(automato.transicoes[i].origem.info.x, automato.transicoes[i].origem.info.y, automato.transicoes[i].origem.info.label);
-			var target = state(automato.transicoes[i].destino.info.x, automato.transicoes[i].destino.info.y, automato.transicoes[i].destino.info.label);
-			var l = link(source, target, automato.transicoes[i].info);
+		while(i != automato.estados.length){
+			if(automato.estadoInicial.info.label != automato.estados[i].info.label){
+				var source = state(automato.estados[i].info.x, automato.estados[i].info.y, automato.estados[i].info.label);
+				estados[automato.estados[i].info.label] = source;
+			}
 			i++;
 		}
+		i = 0;
+		while(i != automato.transicoes.length) {
+			var l = link(estados[automato.transicoes[i].origem.info.label], estados[automato.transicoes[i].destino.info.label], automato.transicoes[i].info);
+			i++;
+		}
+
 		
 // 		link(start, code,  'start');
 // 		link(code,  slash, '/');
