@@ -25,7 +25,7 @@ public class AFN2AFDConversor {
 				Estado destino = t.getDestino();
 				automatoClone.excluirTransicao(automatoClone.getTransicoes().get(automato.getTransicoes().indexOf(t)));
 				
-				List<Transicao<String, String>> novasTransicoes = new ArrayList<Transicao<String,String>>();
+//				List<Transicao<String, String>> novasTransicoes = new ArrayList<Transicao<String,String>>();
 				
 				for (Transicao<String, String> t2 : automato.getTransicoes()) {
 					if(t2.getOrigem().getInfo().equals(destino.getInfo())){
