@@ -40,28 +40,28 @@ public class FileUtil {
 	public static Automato<InfoEstado, String> File2Automato (File file){
 		String arquivo[] = lerArquivo(file).split("\n");
 		Automato<InfoEstado, String> automato = new Automato<InfoEstado, String>();
-		Estado<InfoEstado> inicial = new Estado<InfoEstado>(new InfoEstado(arquivo[0]), true, false);
+		Estado<InfoEstado> inicial = new Estado<InfoEstado>(new InfoEstado(arquivo[0].trim()), true, false);
 		automato.addEstado(inicial);
 		String estadosFinais[] = arquivo[1].split(",");
 		for (String estadoFinal : estadosFinais) {
 			if(inicial.getInfo().getLabel().equals(estadoFinal))
 				inicial.setMarcado(true);
 			else 
-				automato.addEstado(new Estado<InfoEstado>(new InfoEstado(estadoFinal), false, true));
+				automato.addEstado(new Estado<InfoEstado>(new InfoEstado(estadoFinal.trim()), false, true));
 		}
 		for (int i = 2; i < arquivo.length; i++) {
 			String transicao[] = arquivo[i].split(":");
 			String estadosTransicao[] = transicao[1].split("->");
 			Estado<InfoEstado> origem, destino;
-			if(automato.getEstados().contains(estadosTransicao[0]))
-				origem = automato.getEstadoByLabel(estadosTransicao[0]);
+			if(automato.getEstados().contains(estadosTransicao[0].trim()))
+				origem = automato.getEstadoByLabel(estadosTransicao[0].trim());
 			else
-				origem = new Estado<InfoEstado>(new InfoEstado(estadosTransicao[0]));
-			if(automato.getEstados().contains(estadosTransicao[1]))
-				destino = automato.getEstadoByLabel(estadosTransicao[1]);
+				origem = new Estado<InfoEstado>(new InfoEstado(estadosTransicao[0].trim()));
+			if(automato.getEstados().contains(estadosTransicao[1].trim()))
+				destino = automato.getEstadoByLabel(estadosTransicao[1].trim());
 			else
-				destino = new Estado<InfoEstado>(new InfoEstado(estadosTransicao[1]));
-			automato.addTransicao(new Transicao<String, InfoEstado>(transicao[0], origem, destino));
+				destino = new Estado<InfoEstado>(new InfoEstado(estadosTransicao[1].trim()));
+			automato.addTransicao(new Transicao<String, InfoEstado>(transicao[0].trim(), origem, destino));
 		}
 		return automato;
 	}

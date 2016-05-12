@@ -15,7 +15,7 @@
 				sizeLimit="100000" oncomplete="preenche()"/>
 
 			<p:panel id="panel" header="Visualização Automato"
-				style="width: 820px; height: 650px; border-color: blue">
+				style="width: 880px; height: 650px; border-color: blue">
 				<div id="paper"></div>
 			</p:panel>
 		</h:form>
@@ -29,7 +29,7 @@
 	
 		var paper = new joint.dia.Paper({
 		    el: $('#paper'),
-		    width: 800,
+		    width: 860,
 		    height: 600,
 		    gridSize: 1,
 		    model: graph
@@ -84,7 +84,12 @@
 		}
 		i = 0;
 		while(i != automato.transicoes.length) {
-			var l = link(estados[automato.transicoes[i].origem.info.label], estados[automato.transicoes[i].destino.info.label], automato.transicoes[i].info);
+			if(automato.transicoes[i].origem.info.label != automato.transicoes[i].destino.info.label){
+				var l = link(estados[automato.transicoes[i].origem.info.label], estados[automato.transicoes[i].destino.info.label], automato.transicoes[i].info);
+			}else{
+				var pontos = automato.transicoes[i].pontos;
+				var l = link(estados[automato.transicoes[i].origem.info.label], estados[automato.transicoes[i].destino.info.label], automato.transicoes[i].info,[{ x: pontos[0].x, y: pontos[0].y }, { x: pontos[1].x, y: pontos[1].y }]);
+			}
 			i++;
 		}
 

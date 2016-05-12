@@ -1,10 +1,13 @@
 package br.ufpi.automatos.modelo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Transicao<T, E> {
 	private T info;
 	private Estado<E> origem;
 	private Estado<E> destino;
-	
+	private List<Ponto> pontos;
 	/**
 	 * @param info
 	 * @param origem
@@ -14,6 +17,11 @@ public class Transicao<T, E> {
 		this.info = info;
 		this.origem = origem;
 		this.destino = destino;
+		if(origem.equals(destino)){
+			this.pontos = new ArrayList<Ponto>();
+			this.pontos.add(new Ponto((((InfoEstado)origem.getInfo()).getX() - 10), (((InfoEstado)origem.getInfo()).getY() + 10)));
+			this.pontos.add(new Ponto((((InfoEstado)origem.getInfo()).getX() + 10), (((InfoEstado)origem.getInfo()).getY() + 10)));
+		}
 	}
 
 	/**
@@ -109,4 +117,13 @@ public class Transicao<T, E> {
 			return false;
 		return true;
 	}
+
+	public List<Ponto> getPontos() {
+		return pontos;
+	}
+
+	public void setPontos(List<Ponto> pontos) {
+		this.pontos = pontos;
+	}
+	
 }
