@@ -3,7 +3,7 @@ package br.ufpi.automatos.modelo;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Automato<E, T> {
+public class Automato<E, T> implements Cloneable{
 	private List<Estado<E>> estados;
 	private List<Transicao<T, E>> transicoes;
 	private List<Estado<E>> estadosMarcados;
@@ -45,6 +45,10 @@ public class Automato<E, T> {
 			addEstado(transicao.getDestino());
 		}
 	}
+	
+	public void excluirTransicao(Transicao<T,E> transicao){
+		this.transicoes.remove(transicao);
+	}
 
 	public List<Estado<E>> getEstados() {
 		return estados;
@@ -83,4 +87,8 @@ public class Automato<E, T> {
 		return "Automato [estados=" + estados + ", transicoes=" + transicoes + ", estadoInicial=" + estadoInicial + "]";
 	}
 	
+	@Override
+	public Object clone() throws CloneNotSupportedException{
+		return super.clone();
+	}
 }
