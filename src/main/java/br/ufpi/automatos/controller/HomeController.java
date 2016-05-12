@@ -10,15 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 
 import org.primefaces.event.FileUploadEvent;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import br.ufpi.automatos.modelo.Automato;
 import br.ufpi.automatos.modelo.Estado;
@@ -26,12 +23,15 @@ import br.ufpi.automatos.modelo.InfoEstado;
 import br.ufpi.automatos.modelo.Transicao;
 import br.ufpi.automatos.util.FileUtil;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 /**
  * @author rony
  *
  */
 @Named
-@SessionScoped
+@RequestScoped
 public class HomeController implements Serializable {
 	/**
 	 * 
@@ -49,12 +49,12 @@ public class HomeController implements Serializable {
 	private void init(){
 		this.arquivosEntrada = new ArrayList<File>();
 		this.automato = new Automato<InfoEstado, String>();
-		Estado<InfoEstado> code = new Estado<InfoEstado>(new InfoEstado(1L, "code", 180, 390));
+		Estado<InfoEstado> code = new Estado<InfoEstado>(new InfoEstado("code"));
 		code.setInicial(true);
-		Estado<InfoEstado> slash = new Estado<InfoEstado>(new InfoEstado(2L, "slash", 340, 220));
-		Estado<InfoEstado> star = new Estado<InfoEstado>(new InfoEstado(3L, "star", 600, 400));
-		Estado<InfoEstado> line = new Estado<InfoEstado>(new InfoEstado(4L, "line", 190, 100));
-		Estado<InfoEstado> block = new Estado<InfoEstado>(new InfoEstado(5L, "block", 560, 140));
+		Estado<InfoEstado> slash = new Estado<InfoEstado>(new InfoEstado("slash"));
+		Estado<InfoEstado> star = new Estado<InfoEstado>(new InfoEstado("star"));
+		Estado<InfoEstado> line = new Estado<InfoEstado>(new InfoEstado("line"));
+		Estado<InfoEstado> block = new Estado<InfoEstado>(new InfoEstado("block"));
 		
 		Transicao<String, InfoEstado> t1 = new Transicao<String, InfoEstado>("/", code, slash);
 		Transicao<String, InfoEstado> t2 = new Transicao<String, InfoEstado>("other", slash, code);
@@ -63,6 +63,7 @@ public class HomeController implements Serializable {
 		Transicao<String, InfoEstado> t5 = new Transicao<String, InfoEstado>("*", slash, block);
 		Transicao<String, InfoEstado> t6 = new Transicao<String, InfoEstado>("*", block, star);
 		Transicao<String, InfoEstado> t7 = new Transicao<String, InfoEstado>("/", code, slash);
+		Transicao<String, InfoEstado> t8 = new Transicao<String, InfoEstado>("loop", star, star);
 				
 		this.automato.addEstado(code);
 		this.automato.addEstado(slash);
@@ -76,6 +77,7 @@ public class HomeController implements Serializable {
 		this.automato.addTransicao(t5);
 		this.automato.addTransicao(t6);
 		this.automato.addTransicao(t7);
+		this.automato.addTransicao(t8);
 		
 	}
 	

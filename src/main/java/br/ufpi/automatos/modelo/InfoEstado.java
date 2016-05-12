@@ -1,7 +1,6 @@
 package br.ufpi.automatos.modelo;
 
 public class InfoEstado {
-	private Long id;
 	private String label;
 	private int x;
 	private int y;
@@ -9,19 +8,11 @@ public class InfoEstado {
 	public InfoEstado() {
 	}
 	
-	public InfoEstado(Long id, String label, int x, int y) {
+	public InfoEstado(String label) {
 		super();
 		this.label = label;
-		this.x = x;
-		this.y = y;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
+		this.x = 100 + (int)(Math.random() * 700);
+		this.y = 100 + (int)(Math.random() * 500);
 	}
 
 	public String getLabel() {
@@ -52,7 +43,6 @@ public class InfoEstado {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((label == null) ? 0 : label.hashCode());
 		return result;
 	}
@@ -66,11 +56,6 @@ public class InfoEstado {
 		if (getClass() != obj.getClass())
 			return false;
 		InfoEstado other = (InfoEstado) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
 		if (label == null) {
 			if (other.label != null)
 				return false;
@@ -81,7 +66,8 @@ public class InfoEstado {
 
 	@Override
 	public String toString() {
-		return "InfoEstado [id=" + id + ", label=" + label + ", x=" + x + ", y=" + y + "]";
+		return "InfoEstado [label=" + label + ", x=" + x + ", y=" + y + "]";
 	}
 
+	
 }

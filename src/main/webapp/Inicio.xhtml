@@ -9,7 +9,6 @@
 
 		<h:form id="form" style="margin-top:30px">
 			<p:growl id="messages" showDetail="true" style="margin-top:30px"/>
-			<h1 class="aw-page-title">Algoritmos Autômatos</h1>
 			<h:inputHidden id="automato" value="#{homeController.nodesJson}" />
 			<p:fileUpload fileUploadListener="#{homeController.uploadArquivo}"
 				multiple="true" mode="advanced" dragDropSupport="true" update=":#{p:component('messages')}"
@@ -64,12 +63,13 @@
 		    return cell;
 		}
 
-
-		var start = new joint.shapes.fsa.StartState({ position: { x: 50, y: 530 } });
+		var x = Math.floor((Math.random() * 700) + 100);
+		var y = Math.floor((Math.random() * 500) + 100); 
+		var start = new joint.shapes.fsa.StartState({ position: { x: x, y: y} });
 		graph.addCell(start);
 	
-		var estados = new Array();
 		var estadoInicial = state(automato.estadoInicial.info.x, automato.estadoInicial.info.y, automato.estadoInicial.info.label);
+		var estados = new Array();
 		estados[automato.estadoInicial.info.label] = estadoInicial;
 		var l = link(start, estadoInicial, 'start');
 		var i = 0;
@@ -86,6 +86,7 @@
 			i++;
 		}
 
+		joint.layout.DirectedGraph.layout(graph, { setLinkVertices: true });
 		
 // 		link(start, code,  'start');
 // 		link(code,  slash, '/');

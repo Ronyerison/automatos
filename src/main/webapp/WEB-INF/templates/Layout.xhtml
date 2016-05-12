@@ -20,7 +20,7 @@
 	<h:outputScript target="body" library="algaworks" name="javascripts/app.js" />
 	
 	<link rel="stylesheet" href="css/joint.css" />
-<!-- 	<script src="js/jquery.min.js"></script> -->
+	<script src="js/joint.layout.DirectedGraph.js"></script>
 	<script src="js/lodash.min.js"></script>
 	<script src="js/backbone-min.js"></script>
 	<script src="js/joint.js"></script>
@@ -30,14 +30,13 @@
 <h:body>
 
 	<header class="aw-topbar">
-		<h:graphicImage library="algaworks" name="images/logo.png" />
-		
-		<a href="#" class="aw-toggle  js-toggle"><i class="fa  fa-bars"></i></a>
+		<h1 class="aw-page-title">Algoritmos Autômatos</h1>
+		<a href="#" class="aw-toggle  js-toggle"><i class="fa  fa-bars"><ui:include src="Menu.xhtml" /></i></a>
 	</header>
 	
-	<aside class="aw-sidebar  js-sidebar">
-		<ui:include src="Menu.xhtml" />
-	</aside>
+<!-- 	<aside class="aw-sidebar  js-sidebar"> -->
+<!-- 		<ui:include src="Menu.xhtml" /> -->
+<!-- 	</aside> -->
 	
 	<section class="aw-content  js-content">
 		<ui:insert name="content" />
