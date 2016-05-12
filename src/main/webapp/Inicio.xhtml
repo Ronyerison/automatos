@@ -11,16 +11,18 @@
 			<p:growl id="messages" showDetail="true" style="margin-top:30px"/>
 			<h:inputHidden id="automato" value="#{homeController.nodesJson}" />
 			<p:fileUpload fileUploadListener="#{homeController.uploadArquivo}"
-				multiple="true" mode="advanced" dragDropSupport="true" update=":#{p:component('messages')}"
-				sizeLimit="100000" />
+				multiple="true" mode="advanced" dragDropSupport="true" update=":#{p:component('form')}"
+				sizeLimit="100000" oncomplete="preenche()"/>
 
-			<p:panel header="Visualização Automato"
+			<p:panel id="panel" header="Visualização Automato"
 				style="width: 820px; height: 650px; border-color: blue">
 				<div id="paper"></div>
 			</p:panel>
 		</h:form>
 
-		<script type="text/javascript">
+<script type="text/javascript">
+	function preenche(){
+
 		var jsonAutomato = document.getElementById('form:automato').value;
 		var automato = JSON.parse(jsonAutomato);
 		var graph = new joint.dia.Graph();
@@ -86,21 +88,11 @@
 			i++;
 		}
 
-		joint.layout.DirectedGraph.layout(graph, { setLinkVertices: true });
+// 		joint.layout.DirectedGraph.layout(graph, { setLinkVertices: true });
 		
-// 		link(start, code,  'start');
-// 		link(code,  slash, '/');
-// 		link(slash, code,  'other', [{x: 270, y: 300}]);
-// 		link(slash, line,  '/');
-// 		link(line,  code,  'new\n line');
-// 		link(slash, block, '*');
-// 		link(block, star,  '*');
-// 		link(star,  block, 'other', [{x: 650, y: 290}]);
-// 		link(star,  code,  '/',     [{x: 490, y: 310}]);
-// 		link(line,  line,  'other', [{x: 115,y: 100}, {x: 250, y: 50}]);
-// 		link(block, block, 'other', [{x: 485,y: 140}, {x: 620, y: 90}]);
-// 		link(code,  code,  'other', [{x: 180,y: 500}, {x: 305, y: 450}]);
-	</script>
+
+	}
+</script>
 
 	</ui:define>
 

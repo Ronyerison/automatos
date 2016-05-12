@@ -17,12 +17,12 @@ import javax.inject.Named;
 
 import org.primefaces.event.FileUploadEvent;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import br.ufpi.automatos.modelo.Automato;
 import br.ufpi.automatos.modelo.InfoEstado;
 import br.ufpi.automatos.util.FileUtil;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 /**
  * @author rony
@@ -91,6 +91,7 @@ public class HomeController implements Serializable {
         for (File arquivo : arquivosEntrada) {
 			automato = FileUtil.File2Automato(arquivo);
 		}
+        
 	}
 	
 	public String getNodesJson(){
