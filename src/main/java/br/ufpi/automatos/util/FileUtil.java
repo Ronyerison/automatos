@@ -2,10 +2,16 @@ package br.ufpi.automatos.util;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 
 import org.primefaces.model.UploadedFile;
+
+import br.ufpi.automatos.modelo.Automato;
+import br.ufpi.automatos.modelo.Estado;
+import br.ufpi.automatos.modelo.InfoEstado;
+import br.ufpi.automatos.modelo.Transicao;
 
 public class FileUtil {
 	
@@ -29,5 +35,45 @@ public class FileUtil {
 		fos.close();
 		
 		return file;
+	}
+	
+	public static Automato<InfoEstado, String> File2Automato (File file){
+		String arquivo[] = lerArquivo(file).split("\n");
+		Automato<InfoEstado, String> automato = new Automato<InfoEstado, String>();
+		Estado<InfoEstado> inicial = new Estado<InfoEstado>(new InfoEstado(arquivo[0]), true, false);
+		automato.addEstado(inicial);
+		String estadosFinais[] = arquivo[1].split(",");
+		for (String estadoFinal : estadosFinais) {
+			if(inicial.getInfo().getLabel().equals(estadoFinal))
+				inicial.setMarcado(true);
+			else 
+				automato.addEstado(new Estado<InfoEstado>(new InfoEstado(estadoFinal), false, true));
+		}
+		for (int i = 2; i < arquivo.length; i++) {
+			String transicao[] = arquivo[i].split(":");
+			String estadosTransicao[] = transicao[1].split("->");
+			automato.addTransicao(new Transicao<String, InfoEstado>(transicao[0],
+					new Estado<InfoEstado>(new InfoEstado(estadosTransicao[0])),
+					new Estado<InfoEstado>(new InfoEstado(estadosTransicao[1]))));
+		}
+		return automato;
+	}
+	
+	public static String lerArquivo(File file) {
+		StringBuffer sb = new StringBuffer();
+		try {
+			FileReader reader = new FileReader(file);
+			int c;
+			do {
+				c = reader.read();
+				if (c != -1) {
+					sb.append((char) c);
+				}
+			} while (c != -1);
+			reader.close();
+		} catch (IOException e) {
+			System.out.println("Arquivo invalido!");
+		}
+		return sb.toString();
 	}
 }
