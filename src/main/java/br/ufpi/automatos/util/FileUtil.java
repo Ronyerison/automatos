@@ -52,9 +52,16 @@ public class FileUtil {
 		for (int i = 2; i < arquivo.length; i++) {
 			String transicao[] = arquivo[i].split(":");
 			String estadosTransicao[] = transicao[1].split("->");
-			automato.addTransicao(new Transicao<String, InfoEstado>(transicao[0],
-					new Estado<InfoEstado>(new InfoEstado(estadosTransicao[0])),
-					new Estado<InfoEstado>(new InfoEstado(estadosTransicao[1]))));
+			Estado<InfoEstado> origem, destino;
+			if(automato.getEstados().contains(estadosTransicao[0]))
+				origem = automato.getEstadoByLabel(estadosTransicao[0]);
+			else
+				origem = new Estado<InfoEstado>(new InfoEstado(estadosTransicao[0]));
+			if(automato.getEstados().contains(estadosTransicao[1]))
+				destino = automato.getEstadoByLabel(estadosTransicao[1]);
+			else
+				destino = new Estado<InfoEstado>(new InfoEstado(estadosTransicao[1]));
+			automato.addTransicao(new Transicao<String, InfoEstado>(transicao[0], origem, destino));
 		}
 		return automato;
 	}

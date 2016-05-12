@@ -81,7 +81,11 @@ public class Automato<E, T> implements Cloneable{
 	public void setTransicoes(List<Transicao<T, E>> transicoes) {
 		this.transicoes = transicoes;
 	}
-
+	
+	public Estado<E> getEstadoByLabel(String label){
+		return estados.get(estados.indexOf(label));
+	}
+	
 	@Override
 	public String toString() {
 		return "Automato [estados=" + estados + ", transicoes=" + transicoes + ", estadoInicial=" + estadoInicial + "]";
