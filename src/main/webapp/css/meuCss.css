@@ -1,0 +1,22 @@
+.panel-grid {
+	width: 98%;
+	height: 100%;
+}
+
+.panel-interno {
+	width: 900px;
+	height: 800px;
+}
+
+.panel-externo{
+	width: 950px;
+	height: 950px;
+	border: none;
+	background-color: white;
+	background-image: none;
+}
+
+.label{
+	font-weight: bold;
+	padding-left: 15px;
+}
