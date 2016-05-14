@@ -1,16 +1,33 @@
 function visualizaAutomato() {
-	var jsonAutomato = document.getElementById('form:automato').value;
-	var automato = JSON.parse(jsonAutomato);
+	
+	var $tabs = $('.ui-state-default.ui-corner-top'),
+		countTab = 0;
+	
+	$tabs.each(function(idx){
+		if ($(this).hasClass('ui-tabs-selected')) {
+			countTab = idx;
+		}
+	});
+	
+	var jsonListAutomato = document.getElementById('form:automato').value;
+	console.log(jsonListAutomato);
+	var listAutomato = JSON.parse(jsonListAutomato);
+	var automato = listAutomato[countTab];
+	console.log(automato);
+	
+//	var jsonAutomato = document.getElementById('form:automato').value;
+//	var automato = JSON.parse(jsonAutomato);
+	
 	var graph = new joint.dia.Graph();
-
+	console.log($('.paper')[countTab]);
 	var paper = new joint.dia.Paper({
-		el : $('#paper'),
+		el : $('.paper')[countTab],
 		width : 860,
 		height : 750,
 		gridSize : 1,
 		model : graph
 	});
-
+	
 	function state(x, y, label, marcado) {
 		var cell;
 		if (marcado != true) {
@@ -140,6 +157,5 @@ function visualizaAutomato() {
 		i++;
 	}
 
-	// joint.layout.DirectedGraph.layout(graph, { setLinkVertices: true });
 
 }

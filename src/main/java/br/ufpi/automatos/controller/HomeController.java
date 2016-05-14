@@ -15,6 +15,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
+import org.primefaces.component.tabview.Tab;
 import org.primefaces.event.FileUploadEvent;
 
 import br.ufpi.automatos.modelo.Automato;
@@ -36,9 +37,11 @@ public class HomeController implements Serializable {
 	 */
 	private static final long serialVersionUID = -1461117771138572702L;
 	
-	private Automato<InfoEstado, String> automato;
+	private List<Automato<InfoEstado, String>> automatos;
 	
 	private List<File> arquivosEntrada;
+	
+	private List<Tab> tabs;
 	
 	public HomeController() {
 	}
@@ -46,65 +49,41 @@ public class HomeController implements Serializable {
 	@PostConstruct
 	private void init(){
 		this.arquivosEntrada = new ArrayList<File>();
-		this.automato = new Automato<InfoEstado, String>();
+		this.automatos = new ArrayList<Automato<InfoEstado, String>>();
+		this.tabs = new ArrayList<Tab>();
 
-//		Estado<InfoEstado> code = new Estado<InfoEstado>(new InfoEstado("code"));
-//		code.setInicial(true);
-//		Estado<InfoEstado> slash = new Estado<InfoEstado>(new InfoEstado("slash"));
-//		Estado<InfoEstado> star = new Estado<InfoEstado>(new InfoEstado("star"));
-//		Estado<InfoEstado> line = new Estado<InfoEstado>(new InfoEstado("line"));
-//		Estado<InfoEstado> block = new Estado<InfoEstado>(new InfoEstado("block"));
-		
-//		Transicao<String, InfoEstado> t1 = new Transicao<String, InfoEstado>("/", code, slash);
-//		Transicao<String, InfoEstado> t2 = new Transicao<String, InfoEstado>("other", slash, code);
-//		Transicao<String, InfoEstado> t3 = new Transicao<String, InfoEstado>("/", slash, line);
-//		Transicao<String, InfoEstado> t4 = new Transicao<String, InfoEstado>("new\n Line", line, code);
-//		Transicao<String, InfoEstado> t5 = new Transicao<String, InfoEstado>("*", slash, block);
-//		Transicao<String, InfoEstado> t6 = new Transicao<String, InfoEstado>("*", block, star);
-//		Transicao<String, InfoEstado> t7 = new Transicao<String, InfoEstado>("/", code, slash);
-//		Transicao<String, InfoEstado> t8 = new Transicao<String, InfoEstado>("loop", star, star);
-//				
-//		this.automato.addEstado(code);
-//		this.automato.addEstado(slash);
-//		this.automato.addEstado(star);
-//		this.automato.addEstado(line);
-//		this.automato.addEstado(block);
-//		this.automato.addTransicao(t1);
-//		this.automato.addTransicao(t2);
-//		this.automato.addTransicao(t3);
-//		this.automato.addTransicao(t4);
-//		this.automato.addTransicao(t5);
-//		this.automato.addTransicao(t6);
-//		this.automato.addTransicao(t7);
-//		this.automato.addTransicao(t8);
-		
+	}
+	
+	public void addTab(String titulo){
+		Tab tab = new Tab();
+		tab.setTitle(titulo);
+		this.tabs.add(tab);
 	}
 	
 	public void uploadArquivo(FileUploadEvent event){
 		FacesMessage message = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
         FacesContext.getCurrentInstance().addMessage(null, message);
+        addTab(event.getFile().getFileName());
         try {
-			this.arquivosEntrada.add(FileUtil.uploadedFileToFile(event.getFile()));
+        	File arquivo = FileUtil.uploadedFileToFile(event.getFile());
+			this.arquivosEntrada.add(arquivo);
+			this.automatos.add(FileUtil.File2Automato(arquivo));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-        for (File arquivo : arquivosEntrada) {
-			automato = FileUtil.File2Automato(arquivo);
-		}
-        
 	}
 	
 	public String getNodesJson(){
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		return gson.toJson(automato);
+		return gson.toJson(automatos);
 	}
 
-	public Automato<InfoEstado, String> getAutomato() {
-		return automato;
+	public List<Automato<InfoEstado, String>> getAutomatos() {
+		return automatos;
 	}
 
-	public void setAutomato(Automato<InfoEstado, String> automato) {
-		this.automato = automato;
+	public void setAutomatos(List<Automato<InfoEstado, String>> automatos) {
+		this.automatos = automatos;
 	}
 
 	public List<File> getArquivosEntrada() {
@@ -113,6 +92,14 @@ public class HomeController implements Serializable {
 
 	public void setArquivosEntrada(List<File> arquivosEntrada) {
 		this.arquivosEntrada = arquivosEntrada;
+	}
+
+	public List<Tab> getTabs() {
+		return tabs;
+	}
+
+	public void setTabs(List<Tab> tabs) {
+		this.tabs = tabs;
 	}
 
 }

@@ -6,6 +6,7 @@
 .panel-interno {
 	width: 900px;
 	height: 800px;
+	background-image: none;
 }
 
 .panel-externo{

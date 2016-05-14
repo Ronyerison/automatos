@@ -13,14 +13,22 @@
 
 			<p:panel styleClass="panel-externo">
 				<h:panelGrid columns="1" styleClass="panel-grid">
-					<p:outputLabel for="arq" value="Arquivos Autômatos:" styleClass="label"/>
-					<p:fileUpload id="arq" fileUploadListener="#{homeController.uploadArquivo}"
+					<p:outputLabel for="arq" value="Arquivos Autômatos:"
+						styleClass="label" />
+					<p:fileUpload id="arq"
+						fileUploadListener="#{homeController.uploadArquivo}"
 						multiple="true" mode="advanced" dragDropSupport="true"
-						update=":#{p:component('form')}" sizeLimit="100000"
-						oncomplete="visualizaAutomato()" />
-					<p:panel id="panel" header="Visualização Automato" styleClass="panel-interno">
-						<div id="paper"></div>
-					</p:panel>
+						update=":#{p:component('form')}" sizeLimit="100000" oncomplete="visualizaAutomato()"
+						/>
+					
+					<p:tabView value="#{homeController.tabs}" var="tab" onTabShow="visualizaAutomato()">
+						<p:tab title="#{tab.title}" closable="true" >
+							<p:panel id="panel" styleClass="panel-interno">
+								<div class="paper"></div>
+							</p:panel>
+						</p:tab>
+					</p:tabView>
+
 				</h:panelGrid>
 			</p:panel>
 
