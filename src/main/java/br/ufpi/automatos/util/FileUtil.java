@@ -42,26 +42,26 @@ public class FileUtil {
 		Automato<InfoEstado, String> automato = new Automato<InfoEstado, String>();
 		Estado<InfoEstado> inicial = new Estado<InfoEstado>(new InfoEstado(arquivo[0].trim()), true, false);
 		automato.addEstado(inicial);
-		String estadosFinais[] = arquivo[1].split(",");
+		String estadosFinais[] = arquivo[1].trim().split(",");
 		for (String estadoFinal : estadosFinais) {
 			if(inicial.getInfo().getLabel().equals(estadoFinal))
 				inicial.setMarcado(true);
 			else 
-				automato.addEstado(new Estado<InfoEstado>(new InfoEstado(estadoFinal.trim()), false, true));
+				automato.addEstado(new Estado<InfoEstado>(new InfoEstado(estadoFinal), false, true));
 		}
 		for (int i = 2; i < arquivo.length; i++) {
-			String transicao[] = arquivo[i].split(":");
+			String transicao[] = arquivo[i].trim().split(":");
 			String estadosTransicao[] = transicao[1].split("->");
 			Estado<InfoEstado> origem, destino;
-			if(automato.getEstados().contains(estadosTransicao[0].trim()))
-				origem = automato.getEstadoByLabel(estadosTransicao[0].trim());
+			if(automato.getEstados().contains(estadosTransicao[0]))
+				origem = automato.getEstadoByLabel(estadosTransicao[0]);
 			else
-				origem = new Estado<InfoEstado>(new InfoEstado(estadosTransicao[0].trim()));
-			if(automato.getEstados().contains(estadosTransicao[1].trim()))
-				destino = automato.getEstadoByLabel(estadosTransicao[1].trim());
+				origem = new Estado<InfoEstado>(new InfoEstado(estadosTransicao[0]));
+			if(automato.getEstados().contains(estadosTransicao[1]))
+				destino = automato.getEstadoByLabel(estadosTransicao[1]);
 			else
-				destino = new Estado<InfoEstado>(new InfoEstado(estadosTransicao[1].trim()));
-			automato.addTransicao(new Transicao<String, InfoEstado>(transicao[0].trim(), origem, destino));
+				destino = new Estado<InfoEstado>(new InfoEstado(estadosTransicao[1]));
+			automato.addTransicao(new Transicao<String, InfoEstado>(transicao[0], origem, destino));
 		}
 		return automato;
 	}
