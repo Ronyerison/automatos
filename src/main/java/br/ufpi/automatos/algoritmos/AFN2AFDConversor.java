@@ -1,8 +1,5 @@
 package br.ufpi.automatos.algoritmos;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import br.ufpi.automatos.modelo.Automato;
 import br.ufpi.automatos.modelo.Estado;
 import br.ufpi.automatos.modelo.Transicao;
@@ -16,7 +13,6 @@ public class AFN2AFDConversor {
 	
 	@SuppressWarnings({"rawtypes"})
 	public Automato<String, String> excluirTrasicoesVazias(Automato<String, String> automato) throws CloneNotSupportedException{
-		@SuppressWarnings("unchecked")
 		Automato<String, String> automatoClone = (Automato<String, String>) automato.clone();
 		
 		for (Transicao<String, String> t : automato.getTransicoes()) {
