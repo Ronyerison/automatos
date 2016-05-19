@@ -120,7 +120,11 @@ public class Automato<E, T>{
 	}
 
 	public Estado<E> getEstadoByLabel(String label) {
-		return estados.get(estados.indexOf(label));
+		for (int i = 0; i < estados.size(); i++) {
+			if(((InfoEstado)estados.get(i).getInfo()).getLabel().equals(label))
+				return estados.get(i);
+		}
+		return null;
 	}
 
 	@Override

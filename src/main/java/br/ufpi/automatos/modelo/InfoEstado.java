@@ -66,7 +66,8 @@ public class InfoEstado {
 
 	@Override
 	public String toString() {
-		return "InfoEstado [label=" + label + ", x=" + x + ", y=" + y + "]";
+//		return "InfoEstado [label=" + label + ", x=" + x + ", y=" + y + "]";
+		return label;
 	}
 
 	

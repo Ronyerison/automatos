@@ -71,7 +71,7 @@ public class Transicao<T, E> {
 	 */
 	@Override
 	public String toString() {
-		return info + "";
+		return info + ":" + origem.getInfo() + "->" + destino.getInfo();
 	}
 
 	/* (non-Javadoc)
