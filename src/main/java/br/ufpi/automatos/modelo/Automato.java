@@ -3,7 +3,7 @@ package br.ufpi.automatos.modelo;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Automato<E, T> implements Cloneable {
+public class Automato<E, T>{
 	private List<Estado<E>> estados;
 	private List<Transicao<T, E>> transicoes;
 	private List<Estado<E>> estadosMarcados;
@@ -15,15 +15,15 @@ public class Automato<E, T> implements Cloneable {
 		this.estadosMarcados = new ArrayList<Estado<E>>();
 		this.estadoInicial = null;
 	}
-	
-	public Automato(Automato<E, T> automato){
+
+	public Automato(Automato<E, T> automato) {
 		this.estadoInicial = automato.estadoInicial;
 		this.estados = automato.estados;
 		this.estadosMarcados = automato.estadosMarcados;
 		this.transicoes = automato.transicoes;
 	}
-	
-	public Automato<E, T> clone(){
+
+	public Automato<E, T> clone() {
 		return new Automato<E, T>(this);
 	}
 
@@ -36,12 +36,14 @@ public class Automato<E, T> implements Cloneable {
 	}
 
 	public void addEstado(Estado<E> estado) {
-		this.estados.add(estado);
-		if (estado.isInicial()) {
-			this.estadoInicial = estado;
-		}
-		if (estado.isMarcado()) {
-			this.estadosMarcados.add(estado);
+		if (!this.estados.contains(estado)) {
+			this.estados.add(estado);
+			if (estado.isInicial()) {
+				this.estadoInicial = estado;
+			}
+			if (estado.isMarcado()) {
+				this.estadosMarcados.add(estado);
+			}
 		}
 	}
 
@@ -173,5 +175,4 @@ public class Automato<E, T> implements Cloneable {
 		return true;
 	}
 
-	
 }
