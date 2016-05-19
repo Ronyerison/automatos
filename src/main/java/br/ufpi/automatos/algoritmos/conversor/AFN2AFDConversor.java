@@ -6,10 +6,9 @@ import java.util.List;
 import br.ufpi.automatos.modelo.Automato;
 import br.ufpi.automatos.modelo.Estado;
 import br.ufpi.automatos.modelo.Transicao;
+import br.ufpi.automatos.util.Constante;
 
 public class AFN2AFDConversor<E, T> {
-	
-	private static final String ELEMENTO_VAZIO = "$";
 	
 	public AFN2AFDConversor() {
 	}
@@ -103,7 +102,7 @@ public class AFN2AFDConversor<E, T> {
 	private void construirFechoVazioPorEstado(List<Estado<E>> listaEstados, List<Transicao<T, E>> listaTransicoes, int indice){
 		Estado<E> estadoReferencia = listaEstados.get(indice);
 		for (Transicao<T, E> t : listaTransicoes) {
-			if(t.getOrigem().getInfo().equals(estadoReferencia.getInfo()) && t.getInfo().equals(ELEMENTO_VAZIO)){
+			if(t.getOrigem().getInfo().equals(estadoReferencia.getInfo()) && t.getInfo().equals(Constante.getElementoVazio())){
 				if(!listaEstados.contains(t.getDestino())){
 					listaEstados.add(t.getDestino());
 				}
@@ -114,7 +113,7 @@ public class AFN2AFDConversor<E, T> {
 	public List<T> obterAlfabeto(Automato<E, T> automato){
 		List<T> alfabeto = new ArrayList<>();
 		for (Transicao<T, E> t : automato.getTransicoes()) {
-			if(!alfabeto.contains(t.getInfo()) && !t.getInfo().equals(ELEMENTO_VAZIO)){
+			if(!alfabeto.contains(t.getInfo()) && !t.getInfo().equals(Constante.getElementoVazio())){
 				alfabeto.add(t.getInfo());
 			}
 		}
