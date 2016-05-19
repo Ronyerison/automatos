@@ -7,18 +7,51 @@ import br.ufpi.automatos.modelo.Automato;
 import br.ufpi.automatos.modelo.Estado;
 import br.ufpi.automatos.modelo.Transicao;
 
-public class AFN2AFDConversor {
+public class AFN2AFDConversor<E, T> {
 	
 	private static final String ELEMENTO_VAZIO = "$";
 	
 	public AFN2AFDConversor() {
 	}
 	
-	public <E, T> Automato<E, T> converter(Automato<E, T> automatoAFN){
+	public Automato<E, T> converter(Automato<E, T> automatoAFN){
+		List<FechoTransitivo<E, T>> fechos = new ArrayList<>();
+		fechos = obterFechos(automatoAFN);
+		
+		for (FechoTransitivo<E, T> f : fechos) {
+			if(f.getFecho().size() > 1){
+				
+			}
+		}
 		return null;
 	}
 	
-	public <E, T> List<Estado<E>> construirFecho(Automato<E, T> automato, Estado<E> estado, T letra) {
+	private boolean verificarFechoEstado(List<FechoTransitivo<E, T>> fechos, List<Estado<E>> fecho){
+		return false;
+	}
+
+	public List<FechoTransitivo<E, T>> obterFechos(Automato<E, T> automato) {
+		List<T> alfa = new ArrayList<>();
+		alfa = obterAlfabeto(automato);
+		List<FechoTransitivo<E, T>> fechos = new ArrayList<>();
+		FechoTransitivo<E, T> fecho = new FechoTransitivo<>();
+		List<Estado<E>> estadoUnificado;
+		
+		for (Estado<E> e : automato.getEstados()) {
+			for (T a : alfa) {
+				estadoUnificado = new ArrayList<Estado<E>>();
+				estadoUnificado.add(e);
+				fecho.setEstadoUnificado(estadoUnificado);
+				fecho.setFecho(construirFecho(automato, e, a));
+				fecho.setInfoTransicao(a);
+				fechos.add(fecho);
+				fecho = new FechoTransitivo<>();
+			}
+		}
+		return fechos;
+	}
+	
+	public List<Estado<E>> construirFecho(Automato<E, T> automato, Estado<E> estado, T letra) {
 		List<Estado<E>> fecho = new ArrayList<>();
 		List<Estado<E>> f1 = new ArrayList<>();
 		f1.addAll(construirFechoVazio(automato, estado));
@@ -33,7 +66,7 @@ public class AFN2AFDConversor {
 		return fecho;
 	}
 	
-	private <E, T, L> List<Estado<E>> construirFechoPorLetra(List<Estado<E>> listaEstados, List<Transicao<T, E>> listaTransicoes, L letra){
+	private List<Estado<E>> construirFechoPorLetra(List<Estado<E>> listaEstados, List<Transicao<T, E>> listaTransicoes, T letra){
 		List<Estado<E>> estadosAux = new ArrayList<>();
 		for (Estado<E> e : listaEstados) {
 			for (Transicao<T, E> t : listaTransicoes) {
@@ -47,7 +80,7 @@ public class AFN2AFDConversor {
 		return estadosAux;
 	}
 	
-	private <E, T> List<Estado<E>> construirFechoVazio(Automato<E, T> automato, Estado<E> estadoRef){
+	private List<Estado<E>> construirFechoVazio(Automato<E, T> automato, Estado<E> estadoRef){
 		List<Estado<E>> fechoVazio = new ArrayList<>();
 		fechoVazio.add(estadoRef);
 		
@@ -67,7 +100,7 @@ public class AFN2AFDConversor {
 		return fechoVazio;
 	}
 	
-	private <E, T> void construirFechoVazioPorEstado(List<Estado<E>> listaEstados, List<Transicao<T, E>> listaTransicoes, int indice){
+	private void construirFechoVazioPorEstado(List<Estado<E>> listaEstados, List<Transicao<T, E>> listaTransicoes, int indice){
 		Estado<E> estadoReferencia = listaEstados.get(indice);
 		for (Transicao<T, E> t : listaTransicoes) {
 			if(t.getOrigem().getInfo().equals(estadoReferencia.getInfo()) && t.getInfo().equals(ELEMENTO_VAZIO)){
@@ -76,5 +109,15 @@ public class AFN2AFDConversor {
 				}
 			}
 		}
+	}
+	
+	public List<T> obterAlfabeto(Automato<E, T> automato){
+		List<T> alfabeto = new ArrayList<>();
+		for (Transicao<T, E> t : automato.getTransicoes()) {
+			if(!alfabeto.contains(t.getInfo()) && !t.getInfo().equals(ELEMENTO_VAZIO)){
+				alfabeto.add(t.getInfo());
+			}
+		}
+		return alfabeto;
 	}
 }

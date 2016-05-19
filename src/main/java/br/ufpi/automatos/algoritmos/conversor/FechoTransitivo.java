@@ -1,39 +1,48 @@
 package br.ufpi.automatos.algoritmos.conversor;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class FechoTransitivo {
-	private String labelEstado;
-	private String labelAlfabeto;
-	private List<String> estadosAtingidos;
+import br.ufpi.automatos.modelo.Estado;
+import br.ufpi.automatos.modelo.InfoEstado;
+
+public class FechoTransitivo<E, T> {
+	private List<Estado<E>> estadoUnificado;
+	private T infoTransicao;
+	private List<Estado<E>> fecho;
 	
-	public FechoTransitivo() {
-		this.estadosAtingidos = new ArrayList<String>();
+	public T getInfoTransicao() {
+		return infoTransicao;
+	}
+
+	public List<Estado<E>> getEstadoUnificado() {
+		return estadoUnificado;
+	}
+
+	public void setEstadoUnificado(List<Estado<E>> estadoUnificado) {
+		this.estadoUnificado = estadoUnificado;
+	}
+
+	public List<Estado<E>> getFecho() {
+		return fecho;
 	}
 	
-	public String getLabelEstado() {
-		return labelEstado;
+	public void setInfoTransicao(T infoTransicao) {
+		this.infoTransicao = infoTransicao;
 	}
 	
-	public String getLabelAlfabeto() {
-		return labelAlfabeto;
+	public void setFecho(List<Estado<E>> fecho) {
+		this.fecho = fecho;
 	}
 	
-	public List<String> getEstadosAtingidos() {
-		return estadosAtingidos;
+	public String infoEstadoUnificado(){
+		StringBuffer info = new StringBuffer("");
+		for (int i = 0; i < estadoUnificado.size(); i++) {
+			if(i < estadoUnificado.size()-1){
+				info.append(estadoUnificado.get(i).getInfo().toString().concat(","));
+			}else{
+				info.append(((InfoEstado)estadoUnificado.get(i).getInfo()).getLabel());
+			}
+		}
+		return info.toString();
 	}
-	
-	public void setLabelEstado(String labelEstado) {
-		this.labelEstado = labelEstado;
-	}
-	
-	public void setLabelAlfabeto(String labelAlfabeto) {
-		this.labelAlfabeto = labelAlfabeto;
-	}
-	
-	public void setEstadosAtingidos(List<String> estadosAtingidos) {
-		this.estadosAtingidos = estadosAtingidos;
-	}
-	
 }
