@@ -1,7 +1,7 @@
 package br.ufpi.automatos.algoritmos.conversor;
 
+import java.util.ArrayList;
 import java.util.List;
-
 import br.ufpi.automatos.modelo.Estado;
 import br.ufpi.automatos.modelo.InfoEstado;
 
@@ -45,4 +45,39 @@ public class FechoTransitivo<E, T> {
 		}
 		return info.toString();
 	}
+	
+	public String infoFechoUnificado(){
+		StringBuffer info = new StringBuffer("");
+		for (int i = 0; i < fecho.size(); i++) {
+			if(i < fecho.size()-1){
+				info.append(fecho.get(i).getInfo().toString().concat(","));
+			}else{
+				info.append(((InfoEstado)fecho.get(i).getInfo()).getLabel());
+			}
+		}
+		return info.toString();
+	}
+	
+	public void setFechoDiff(List<Estado<E>> fecho){
+		List<Estado<E>> estados;
+		List<Estado<E>> fechoAux = new ArrayList<>(fecho);
+		
+		for (Estado<E> fechoTransitivo : fechoAux) {
+			if(!existeEstado(fechoTransitivo)){
+				estados = new ArrayList<>();
+				estados.add(fechoTransitivo);
+				this.fecho.addAll(estados);
+			}
+		}
+	}
+	
+	private boolean existeEstado(Estado<E> estado){
+		for (Estado<E> e : fecho) {
+			if(((InfoEstado)e.getInfo()).getLabel().equals(((InfoEstado)estado.getInfo()).getLabel())){
+				return true;
+			}
+		}
+		return false;
+	}
 }
+
