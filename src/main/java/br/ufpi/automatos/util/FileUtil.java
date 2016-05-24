@@ -38,8 +38,15 @@ public class FileUtil {
 	}
 	
 	public static Automato<InfoEstado, String> File2Automato (File file){
+		String label;
+		int pos = file.getName().lastIndexOf(".");
+		if(pos != -1)
+		   label = file.getName().substring(0, pos);
+		else
+			label = file.getName();
 		String arquivo[] = lerArquivo(file).split("\n");
 		Automato<InfoEstado, String> automato = new Automato<InfoEstado, String>();
+		automato.setLabel(label);
 		Estado<InfoEstado> inicial = new Estado<InfoEstado>(new InfoEstado(arquivo[0].trim()), true, false);
 		automato.addEstado(inicial);
 		String estadosFinais[] = arquivo[1].trim().split(";");

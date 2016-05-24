@@ -4,35 +4,44 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Automato<E, T>{
+
+	private String label;
 	private List<Estado<E>> estados;
 	private List<Transicao<T, E>> transicoes;
 	private List<Estado<E>> estadosMarcados;
 	private Estado<E> estadoInicial;
+	private List<T> alfabeto;
 
 	public Automato() {
+		this.label = "";
 		this.estados = new ArrayList<Estado<E>>();
 		this.transicoes = new ArrayList<Transicao<T, E>>();
 		this.estadosMarcados = new ArrayList<Estado<E>>();
 		this.estadoInicial = null;
+		this.alfabeto = new ArrayList<T>();
 	}
 
 	public Automato(Automato<E, T> automato) {
+		this.label = automato.label;
 		this.estadoInicial = automato.estadoInicial;
 		this.estados = automato.estados;
 		this.estadosMarcados = automato.estadosMarcados;
 		this.transicoes = automato.transicoes;
+		this.alfabeto = automato.alfabeto;
 	}
 
 	public Automato<E, T> clone() {
 		return new Automato<E, T>(this);
 	}
 
-	public Automato(List<Estado<E>> estados, List<Transicao<T, E>> transicoes,
-			List<Estado<E>> estadosMarcados, Estado<E> estadoInicial) {
+	public Automato(String label, List<Estado<E>> estados, List<Transicao<T, E>> transicoes,
+			List<Estado<E>> estadosMarcados, Estado<E> estadoInicial, List<T> alfabeto) {
+		this.label = label;
 		this.estados = estados;
 		this.transicoes = transicoes;
 		this.estadosMarcados = estadosMarcados;
 		this.estadoInicial = estadoInicial;
+		this.alfabeto = alfabeto;
 	}
 
 	public void addEstado(Estado<E> estado) {
@@ -50,6 +59,9 @@ public class Automato<E, T>{
 	public void addTransicao(Transicao<T, E> transicao) {
 		if (!this.transicoes.contains(transicao)) {
 			this.transicoes.add(transicao);
+			if (!alfabeto.contains(transicao.getInfo())) {
+				alfabeto.add(transicao.getInfo());
+			}
 		}
 		if (!this.estados.contains(transicao.getOrigem())) {
 			addEstado(transicao.getOrigem());
@@ -63,6 +75,9 @@ public class Automato<E, T>{
 		for (Transicao<T, E> transicao : transicoes) {
 			if (!this.transicoes.contains(transicao)) {
 				this.transicoes.add(transicao);
+				if (!alfabeto.contains(transicao.getInfo())) {
+					alfabeto.add(transicao.getInfo());
+				}
 			}
 			if (!this.estados.contains(transicao.getOrigem())) {
 				addEstado(transicao.getOrigem());
@@ -82,11 +97,20 @@ public class Automato<E, T>{
 		}
 		return transicoes;
 	}
-
+	
+	//TODO remover do alfabeto quando todas as transicoes com determinada label forem excluidas
 	public void excluirTransicao(Transicao<T, E> transicao) {
 		this.transicoes.remove(transicao);
 	}
 
+	public String getLabel() {
+		return label;
+	}
+	
+	public void setLabel(String label) {
+		this.label = label;
+	}
+	
 	public List<Estado<E>> getEstados() {
 		return estados;
 	}
@@ -114,9 +138,23 @@ public class Automato<E, T>{
 	public List<Transicao<T, E>> getTransicoes() {
 		return transicoes;
 	}
-
+	
+	//TODO montar o alfabeto quando as transicoes forem setadas manualmente por este metodo
 	public void setTransicoes(List<Transicao<T, E>> transicoes) {
 		this.transicoes = transicoes;
+		for (Transicao<T, E> transicao : transicoes) {
+			if (!alfabeto.contains(transicao.getInfo())) {
+				alfabeto.add(transicao.getInfo());
+			}
+		}
+	}
+	
+	public List<T> getAlfabeto() {
+		return alfabeto;
+	}
+	
+	public void setAlfabeto(List<T> alfabeto) {
+		this.alfabeto = alfabeto;
 	}
 
 	public Estado<E> getEstadoByLabel(String label) {
@@ -178,5 +216,5 @@ public class Automato<E, T>{
 			return false;
 		return true;
 	}
-
+	
 }
