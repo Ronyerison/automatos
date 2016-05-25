@@ -164,6 +164,16 @@ public class Automato<E, T>{
 		}
 		return null;
 	}
+	
+	public Estado<E> getEstadoCompostoByLabel(String label) {
+		for (int i = 0; i < estados.size(); i++) {
+			for (String nome : ((InfoEstado)estados.get(i).getInfo()).getLabel().split(",")) {
+				if (nome.equals(label))
+					return estados.get(i);					
+			}
+		}
+		return null;
+	}
 
 	@Override
 	public String toString() {
