@@ -159,3 +159,15 @@ function visualizaAutomato() {
 
 
 }
+
+function getIndexTab(){
+	var $tabs = $('.ui-state-default.ui-corner-top'),
+	countTab = 0;
+
+	$tabs.each(function(idx){
+	if ($(this).hasClass('ui-tabs-selected')) {
+		countTab = idx;
+		return countTab;
+	}
+	});
+}

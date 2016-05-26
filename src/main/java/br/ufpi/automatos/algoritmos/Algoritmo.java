@@ -9,6 +9,13 @@ import br.ufpi.automatos.modelo.Transicao;
 
 public class Algoritmo<E, T> {
 
+	public Automato<E, T> trim(Automato<E, T> automato){
+		Automato<E, T> result = acessibilidade(automato);
+		result = coacessibilidade(result);
+		
+		return result;
+	}
+	
 	public Automato<E, T> acessibilidade(Automato<E, T> automato) {
 		List<Estado<E>> estadosVisitados = new ArrayList<Estado<E>>();
 		Automato<E, T> result = new Automato<E, T>();
@@ -24,7 +31,7 @@ public class Algoritmo<E, T> {
 					estadosAdj.remove(est);
 				}
 			}
-			if(!estadosAdj.isEmpty()){
+			if (!estadosAdj.isEmpty()) {
 				List<Estado<E>> adj = addEstadosAdj(automato, result,
 						estadosAdj.get(0), estadosVisitados);
 				for (Estado<E> estado : adj) {
@@ -35,6 +42,32 @@ public class Algoritmo<E, T> {
 		}
 		return result;
 	}
+
+	
+	
+	public Automato<E, T> coacessibilidade(Automato<E, T> automato) {
+		Automato<E, T> resultado = new Automato<E, T>();
+		for (Estado<E> estado : automato.getEstadosMarcados()) {
+			if(!estado.isInicial() || !automato.getTransicoesByDestino(estado).isEmpty()){
+				buscarCaminho(automato, estado, resultado);
+			}else{
+				resultado.addEstado(estado);
+			}
+		}
+		
+		return resultado;
+	}
+
+	private void buscarCaminho(Automato<E, T> automato, Estado<E> estado, Automato<E, T> resultado){
+		List<Transicao<T, E>> t = automato.getTransicoesByDestino(estado);
+		for (Transicao<T, E> transicao : t) {
+			if(!resultado.getTransicoes().contains(transicao)){
+				resultado.addTransicao(transicao);
+				buscarCaminho(automato, transicao.getOrigem(), resultado);
+			}
+		}
+	}
+	
 
 	/**
 	 * @param automato

@@ -98,6 +98,16 @@ public class Automato<E, T>{
 		return transicoes;
 	}
 	
+	public List<Transicao<T, E>> getTransicoesByDestino(Estado<E> estado) {
+		List<Transicao<T, E>> transicoes = new ArrayList<Transicao<T, E>>();
+		for (Transicao<T, E> transicao : this.transicoes) {
+			if (transicao.getDestino().equals(estado)) {
+				transicoes.add(transicao);
+			}
+		}
+		return transicoes;
+	}
+	
 	//TODO remover do alfabeto quando todas as transicoes com determinada label forem excluidas
 	public void excluirTransicao(Transicao<T, E> transicao) {
 		this.transicoes.remove(transicao);

@@ -16,8 +16,11 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
 import org.primefaces.component.tabview.Tab;
+import org.primefaces.component.tabview.TabView;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.event.TabChangeEvent;
 
+import br.ufpi.automatos.algoritmos.Algoritmo;
 import br.ufpi.automatos.modelo.Automato;
 import br.ufpi.automatos.modelo.InfoEstado;
 import br.ufpi.automatos.util.FileUtil;
@@ -42,6 +45,8 @@ public class HomeController implements Serializable {
 	private List<File> arquivosEntrada;
 	
 	private List<Tab> tabs;
+	
+	private int indexActiveTab;
 	
 	public HomeController() {
 	}
@@ -71,6 +76,18 @@ public class HomeController implements Serializable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void onTabChange(TabChangeEvent event){
+		TabView tabView = (TabView) event.getComponent();
+		indexActiveTab = tabView.getActiveIndex();
+		System.out.println("Tab " + indexActiveTab);
+	}
+	
+	public void acessibilidade(){
+		Algoritmo<InfoEstado, String> algoritmo = new Algoritmo<InfoEstado, String>();
+		this.automatos.add(algoritmo.acessibilidade(this.automatos.get(indexActiveTab)));
+		addTab("Acessibilidade Automato " + indexActiveTab);
 	}
 	
 	public String getNodesJson(){

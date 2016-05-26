@@ -10,7 +10,7 @@
 		<h:form id="form" style="margin-top:30px">
 			<p:growl id="messages" showDetail="true" style="margin-top:30px" />
 			<h:inputHidden id="automato" value="#{homeController.nodesJson}" />
-
+			
 			<p:panel styleClass="panel-externo">
 				<h:panelGrid columns="1" styleClass="panel-grid">
 					<p:outputLabel for="arq" value="Arquivos Autômatos:"
@@ -21,9 +21,10 @@
 						update=":#{p:component('form')}" sizeLimit="100000" oncomplete="visualizaAutomato()"
 						/>
 					
-					<p:tabView value="#{homeController.tabs}" var="tab" onTabShow="visualizaAutomato()">
+					<p:tabView value="#{homeController.tabs}" var="tab" onTabShow="visualizaAutomato()" dynamic="true">
+						<p:ajax event="tabChange" listener="#{homeController.onTabChange()}"/>
 						<p:tab title="#{tab.title}" closable="true" >
-							<p:panel id="panel" styleClass="panel-interno">
+							<p:panel id="panel" styleClass="panel-interno" >
 								<div class="paper"></div>
 							</p:panel>
 						</p:tab>

@@ -51,10 +51,12 @@ public class FileUtil {
 		automato.addEstado(inicial);
 		String estadosFinais[] = arquivo[1].trim().split(";");
 		for (String estadoFinal : estadosFinais) {
-			if(inicial.getInfo().getLabel().equals(estadoFinal))
+			if(inicial.getInfo().getLabel().equals(estadoFinal)){
 				inicial.setMarcado(true);
-			else 
+				automato.getEstadosMarcados().add(inicial);
+			}else{ 
 				automato.addEstado(new Estado<InfoEstado>(new InfoEstado(estadoFinal), false, true));
+			}
 		}
 		for (int i = 2; i < arquivo.length; i++) {
 			String transicao[] = arquivo[i].trim().split(":");
