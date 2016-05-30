@@ -7,10 +7,11 @@
 
 	<ui:define name="content">
 
-		<h:form id="form" style="margin-top:30px">
+		<h:form id="form" style="margin-top:30px"
+			enctype="multipart/form-data">
 			<p:growl id="messages" showDetail="true" style="margin-top:30px" />
 			<h:inputHidden id="automato" value="#{homeController.nodesJson}" />
-			
+
 			<p:panel styleClass="panel-externo">
 				<h:panelGrid columns="1" styleClass="panel-grid">
 					<p:outputLabel for="arq" value="Arquivos Autômatos:"
@@ -18,13 +19,13 @@
 					<p:fileUpload id="arq"
 						fileUploadListener="#{homeController.uploadArquivo}"
 						multiple="true" mode="advanced" dragDropSupport="true"
-						update=":#{p:component('form')}" sizeLimit="100000" oncomplete="visualizaAutomato()"
-						/>
-					
-					<p:tabView value="#{homeController.tabs}" var="tab" onTabShow="visualizaAutomato()" dynamic="true">
-						<p:ajax event="tabChange" listener="#{homeController.onTabChange()}"/>
-						<p:tab title="#{tab.title}" closable="true" >
-							<p:panel id="panel" styleClass="panel-interno" >
+						update=":#{p:component('form')}" sizeLimit="100000"
+						oncomplete="visualizaAutomato()" />
+
+					<p:tabView value="#{homeController.tabs}" var="tab" onTabChange="limpaDiv()"
+						onTabShow="visualizaAutomato()" dynamic="true" >
+						<p:tab title="#{tab.title}" closable="false">
+							<p:panel id="panel" styleClass="panel-interno">
 								<div class="paper"></div>
 							</p:panel>
 						</p:tab>
@@ -33,7 +34,28 @@
 				</h:panelGrid>
 			</p:panel>
 
+			<p:dialog id="dlg" header="TRIM" widgetVar="dlgTrim"
+				showEffect="blind" hideEffect="explode" width="700"
+				resizable="false">
+				<p:outputPanel id="panel_aut" style="text-align:justify;">
+					<p:panelGrid columns="1" style="text-align: left; width: 100%">
 
+						<p:selectOneMenu id="select_aut"
+							value="#{homeController.automatoSelecionado}">
+							<f:selectItem itemLabel="Selecione um Automato" />
+							<f:selectItems value="#{homeController.automatos}" var="automato"
+								itemLabel="#{automato.label}" itemValue="#{automato.label}" />
+							<p:ajax event="change" process="@this"
+								listener="#{homeController.trim()}"
+								oncomplete="visualizaAutomato()"
+								update=":#{p:component('form')}" />
+						</p:selectOneMenu>
+						<!-- 						<p:commandButton value="Executar TRIM" process="@this form:select_aut" -->
+						<!-- 							actionListener="#{homeController.trim()}" -->
+						<!-- 							oncomplete="visualizaAutomato()" update=":#{p:component('form')}" /> -->
+					</p:panelGrid>
+				</p:outputPanel>
+			</p:dialog>
 		</h:form>
 
 	</ui:define>

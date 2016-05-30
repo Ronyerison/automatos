@@ -39,58 +39,82 @@ public class HomeController implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -1461117771138572702L;
-	
+
 	private List<Automato<InfoEstado, String>> automatos;
-	
+
 	private List<File> arquivosEntrada;
-	
+
 	private List<Tab> tabs;
-	
+
 	private int indexActiveTab;
-	
+
+	private String automatoSelecionado;
+
 	public HomeController() {
 	}
-	
+
 	@PostConstruct
-	private void init(){
+	private void init() {
 		this.arquivosEntrada = new ArrayList<File>();
 		this.automatos = new ArrayList<Automato<InfoEstado, String>>();
 		this.tabs = new ArrayList<Tab>();
 
 	}
-	
-	public void addTab(String titulo){
+
+	public void addTab(String titulo) {
 		Tab tab = new Tab();
 		tab.setTitle(titulo);
 		this.tabs.add(tab);
 	}
-	
-	public void uploadArquivo(FileUploadEvent event){
-		FacesMessage message = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
-        FacesContext.getCurrentInstance().addMessage(null, message);
-        addTab(event.getFile().getFileName());
-        try {
-        	File arquivo = FileUtil.uploadedFileToFile(event.getFile());
+
+	public void uploadArquivo(FileUploadEvent event) {
+		FacesMessage message = new FacesMessage("Succesful", event.getFile()
+				.getFileName() + " is uploaded.");
+		FacesContext.getCurrentInstance().addMessage(null, message);
+		addTab(event.getFile().getFileName());
+		try {
+			File arquivo = FileUtil.uploadedFileToFile(event.getFile());
 			this.arquivosEntrada.add(arquivo);
 			this.automatos.add(FileUtil.File2Automato(arquivo));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	public void onTabChange(TabChangeEvent event){
+
+	public void onTabChange(TabChangeEvent event) {
 		TabView tabView = (TabView) event.getComponent();
 		indexActiveTab = tabView.getActiveIndex();
 		System.out.println("Tab " + indexActiveTab);
 	}
-	
-	public void acessibilidade(){
+
+	public void acessibilidade() {
 		Algoritmo<InfoEstado, String> algoritmo = new Algoritmo<InfoEstado, String>();
-		this.automatos.add(algoritmo.acessibilidade(this.automatos.get(indexActiveTab)));
+		this.automatos.add(algoritmo.acessibilidade(this.automatos
+				.get(indexActiveTab)));
 		addTab("Acessibilidade Automato " + indexActiveTab);
 	}
+
+	public void trim() {
+		Algoritmo<InfoEstado, String> algoritmo = new Algoritmo<InfoEstado, String>();
+		if(automatoSelecionado != null){
+			Automato<InfoEstado, String> trim = algoritmo.trim(getAutomatoByLabel(automatoSelecionado));
+			if(!this.automatos.contains(trim)){
+				this.automatos.add(trim);
+				addTab("TRIM Automato " + automatoSelecionado);
+			}
+		}
+	}
 	
-	public String getNodesJson(){
+	private Automato<InfoEstado, String> getAutomatoByLabel(String label){
+		for (Automato<InfoEstado, String> a : automatos) {
+			if(a.getLabel().equalsIgnoreCase(label)){
+				return a;
+			}
+		}
+		return null;
+	}
+
+	public String getNodesJson() {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		return gson.toJson(automatos);
 	}
@@ -117,6 +141,14 @@ public class HomeController implements Serializable {
 
 	public void setTabs(List<Tab> tabs) {
 		this.tabs = tabs;
+	}
+
+	public String getAutomatoSelecionado() {
+		return automatoSelecionado;
+	}
+
+	public void setAutomatoSelecionado(String automatoSelecionado) {
+		this.automatoSelecionado = automatoSelecionado;
 	}
 
 }

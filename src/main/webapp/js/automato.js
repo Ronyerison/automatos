@@ -1,5 +1,5 @@
 function visualizaAutomato() {
-	
+		
 	var $tabs = $('.ui-state-default.ui-corner-top'),
 		countTab = 0;
 	
@@ -20,6 +20,7 @@ function visualizaAutomato() {
 	
 	var graph = new joint.dia.Graph();
 	console.log($('.paper')[countTab]);
+	
 	var paper = new joint.dia.Paper({
 		el : $('.paper')[countTab],
 		width : 860,
@@ -170,4 +171,8 @@ function getIndexTab(){
 		return countTab;
 	}
 	});
+}
+
+function limpaDiv(){
+	$('.paper').html("");
 }

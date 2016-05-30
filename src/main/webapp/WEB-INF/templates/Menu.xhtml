@@ -12,7 +12,7 @@
 
 			<p:menuitem value="Acessibilidade" action="#{homeController.acessibilidade()}" update=":#{p:component('form')}"/>
 			<p:menuitem value="Co-Acessibilidade" />
-			<p:menuitem value="TRIM" />
+			<p:menuitem value="TRIM" onclick="PF('dlgTrim').show()"/>
 						
 			<f:facet name="options">
 				<p:commandButton value="Sair" icon="ui-icon-power" />
