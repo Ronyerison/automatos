@@ -126,7 +126,7 @@ public class Minimizacao {
 			minimo.addTransicao(new Transicao<String, InfoEstado>(transicao.getInfo(), origem, destino));
 		}
 		
-		return minimo;
+		return new Algoritmo<InfoEstado, String>().coacessibilidade(minimo);
 	}
 	
 	private static void marcarRecursivamente(ItemTabela item) {
