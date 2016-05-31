@@ -28,6 +28,7 @@ public class Composicao {
 			}
 		}
 		
+		automatoComposto = new Algoritmo<InfoEstado, String>().trim(automatoComposto);
 		automatoComposto.setLabel(automato1.getLabel() + "_PROD_" + automato2.getLabel());
 		
 		return automatoComposto;
@@ -66,6 +67,7 @@ public class Composicao {
 			}
 		}
 		
+		automatoComposto = new Algoritmo<InfoEstado, String>().trim(automatoComposto);
 		automatoComposto.setLabel(automato1.getLabel() + "_PAR_" + automato2.getLabel());
 		
 		return automatoComposto;
