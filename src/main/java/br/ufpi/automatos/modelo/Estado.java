@@ -15,6 +15,12 @@ public class Estado<E> {
 		this.marcado = marcado;
 	}
 
+	public Estado(Estado<E> estado) {
+		this.info = estado.info;
+		this.inicial = estado.inicial;
+		this.marcado = estado.marcado;
+	}
+
 	public E getInfo() {
 		return this.info;
 	}
@@ -68,5 +74,9 @@ public class Estado<E> {
 	@Override
 	public String toString() {
 		return info+"";
+	}
+	
+	public Estado<E> clone() {
+		return new Estado<E>(this);
 	}
 }

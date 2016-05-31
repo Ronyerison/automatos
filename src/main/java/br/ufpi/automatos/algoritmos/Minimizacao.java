@@ -117,12 +117,12 @@ public class Minimizacao {
 			if (minimo.getEstadoCompostoByLabel(transicao.getOrigem().getInfo().getLabel()) != null)
 				origem = minimo.getEstadoCompostoByLabel(transicao.getOrigem().getInfo().getLabel());
 			else
-				origem = transicao.getOrigem(); //TODO trocar por clone quando estiver implementado
+				origem = transicao.getOrigem().clone();
 			Estado<InfoEstado> destino;
 			if (minimo.getEstadoCompostoByLabel(transicao.getDestino().getInfo().getLabel()) != null)
 				destino = minimo.getEstadoCompostoByLabel(transicao.getDestino().getInfo().getLabel());
 			else
-				destino = transicao.getDestino(); //TODO trocar por clone quando estiver implementado
+				destino = transicao.getDestino().clone();
 			minimo.addTransicao(new Transicao<String, InfoEstado>(transicao.getInfo(), origem, destino));
 		}
 		

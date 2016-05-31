@@ -23,11 +23,11 @@ public class Automato<E, T>{
 
 	public Automato(Automato<E, T> automato) {
 		this.label = automato.label;
-		this.estadoInicial = automato.estadoInicial;
-		this.estados = automato.estados;
-		this.estadosMarcados = automato.estadosMarcados;
-		this.transicoes = automato.transicoes;
-		this.alfabeto = automato.alfabeto;
+		this.estadoInicial = automato.estadoInicial.clone();
+		this.estados = new ArrayList<Estado<E>>(automato.estados);
+		this.estadosMarcados = new ArrayList<Estado<E>>(automato.estadosMarcados);
+		this.transicoes = new ArrayList<Transicao<T, E>>(automato.transicoes);
+		this.alfabeto = new ArrayList<T>(automato.alfabeto);
 	}
 
 	public Automato<E, T> clone() {
