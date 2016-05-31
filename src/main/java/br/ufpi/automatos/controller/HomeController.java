@@ -21,6 +21,9 @@ import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.TabChangeEvent;
 
 import br.ufpi.automatos.algoritmos.Algoritmo;
+import br.ufpi.automatos.algoritmos.Composicao;
+import br.ufpi.automatos.algoritmos.Minimizacao;
+import br.ufpi.automatos.algoritmos.conversor.AFN2AFDConversor;
 import br.ufpi.automatos.modelo.Automato;
 import br.ufpi.automatos.modelo.InfoEstado;
 import br.ufpi.automatos.util.FileUtil;
@@ -48,8 +51,14 @@ public class HomeController implements Serializable {
 
 	private int indexActiveTab;
 
-	private String automatoSelecionado;
+	private String autSelTrim;
 
+	private String autSelAFD;
+	
+	private String autSelMin;
+	
+	private String[] autSelProdutos;
+	
 	public HomeController() {
 	}
 
@@ -96,11 +105,54 @@ public class HomeController implements Serializable {
 
 	public void trim() {
 		Algoritmo<InfoEstado, String> algoritmo = new Algoritmo<InfoEstado, String>();
-		if(automatoSelecionado != null){
-			Automato<InfoEstado, String> trim = algoritmo.trim(getAutomatoByLabel(automatoSelecionado));
+		if(autSelTrim != null){
+			Automato<InfoEstado, String> trim = algoritmo.trim(getAutomatoByLabel(autSelTrim));
 			if(!this.automatos.contains(trim)){
 				this.automatos.add(trim);
-				addTab("TRIM Automato " + automatoSelecionado);
+				addTab("TRIM Automato " + autSelTrim);
+			}
+		}
+	}
+	
+	public void produto(){
+		Automato<InfoEstado, String> produto ;
+		if(autSelProdutos.length > 2){
+			produto = getAutomatoByLabel(autSelProdutos[0]);
+			for (int i = 0; i < autSelProdutos.length-1; i++) {
+				produto = Composicao.produto(produto, getAutomatoByLabel(autSelProdutos[i+1]));
+			}
+			if(!this.automatos.contains(produto)){
+				this.automatos.add(produto);
+				addTab(getAutomatoByLabel(autSelProdutos[0]).getLabel() + "_X_" + getAutomatoByLabel(autSelProdutos[1]).getLabel());
+			}
+		}else if(autSelProdutos.length == 2){
+			produto = Composicao.produto(getAutomatoByLabel(autSelProdutos[0]), getAutomatoByLabel(autSelProdutos[1]));
+			if(!this.automatos.contains(produto)){
+				this.automatos.add(produto);
+				addTab(getAutomatoByLabel(autSelProdutos[0]).getLabel() + "_X_" + getAutomatoByLabel(autSelProdutos[1]).getLabel());
+			}
+		}else{
+			
+		}
+	}
+	
+	public void afn2afd(){
+		AFN2AFDConversor<InfoEstado, String> conversor = new AFN2AFDConversor<InfoEstado, String>();
+		if(autSelAFD != null){
+			Automato<InfoEstado, String> afd = conversor.converter(getAutomatoByLabel(autSelAFD));
+			if(!this.automatos.contains(afd)){
+				this.automatos.add(afd);
+				addTab("AFD Automato " + autSelAFD);
+			}
+		}
+	}
+	
+	public void minimizacao(){
+		if(autSelMin != null){
+			Automato<InfoEstado, String> min = Minimizacao.automatoMinimo(getAutomatoByLabel(autSelMin));
+			if(!this.automatos.contains(min)){
+				this.automatos.add(min);
+				addTab("Automato Mínimo " + autSelMin);
 			}
 		}
 	}
@@ -143,12 +195,38 @@ public class HomeController implements Serializable {
 		this.tabs = tabs;
 	}
 
-	public String getAutomatoSelecionado() {
-		return automatoSelecionado;
+	public String getAutSelTrim() {
+		return autSelTrim;
 	}
 
-	public void setAutomatoSelecionado(String automatoSelecionado) {
-		this.automatoSelecionado = automatoSelecionado;
+	public void setAutSelTrim(String autSelTrim) {
+		this.autSelTrim = autSelTrim;
 	}
 
+	public String getAutSelAFD() {
+		return autSelAFD;
+	}
+
+	public void setAutSelAFD(String autSelAFD) {
+		this.autSelAFD = autSelAFD;
+	}
+
+	public String getAutSelMin() {
+		return autSelMin;
+	}
+
+	public void setAutSelMin(String autSelMin) {
+		this.autSelMin = autSelMin;
+	}
+
+	public String[] getAutSelProdutos() {
+		return autSelProdutos;
+	}
+
+	public void setAutSelProdutos(String[] autSelProdutos) {
+		this.autSelProdutos = autSelProdutos;
+	}
+
+	
+	
 }

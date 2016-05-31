@@ -22,8 +22,9 @@
 						update=":#{p:component('form')}" sizeLimit="100000"
 						oncomplete="visualizaAutomato()" />
 
-					<p:tabView value="#{homeController.tabs}" var="tab" onTabChange="limpaDiv()"
-						onTabShow="visualizaAutomato()" dynamic="true" >
+					<p:tabView id="tab_view" value="#{homeController.tabs}" var="tab"
+						onTabChange="limpaDiv()" onTabShow="visualizaAutomato()"
+						dynamic="true">
 						<p:tab title="#{tab.title}" closable="false">
 							<p:panel id="panel" styleClass="panel-interno">
 								<div class="paper"></div>
@@ -34,28 +35,78 @@
 				</h:panelGrid>
 			</p:panel>
 
-			<p:dialog id="dlg" header="TRIM" widgetVar="dlgTrim"
-				showEffect="blind" hideEffect="explode" width="700"
-				resizable="false">
-				<p:outputPanel id="panel_aut" style="text-align:justify;">
+			<p:dialog id="dlg_trim" header="TRIM" widgetVar="dlgTrim"
+				showEffect="blind" hideEffect="explode" resizable="false">
+				<p:outputPanel id="panel_trim" style="text-align:justify;">
 					<p:panelGrid columns="1" style="text-align: left; width: 100%">
 
-						<p:selectOneMenu id="select_aut"
-							value="#{homeController.automatoSelecionado}">
+						<p:selectOneMenu id="select_trim"
+							value="#{homeController.autSelTrim}">
 							<f:selectItem itemLabel="Selecione um Automato" />
 							<f:selectItems value="#{homeController.automatos}" var="automato"
 								itemLabel="#{automato.label}" itemValue="#{automato.label}" />
-							<p:ajax event="change" process="@this"
-								listener="#{homeController.trim()}"
-								oncomplete="visualizaAutomato()"
-								update=":#{p:component('form')}" />
 						</p:selectOneMenu>
-						<!-- 						<p:commandButton value="Executar TRIM" process="@this form:select_aut" -->
-						<!-- 							actionListener="#{homeController.trim()}" -->
-						<!-- 							oncomplete="visualizaAutomato()" update=":#{p:component('form')}" /> -->
+						<p:commandButton value="Executar TRIM" process="dlg_trim"
+							action="#{homeController.trim()}"
+							update=":#{p:component('form')}" />
 					</p:panelGrid>
 				</p:outputPanel>
 			</p:dialog>
+
+			<p:dialog id="dlg_conv" header="AFN to AFD" widgetVar="dlgAFN_AFD"
+				showEffect="blind" hideEffect="explode" 
+				resizable="false">
+				<p:outputPanel id="panel_conv" style="text-align:justify;">
+					<p:panelGrid columns="1" style="text-align: left; width: 100%">
+
+						<p:selectOneMenu id="select_conv"
+							value="#{homeController.autSelAFD}">
+							<f:selectItem itemLabel="Selecione um Automato" />
+							<f:selectItems value="#{homeController.automatos}" var="automato"
+								itemLabel="#{automato.label}" itemValue="#{automato.label}" />
+							
+						</p:selectOneMenu>
+						<p:commandButton value="Converter" process="dlg_conv"
+							action="#{homeController.afn2afd()}"
+							update=":#{p:component('form')}" />
+					</p:panelGrid>
+				</p:outputPanel>
+			</p:dialog>
+
+			<p:dialog id="dlg_min" header="Minimização de Atutomato"
+				widgetVar="dlgMin" showEffect="blind" hideEffect="explode"
+				resizable="false">
+				<p:outputPanel id="panel_min" style="text-align:justify;">
+					<p:panelGrid columns="1" style="text-align: left; width: 100%">
+
+						<p:selectOneMenu id="select_min"
+							value="#{homeController.autSelMin}">
+							<f:selectItem itemLabel="Selecione um Automato" />
+							<f:selectItems value="#{homeController.automatos}" var="automato"
+								itemLabel="#{automato.label}" itemValue="#{automato.label}" />
+							
+						</p:selectOneMenu>
+						<p:commandButton value="Minimizar" process="dlg_min"
+							action="#{homeController.minimizacao()}"
+							update=":#{p:component('form')}" />
+					</p:panelGrid>
+				</p:outputPanel>
+			</p:dialog>
+
+			<p:dialog id="dlg_prod" header="Produto de Atutomato"
+				widgetVar="dlgProd" showEffect="blind" hideEffect="explode"
+				resizable="false">
+				<h3>Selecione os Automatos</h3>
+				<p:selectManyCheckbox id="grid"
+					value="#{homeController.autSelProdutos}" layout="grid" columns="3">
+					<f:selectItems value="#{homeController.automatos}" var="automato"
+						itemLabel="#{automato.label}" itemValue="#{automato.label}" />
+				</p:selectManyCheckbox>
+				<p:commandButton value="Executar Produto" process="dlg_prod"
+					action="#{homeController.produto()}"
+					update=":#{p:component('form')}" />
+			</p:dialog>
+
 		</h:form>
 
 	</ui:define>
