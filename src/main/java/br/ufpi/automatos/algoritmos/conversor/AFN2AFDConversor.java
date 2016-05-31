@@ -15,15 +15,14 @@ public class AFN2AFDConversor<E, T> {
 	}
 	
 	public Automato<E, T> converter(Automato<E, T> automatoAFN){
-
 		List<FechoTransitivo<E, T>> fechos = new ArrayList<>();		
 		List<T> alfabeto = new ArrayList<>();
 
 		fechos = obterFechos(automatoAFN);
 		alfabeto = obterAlfabeto(automatoAFN);
 		criarEstadosCompostos(fechos, alfabeto);
-		
-		return criarAutomatoAFD(fechos);
+		String label = new String ("AFD_" + automatoAFN.getLabel());
+		return criarAutomatoAFD(fechos, label);
 	}
 
 	/** MÉTODOS PARA OBTER A LISTA DE FECHOS TRANSITIVOS DO AUTOMATO**/
@@ -209,7 +208,7 @@ public class AFN2AFDConversor<E, T> {
 	/** MÉTODOS PARA CRIAR O AUTOMATO AFD A PARTIR DA LISTA FINAL DE FECHOS TRANSITIVOS **/
 	
 	@SuppressWarnings("unchecked")
-	private Automato<E, T> criarAutomatoAFD(List<FechoTransitivo<E, T>> fechos){
+	private Automato<E, T> criarAutomatoAFD(List<FechoTransitivo<E, T>> fechos, String label){
 		Automato<E, T> automatoAFD = new Automato<>();
 		List<List<Estado<E>>> estadosAtingidos = new ArrayList<>();
 		List<Estado<E>> novosEstados = new ArrayList<>();
@@ -257,6 +256,7 @@ public class AFN2AFDConversor<E, T> {
 			}
 		}
 		
+		automatoAFD.setLabel(label);
 		automatoAFD.setEstados(novosEstados);
 		automatoAFD.setTransicoes(novasTransicoes);
 		discriminarInicialMarcado(automatoAFD);
