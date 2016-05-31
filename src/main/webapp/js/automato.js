@@ -115,8 +115,8 @@ function visualizaAutomato() {
 			y : y
 		},
 		size : {
-			width : 10,
-			height : 10
+			width : 20,
+			height : 20
 		}
 	});
 	graph.addCell(start);

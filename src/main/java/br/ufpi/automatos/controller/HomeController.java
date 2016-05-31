@@ -80,11 +80,12 @@ public class HomeController implements Serializable {
 		FacesMessage message = new FacesMessage("Succesful", event.getFile()
 				.getFileName() + " is uploaded.");
 		FacesContext.getCurrentInstance().addMessage(null, message);
-		addTab(event.getFile().getFileName());
 		try {
 			File arquivo = FileUtil.uploadedFileToFile(event.getFile());
 			this.arquivosEntrada.add(arquivo);
-			this.automatos.add(FileUtil.File2Automato(arquivo));
+			Automato<InfoEstado,String> automato = FileUtil.File2Automato(arquivo);
+			this.automatos.add(automato);
+			addTab(automato.getLabel());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -109,7 +110,7 @@ public class HomeController implements Serializable {
 			Automato<InfoEstado, String> trim = algoritmo.trim(getAutomatoByLabel(autSelTrim));
 			if(!this.automatos.contains(trim)){
 				this.automatos.add(trim);
-				addTab("TRIM Automato " + autSelTrim);
+				addTab(trim.getLabel());
 			}
 		}
 	}
@@ -117,19 +118,41 @@ public class HomeController implements Serializable {
 	public void produto(){
 		Automato<InfoEstado, String> produto ;
 		if(autSelProdutos.length > 2){
-			produto = getAutomatoByLabel(autSelProdutos[0]);
+			produto = getAutomatoByLabel(autSelProdutos[0]).clone();
 			for (int i = 0; i < autSelProdutos.length-1; i++) {
-				produto = Composicao.produto(produto, getAutomatoByLabel(autSelProdutos[i+1]));
+				produto = Composicao.produto(produto, getAutomatoByLabel(autSelProdutos[i+1]).clone());
 			}
 			if(!this.automatos.contains(produto)){
 				this.automatos.add(produto);
-				addTab(getAutomatoByLabel(autSelProdutos[0]).getLabel() + "_X_" + getAutomatoByLabel(autSelProdutos[1]).getLabel());
+				addTab(produto.getLabel());
 			}
 		}else if(autSelProdutos.length == 2){
-			produto = Composicao.produto(getAutomatoByLabel(autSelProdutos[0]), getAutomatoByLabel(autSelProdutos[1]));
+			produto = Composicao.produto(getAutomatoByLabel(autSelProdutos[0]).clone(), getAutomatoByLabel(autSelProdutos[1]).clone());
 			if(!this.automatos.contains(produto)){
 				this.automatos.add(produto);
-				addTab(getAutomatoByLabel(autSelProdutos[0]).getLabel() + "_X_" + getAutomatoByLabel(autSelProdutos[1]).getLabel());
+				addTab(produto.getLabel());
+			}
+		}else{
+			
+		}
+	}
+	
+	public void paralela(){
+		Automato<InfoEstado, String> paralela ;
+		if(autSelProdutos.length > 2){
+			paralela = getAutomatoByLabel(autSelProdutos[0]).clone();
+			for (int i = 0; i < autSelProdutos.length-1; i++) {
+				paralela = Composicao.paralela(paralela, getAutomatoByLabel(autSelProdutos[i+1]).clone());
+			}
+			if(!this.automatos.contains(paralela)){
+				this.automatos.add(paralela);
+				addTab(paralela.getLabel());
+			}
+		}else if(autSelProdutos.length == 2){
+			paralela = Composicao.paralela(getAutomatoByLabel(autSelProdutos[0]).clone(), getAutomatoByLabel(autSelProdutos[1]).clone());
+			if(!this.automatos.contains(paralela)){
+				this.automatos.add(paralela);
+				addTab(paralela.getLabel());
 			}
 		}else{
 			
@@ -142,7 +165,7 @@ public class HomeController implements Serializable {
 			Automato<InfoEstado, String> afd = conversor.converter(getAutomatoByLabel(autSelAFD));
 			if(!this.automatos.contains(afd)){
 				this.automatos.add(afd);
-				addTab("AFD Automato " + autSelAFD);
+				addTab(afd.getLabel());
 			}
 		}
 	}
@@ -152,7 +175,7 @@ public class HomeController implements Serializable {
 			Automato<InfoEstado, String> min = Minimizacao.automatoMinimo(getAutomatoByLabel(autSelMin));
 			if(!this.automatos.contains(min)){
 				this.automatos.add(min);
-				addTab("Automato Mínimo " + autSelMin);
+				addTab(min.getLabel());
 			}
 		}
 	}

@@ -12,7 +12,7 @@ public class Algoritmo<E, T> {
 	public Automato<E, T> trim(Automato<E, T> automato){
 		Automato<E, T> result = acessibilidade(automato);
 		result = coacessibilidade(result);
-		
+		result.setLabel("TRIM_" + automato.getLabel());
 		return result;
 	}
 	
