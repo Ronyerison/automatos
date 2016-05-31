@@ -107,6 +107,20 @@
 					update=":#{p:component('form')}" />
 			</p:dialog>
 
+			<p:dialog id="dlg_para" header="Composição Paralela de Atutomatos"
+				widgetVar="dlgPara" showEffect="blind" hideEffect="explode"
+				resizable="false">
+				<h3>Selecione os Automatos</h3>
+				<p:selectManyCheckbox id="select_composicao"
+					value="#{homeController.autSelProdutos}" layout="grid" columns="3">
+					<f:selectItems value="#{homeController.automatos}" var="automato"
+						itemLabel="#{automato.label}" itemValue="#{automato.label}" />
+				</p:selectManyCheckbox>
+				<p:commandButton value="Executar Composição" process="dlg_para"
+					action="#{homeController.paralela()}"
+					update=":#{p:component('form')}" />
+			</p:dialog>
+
 		</h:form>
 
 	</ui:define>

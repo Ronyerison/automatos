@@ -6,21 +6,11 @@
 	
 	<h:form>
 		<p:menubar>
-
-			<p:menuitem icon="ui-icon-home" url="home.xhtml"
-				style="margin-left:10px" />
-
-			<p:menuitem value="ACESSIBILIDADE" action="#{homeController.acessibilidade()}" update=":#{p:component('form')}"/>
-			<p:menuitem value="CO-ACESSIBILIDADE" />
 			<p:menuitem value="TRIM" onclick="PF('dlgTrim').show()"/>
 			<p:menuitem value="AFN TO AFD" onclick="PF('dlgAFN_AFD').show()"/>
 			<p:menuitem value="MINIMIZAÇÃO" onclick="PF('dlgMin').show()"/>
 			<p:menuitem value="PRODUTO" onclick="PF('dlgProd').show()"/>
-						
-			<f:facet name="options">
-				<p:commandButton value="Sair" icon="ui-icon-power" />
-			</f:facet>
-
+			<p:menuitem value="COMPOSIÇÃO PARALELA" onclick="PF('dlgPara').show()"/>
 		</p:menubar>
 	</h:form>
 </ui:composition>
