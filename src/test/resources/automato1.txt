@@ -1,0 +1,9 @@
+X
+X;Z
+a:X->X
+a:Y->X
+b:Y->Y
+g:X->Z
+b:Z->Z
+a:Z->Y
+g:Z->Y
