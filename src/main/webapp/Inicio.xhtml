@@ -22,9 +22,9 @@
 						update=":#{p:component('form')}" sizeLimit="100000"
 						oncomplete="visualizaAutomato()" />
 
-					<p:tabView id="tab_view" value="#{homeController.tabs}" var="tab"
-						onTabChange="limpaDiv()" onTabShow="visualizaAutomato()"
-						dynamic="true">
+					<p:tabView id="tab_view" value="#{homeController.tabs}" var="tab" widgetVar="widTabView"
+					 	onTabShow="visualizaAutomato()"
+						dynamic="false">
 						<p:tab title="#{tab.title}" closable="false">
 							<p:panel id="panel" styleClass="panel-interno">
 								<div class="paper"></div>
@@ -47,7 +47,7 @@
 								itemLabel="#{automato.label}" itemValue="#{automato.label}" />
 						</p:selectOneMenu>
 						<p:commandButton value="Executar TRIM" process="dlg_trim"
-							action="#{homeController.trim()}"
+							action="#{homeController.trim()}" oncomplete="visualizaAutomato()" 
 							update=":#{p:component('form')}" />
 					</p:panelGrid>
 				</p:outputPanel>
@@ -67,7 +67,7 @@
 							
 						</p:selectOneMenu>
 						<p:commandButton value="Converter" process="dlg_conv"
-							action="#{homeController.afn2afd()}"
+							action="#{homeController.afn2afd()}" oncomplete="visualizaAutomato()"
 							update=":#{p:component('form')}" />
 					</p:panelGrid>
 				</p:outputPanel>
@@ -87,7 +87,7 @@
 							
 						</p:selectOneMenu>
 						<p:commandButton value="Minimizar" process="dlg_min"
-							action="#{homeController.minimizacao()}"
+							action="#{homeController.minimizacao()}" oncomplete="visualizaAutomato()"
 							update=":#{p:component('form')}" />
 					</p:panelGrid>
 				</p:outputPanel>
@@ -103,7 +103,7 @@
 						itemLabel="#{automato.label}" itemValue="#{automato.label}" />
 				</p:selectManyCheckbox>
 				<p:commandButton value="Executar Produto" process="dlg_prod"
-					action="#{homeController.produto()}"
+					action="#{homeController.produto()}" oncomplete="visualizaAutomato()"
 					update=":#{p:component('form')}" />
 			</p:dialog>
 
@@ -117,7 +117,7 @@
 						itemLabel="#{automato.label}" itemValue="#{automato.label}" />
 				</p:selectManyCheckbox>
 				<p:commandButton value="Executar Composição" process="dlg_para"
-					action="#{homeController.paralela()}"
+					action="#{homeController.paralela()}" oncomplete="visualizaAutomato()"
 					update=":#{p:component('form')}" />
 			</p:dialog>
 
