@@ -96,12 +96,16 @@ public class Minimizacao {
 			for (ItemTabela itemTabela : tabela.get(chave).values()) {
 				if (!itemTabela.isMarcado()) {
 					if (minimo.getEstadoCompostoByLabel(itemTabela.getE1().getInfo().getLabel()) != null) {
-						Estado<InfoEstado> estadoComposto = minimo.getEstadoCompostoByLabel(itemTabela.getE1().getInfo().getLabel());
-						estadoComposto.getInfo().setLabel(estadoComposto.getInfo().getLabel() + "," + itemTabela.getE2().getInfo().getLabel());
+						if (minimo.getEstadoCompostoByLabel(itemTabela.getE2().getInfo().getLabel()) == null) {
+							Estado<InfoEstado> estadoComposto = minimo.getEstadoCompostoByLabel(itemTabela.getE1().getInfo().getLabel());
+							estadoComposto.getInfo().setLabel(estadoComposto.getInfo().getLabel() + "," + itemTabela.getE2().getInfo().getLabel());
+						}
 					}
 					else if (minimo.getEstadoCompostoByLabel(itemTabela.getE2().getInfo().getLabel()) != null) {
-						Estado<InfoEstado> estadoComposto = minimo.getEstadoCompostoByLabel(itemTabela.getE2().getInfo().getLabel());
-						estadoComposto.getInfo().setLabel(estadoComposto.getInfo().getLabel() + "," + itemTabela.getE1().getInfo().getLabel());
+						if (minimo.getEstadoCompostoByLabel(itemTabela.getE1().getInfo().getLabel()) == null) {
+							Estado<InfoEstado> estadoComposto = minimo.getEstadoCompostoByLabel(itemTabela.getE2().getInfo().getLabel());
+							estadoComposto.getInfo().setLabel(estadoComposto.getInfo().getLabel() + "," + itemTabela.getE1().getInfo().getLabel());
+						}
 					} else {
 						Estado<InfoEstado> estadoEquivalente = new Estado<InfoEstado>(
 								new InfoEstado(itemTabela.getE1() + "," + itemTabela.getE2()),
