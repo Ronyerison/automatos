@@ -3,6 +3,7 @@ package br.ufpi.automatos.algoritmos;
 import java.util.HashMap;
 import java.util.Map;
 
+import br.ufpi.automatos.algoritmos.conversor.AFN2AFDConversor;
 import br.ufpi.automatos.modelo.Automato;
 import br.ufpi.automatos.modelo.Estado;
 import br.ufpi.automatos.modelo.InfoEstado;
@@ -37,7 +38,8 @@ public class Minimizacao {
 	}
 	
 	public static Automato<InfoEstado, String> automatoMinimo (Automato<InfoEstado, String> automato){
-		
+		//clone?
+		//Automato<InfoEstado, String> total = automatoTotal(new AFN2AFDConversor<InfoEstado, String>().converter(automato));
 		Automato<InfoEstado, String> total = automatoTotal(automato);
 		
 		//Preenche a tabela
@@ -126,7 +128,9 @@ public class Minimizacao {
 			minimo.addTransicao(new Transicao<String, InfoEstado>(transicao.getInfo(), origem, destino));
 		}
 		
-		return new Algoritmo<InfoEstado, String>().coacessibilidade(minimo);
+		minimo = new Algoritmo<InfoEstado, String>().coacessibilidade(minimo);
+		minimo.setLabel("MIN_" + automato.getLabel());
+		return minimo;
 	}
 	
 	private static void marcarRecursivamente(ItemTabela item) {
