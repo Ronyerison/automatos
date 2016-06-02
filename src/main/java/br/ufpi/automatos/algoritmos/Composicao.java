@@ -1,5 +1,6 @@
 package br.ufpi.automatos.algoritmos;
 
+import br.ufpi.automatos.algoritmos.conversor.AFN2AFDConversor;
 import br.ufpi.automatos.modelo.Automato;
 import br.ufpi.automatos.modelo.Estado;
 import br.ufpi.automatos.modelo.InfoEstado;
@@ -8,14 +9,16 @@ import br.ufpi.automatos.modelo.Transicao;
 public class Composicao {
 	
 	public static Automato<InfoEstado, String> produto (Automato<InfoEstado, String> automato1, Automato<InfoEstado, String> automato2){
+		Automato<InfoEstado, String> automato1AFD = new AFN2AFDConversor<InfoEstado, String>().converter(automato1);
+		Automato<InfoEstado, String> automato2AFD = new AFN2AFDConversor<InfoEstado, String>().converter(automato2);
 		
 		Automato<InfoEstado, String> automatoComposto = new Automato<InfoEstado, String>();
 		
-		for (int i = 0; i < automato1.getEstados().size(); i++) {
-			for (int j = 0; j < automato2.getEstados().size(); j++) {
+		for (int i = 0; i < automato1AFD.getEstados().size(); i++) {
+			for (int j = 0; j < automato2AFD.getEstados().size(); j++) {
 				
-				for (Transicao<String, InfoEstado> transicao1 : automato1.getTransicoesByEstado(automato1.getEstados().get(i))) {
-					for (Transicao<String, InfoEstado> transicao2 : automato2.getTransicoesByEstado(automato2.getEstados().get(j))) {
+				for (Transicao<String, InfoEstado> transicao1 : automato1AFD.getTransicoesByEstado(automato1AFD.getEstados().get(i))) {
+					for (Transicao<String, InfoEstado> transicao2 : automato2AFD.getTransicoesByEstado(automato2AFD.getEstados().get(j))) {
 						
 						if (transicao1.getInfo().equals(transicao2.getInfo()))
 							automatoComposto.addTransicao(transicaoSincrona(
@@ -29,20 +32,22 @@ public class Composicao {
 		}
 		
 		automatoComposto = new Algoritmo<InfoEstado, String>().trim(automatoComposto);
-		automatoComposto.setLabel(automato1.getLabel() + "_PROD_" + automato2.getLabel());
+		automatoComposto.setLabel(automato1AFD.getLabel() + "_PROD_" + automato2AFD.getLabel());
 		
 		return automatoComposto;
 	}
 	
 	public static Automato<InfoEstado, String> paralela (Automato<InfoEstado, String> automato1, Automato<InfoEstado, String> automato2){
+		Automato<InfoEstado, String> automato1AFD = new AFN2AFDConversor<InfoEstado, String>().converter(automato1);
+		Automato<InfoEstado, String> automato2AFD = new AFN2AFDConversor<InfoEstado, String>().converter(automato2);
 		
 		Automato<InfoEstado, String> automatoComposto = new Automato<InfoEstado, String>();
 		
-		for (int i = 0; i < automato1.getEstados().size(); i++) {
-			for (int j = 0; j < automato2.getEstados().size(); j++) {
+		for (int i = 0; i < automato1AFD.getEstados().size(); i++) {
+			for (int j = 0; j < automato2AFD.getEstados().size(); j++) {
 				
-				for (Transicao<String, InfoEstado> transicao1 : automato1.getTransicoesByEstado(automato1.getEstados().get(i))) {
-					for (Transicao<String, InfoEstado> transicao2 : automato2.getTransicoesByEstado(automato2.getEstados().get(j))) {
+				for (Transicao<String, InfoEstado> transicao1 : automato1AFD.getTransicoesByEstado(automato1AFD.getEstados().get(i))) {
+					for (Transicao<String, InfoEstado> transicao2 : automato2AFD.getTransicoesByEstado(automato2AFD.getEstados().get(j))) {
 						
 						if (transicao1.getInfo().equals(transicao2.getInfo()))
 							automatoComposto.addTransicao(transicaoSincrona(
@@ -50,13 +55,13 @@ public class Composicao {
 									transicao1.getOrigem(), transicao1.getDestino(),
 									transicao2.getOrigem(), transicao2.getDestino()));
 							
-						else if (!automato2.getAlfabeto().contains(transicao1.getInfo()))
+						else if (!automato2AFD.getAlfabeto().contains(transicao1.getInfo()))
 							automatoComposto.addTransicao(transicaoSincrona(
 									automatoComposto, transicao1.getInfo(),
 									transicao1.getOrigem(), transicao1.getDestino(),
 									transicao2.getOrigem(), transicao2.getOrigem()));
 						
-						else if(!automato1.getAlfabeto().contains(transicao2.getInfo()))
+						else if(!automato1AFD.getAlfabeto().contains(transicao2.getInfo()))
 							automatoComposto.addTransicao(transicaoSincrona(
 									automatoComposto, transicao2.getInfo(),
 									transicao1.getOrigem(), transicao1.getOrigem(),
@@ -68,7 +73,7 @@ public class Composicao {
 		}
 		
 		automatoComposto = new Algoritmo<InfoEstado, String>().trim(automatoComposto);
-		automatoComposto.setLabel(automato1.getLabel() + "_PAR_" + automato2.getLabel());
+		automatoComposto.setLabel(automato1AFD.getLabel() + "_PAR_" + automato2AFD.getLabel());
 		
 		return automatoComposto;
 	}

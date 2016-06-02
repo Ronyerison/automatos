@@ -196,15 +196,19 @@ public class Automato<E, T>{
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
+				+ ((alfabeto == null) ? 0 : alfabeto.hashCode());
+		result = prime * result
 				+ ((estadoInicial == null) ? 0 : estadoInicial.hashCode());
 		result = prime * result + ((estados == null) ? 0 : estados.hashCode());
 		result = prime * result
 				+ ((estadosMarcados == null) ? 0 : estadosMarcados.hashCode());
+		result = prime * result + ((label == null) ? 0 : label.hashCode());
 		result = prime * result
 				+ ((transicoes == null) ? 0 : transicoes.hashCode());
 		return result;
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -213,7 +217,12 @@ public class Automato<E, T>{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Automato<?, ?> other = (Automato<?, ?>) obj;
+		Automato other = (Automato) obj;
+		if (alfabeto == null) {
+			if (other.alfabeto != null)
+				return false;
+		} else if (!alfabeto.equals(other.alfabeto))
+			return false;
 		if (estadoInicial == null) {
 			if (other.estadoInicial != null)
 				return false;
@@ -229,6 +238,11 @@ public class Automato<E, T>{
 				return false;
 		} else if (!estadosMarcados.equals(other.estadosMarcados))
 			return false;
+		if (label == null) {
+			if (other.label != null)
+				return false;
+		} else if (!label.equals(other.label))
+			return false;
 		if (transicoes == null) {
 			if (other.transicoes != null)
 				return false;
@@ -236,5 +250,7 @@ public class Automato<E, T>{
 			return false;
 		return true;
 	}
+	
+	
 	
 }

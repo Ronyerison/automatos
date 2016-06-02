@@ -38,9 +38,8 @@ public class Minimizacao {
 	}
 	
 	public static Automato<InfoEstado, String> automatoMinimo (Automato<InfoEstado, String> automato){
-		//clone?
-		//Automato<InfoEstado, String> total = automatoTotal(new AFN2AFDConversor<InfoEstado, String>().converter(automato));
-		Automato<InfoEstado, String> total = automatoTotal(automato);
+		
+		Automato<InfoEstado, String> total = automatoTotal(new AFN2AFDConversor<InfoEstado, String>().converter(automato));
 		
 		//Preenche a tabela
 		Map<String, Map<String, ItemTabela>> tabela = new HashMap<String, Map<String, ItemTabela>>();

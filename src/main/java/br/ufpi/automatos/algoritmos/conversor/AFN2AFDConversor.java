@@ -17,12 +17,18 @@ public class AFN2AFDConversor<E, T> {
 	public Automato<E, T> converter(Automato<E, T> automatoAFN){
 		List<FechoTransitivo<E, T>> fechos = new ArrayList<>();		
 		List<T> alfabeto = new ArrayList<>();
-
-		fechos = obterFechos(automatoAFN);
-		alfabeto = obterAlfabeto(automatoAFN);
-		criarEstadosCompostos(fechos, alfabeto);
-		String label = new String ("AFD_" + automatoAFN.getLabel());
-		return criarAutomatoAFD(fechos, label);
+		
+		if(verificarAutomatoAFN(automatoAFN)){
+			fechos = obterFechos(automatoAFN);
+			alfabeto = obterAlfabeto(automatoAFN);
+			criarEstadosCompostos(fechos, alfabeto);
+			String label = new String ("AFD_" + automatoAFN.getLabel());
+			return criarAutomatoAFD(fechos, label);
+		}else{
+			Automato<E, T> automatoResultado = automatoAFN.clone();
+			automatoResultado.setLabel("AFD_" + automatoAFN.getLabel());
+			return automatoResultado;
+		}
 	}
 
 	/** MÉTODOS PARA OBTER A LISTA DE FECHOS TRANSITIVOS DO AUTOMATO**/
@@ -340,5 +346,33 @@ public class AFN2AFDConversor<E, T> {
 		}
 		automato.setEstadoInicial(estadoInicial);
 		automato.setEstadosMarcados(estadosMarcados);
+	}
+	
+	private boolean verificarAutomatoAFN (Automato<E, T> automato){
+		boolean flag = false;
+		
+		for (Transicao<T, E> t : automato.getTransicoes()) {
+			if(t.getInfo().equals(Constante.getElementoVazio())){
+				return true; 
+			}
+		}
+		
+		String labelTransicao, labelEstadoOrigem, labelEstadoDestino;
+		
+		for (Transicao<T, E> t : automato.getTransicoes()) {
+			labelTransicao = (String)t.getInfo();
+			labelEstadoOrigem = ((InfoEstado)t.getOrigem().getInfo()).getLabel(); 
+			labelEstadoDestino = ((InfoEstado)t.getDestino().getInfo()).getLabel(); 
+			
+			for(Transicao<T, E> t2 : automato.getTransicoes()){
+				if(((InfoEstado)t.getOrigem().getInfo()).getLabel().equals(((InfoEstado)t.getOrigem().getInfo()).getLabel())){
+					if(t2.getInfo().equals(labelTransicao) && labelEstadoOrigem.equals(((InfoEstado)t2.getOrigem().getInfo()).getLabel()) && !labelEstadoDestino.equals(((InfoEstado)t2.getDestino().getInfo()).getLabel())){
+						return true;
+					}
+				}
+			}
+		}
+		
+		return flag;
 	}
 }
