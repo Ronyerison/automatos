@@ -31,7 +31,8 @@ public class Composicao {
 			}
 		}
 		
-		automatoComposto = new Algoritmo<InfoEstado, String>().trim(automatoComposto);
+//		if (automatoComposto.getEstados().size() > 0)
+//			automatoComposto = new Algoritmo<InfoEstado, String>().trim(automatoComposto);
 		automatoComposto.setLabel(automato1.getLabel() + "_PROD_" + automato2.getLabel());
 		
 		return automatoComposto;
@@ -55,24 +56,26 @@ public class Composicao {
 									transicao1.getOrigem(), transicao1.getDestino(),
 									transicao2.getOrigem(), transicao2.getDestino()));
 							
-						else if (!automato2AFD.getAlfabeto().contains(transicao1.getInfo()))
-							automatoComposto.addTransicao(transicaoSincrona(
-									automatoComposto, transicao1.getInfo(),
-									transicao1.getOrigem(), transicao1.getDestino(),
-									transicao2.getOrigem(), transicao2.getOrigem()));
-						
-						else if(!automato1AFD.getAlfabeto().contains(transicao2.getInfo()))
-							automatoComposto.addTransicao(transicaoSincrona(
-									automatoComposto, transicao2.getInfo(),
-									transicao1.getOrigem(), transicao1.getOrigem(),
-									transicao2.getOrigem(), transicao2.getDestino()));
+						else {
+							if (!automato2AFD.getAlfabeto().contains(transicao1.getInfo()))
+								automatoComposto.addTransicao(transicaoSincrona(
+										automatoComposto, transicao1.getInfo(),
+										transicao1.getOrigem(), transicao1.getDestino(),
+										transicao2.getOrigem(), transicao2.getOrigem()));
+							
+							if(!automato1AFD.getAlfabeto().contains(transicao2.getInfo()))
+								automatoComposto.addTransicao(transicaoSincrona(
+										automatoComposto, transicao2.getInfo(),
+										transicao1.getOrigem(), transicao1.getOrigem(),
+										transicao2.getOrigem(), transicao2.getDestino()));							
+						}
 					
 					}
 				}
 			}
 		}
 		
-		automatoComposto = new Algoritmo<InfoEstado, String>().trim(automatoComposto);
+//		automatoComposto = new Algoritmo<InfoEstado, String>().trim(automatoComposto);
 		automatoComposto.setLabel(automato1.getLabel() + "_PAR_" + automato2.getLabel());
 		
 		return automatoComposto;

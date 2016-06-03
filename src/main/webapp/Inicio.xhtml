@@ -52,7 +52,43 @@
 					</p:panelGrid>
 				</p:outputPanel>
 			</p:dialog>
+			
+			<p:dialog id="dlg_coas" header="COACESSIBILIDADE" widgetVar="dlgcoas"
+				showEffect="blind" hideEffect="explode" resizable="false">
+				<p:outputPanel id="panel_coas" style="text-align:justify;">
+					<p:panelGrid columns="1" style="text-align: left; width: 100%">
 
+						<p:selectOneMenu id="select_coas"
+							value="#{homeController.autSelTrim}">
+							<f:selectItem itemLabel="Selecione um Automato" />
+							<f:selectItems value="#{homeController.automatos}" var="automato"
+								itemLabel="#{automato.label}" itemValue="#{automato.label}" />
+						</p:selectOneMenu>
+						<p:commandButton value="Executar COACESSIBILIDADE" process="dlg_coas"
+							action="#{homeController.coacessibilidade()}" oncomplete="visualizaAutomato()" 
+							update=":#{p:component('form')}" />
+					</p:panelGrid>
+				</p:outputPanel>
+			</p:dialog>
+
+			<p:dialog id="dlg_as" header="ACESSIBILIDADE" widgetVar="dlgas"
+				showEffect="blind" hideEffect="explode" resizable="false">
+				<p:outputPanel id="panel_as" style="text-align:justify;">
+					<p:panelGrid columns="1" style="text-align: left; width: 100%">
+
+						<p:selectOneMenu id="select_as"
+							value="#{homeController.autSelTrim}">
+							<f:selectItem itemLabel="Selecione um Automato" />
+							<f:selectItems value="#{homeController.automatos}" var="automato"
+								itemLabel="#{automato.label}" itemValue="#{automato.label}" />
+						</p:selectOneMenu>
+						<p:commandButton value="Executar ACESSIBILIDADE" process="dlg_as"
+							action="#{homeController.acessibilidade()}" oncomplete="visualizaAutomato()" 
+							update=":#{p:component('form')}" />
+					</p:panelGrid>
+				</p:outputPanel>
+			</p:dialog>
+			
 			<p:dialog id="dlg_conv" header="AFN to AFD" widgetVar="dlgAFN_AFD"
 				showEffect="blind" hideEffect="explode" 
 				resizable="false">

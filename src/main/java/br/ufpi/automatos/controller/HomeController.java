@@ -104,6 +104,13 @@ public class HomeController implements Serializable {
 		addTab("Acessibilidade Automato " + indexActiveTab);
 	}
 
+	public void coacessibilidade() {
+		Algoritmo<InfoEstado, String> algoritmo = new Algoritmo<InfoEstado, String>();
+		this.automatos.add(algoritmo.coacessibilidade(this.automatos
+				.get(indexActiveTab)));
+		addTab("Coacessibilidade Automato " + indexActiveTab);
+	}
+	
 	public void trim() {
 		Algoritmo<InfoEstado, String> algoritmo = new Algoritmo<InfoEstado, String>();
 		if(autSelTrim != null){
