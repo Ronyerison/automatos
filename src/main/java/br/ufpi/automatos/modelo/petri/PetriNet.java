@@ -1,7 +1,9 @@
 package br.ufpi.automatos.modelo.petri;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class represents a Petri Network.
@@ -16,11 +18,9 @@ public class PetriNet extends PetriNetObject {
 	/** List with arcs */
 	private List<Arc> arcs;
 	/** List with places */
-	private List<Place> places;
+	private Map<String, Place> places;
 	/** List with transitions */
-	private List<Transition> transitions;
-	/** List with inhibitor arcs */
-	private List<InhibitorArc> inhibitors;
+	private Map<String, Transition> transitions;
 
 	/**
 	 * @param name
@@ -28,29 +28,17 @@ public class PetriNet extends PetriNetObject {
 	public PetriNet(String name) {
 		super(name);
 		this.arcs = new ArrayList<Arc>();
-		this.places = new ArrayList<Place>();
-		this.transitions = new ArrayList<Transition>();
-		this.inhibitors = new ArrayList<InhibitorArc>();
+		this.places = new HashMap<String, Place>();
+		this.transitions = new HashMap<String, Transition>();
 	}
 
-	/**
-	 * @param o
-	 */
-	@Deprecated
-	public void add(PetriNetObject o) {
-		if (o instanceof Place) {
-			this.places.add((Place) o);
-		} else if (o instanceof Transition) {
-			this.transitions.add((Transition) o);
-		}
-	}
 
 	/**
 	 * @return
 	 */
 	public List<Transition> getTransitionsAbleToFire() {
 		ArrayList<Transition> list = new ArrayList<Transition>();
-		for (Transition t : this.transitions) {
+		for (Transition t : this.transitions.values()) {
 			if (t.canFire()) {
 				list.add(t);
 			}
@@ -64,7 +52,7 @@ public class PetriNet extends PetriNetObject {
 	 */
 	public Transition transition(String name) {
 		Transition t = new Transition(name);
-		this.transitions.add(t);
+		this.transitions.put(name, t);
 		return t;
 	}
 	
@@ -74,7 +62,7 @@ public class PetriNet extends PetriNetObject {
 	 */
 	public Place place(String name) {
 		Place p = new Place(name);
-		this.places.add(p);
+		this.places.put(name, p);
 		return p;
 	}
 
@@ -85,7 +73,7 @@ public class PetriNet extends PetriNetObject {
 	 */
 	public Place place(String name, int initial) {
 		Place p = new Place(name, initial);
-		this.places.add(p);
+		this.places.put(name, p);
 		return p;
 	}
 
@@ -113,17 +101,6 @@ public class PetriNet extends PetriNetObject {
 		return arc;
 	}
 
-	/**
-	 * @param name
-	 * @param p
-	 * @param t
-	 * @return
-	 */
-	public InhibitorArc inhibitor(String name, Place p, Transition t) {
-		InhibitorArc i = new InhibitorArc(name, p, t);
-		this.inhibitors.add(i);
-		return i;
-	}
 
 	/* (non-Javadoc)
 	 * @see br.ufpi.easii.athena.core.system.simulation.petri.base.PetriNetObject#toString()
@@ -133,41 +110,26 @@ public class PetriNet extends PetriNetObject {
 		StringBuilder sb = new StringBuilder("Petrinet ");
 		sb.append(super.toString()).append(BREAK_LINE);
 		sb.append("---Transitions---").append(BREAK_LINE);
-		for (Transition t : transitions) {
+		for (Transition t : transitions.values()) {
 			sb.append(t).append(BREAK_LINE);
 		}
 		sb.append("---Places---").append(BREAK_LINE);
-		for (Place p : places) {
+		for (Place p : places.values()) {
 			sb.append(p).append(BREAK_LINE);
 		}
 		return sb.toString();
 	}
 
-	/**
-	 * @return
-	 */
-	public List<Place> getPlaces() {
-		return this.places;
+	public Map<String, Place> getPlaces() {
+		return places;
 	}
 
-	/**
-	 * @return
-	 */
-	public List<Transition> getTransitions() {
-		return this.transitions;
+	public Map<String, Transition> getTransitions() {
+		return transitions;
 	}
 
-	/**
-	 * @return
-	 */
 	public List<Arc> getArcs() {
 		return this.arcs;
 	}
 
-	/**
-	 * @return
-	 */
-	public List<InhibitorArc> getInhibitors() {
-		return this.inhibitors;
-	}
 }

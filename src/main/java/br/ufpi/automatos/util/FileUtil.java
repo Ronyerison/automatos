@@ -12,6 +12,7 @@ import br.ufpi.automatos.modelo.Automato;
 import br.ufpi.automatos.modelo.Estado;
 import br.ufpi.automatos.modelo.InfoEstado;
 import br.ufpi.automatos.modelo.Transicao;
+import br.ufpi.automatos.modelo.petri.PetriNet;
 
 public class FileUtil {
 	
@@ -75,6 +76,43 @@ public class FileUtil {
 			automato.addTransicao(new Transicao<String, InfoEstado>(transicao[0], origem, destino));
 		}
 		return automato;
+	}
+	
+	public static PetriNet file2Petri(File arquivo){
+		String label;
+		int pos = arquivo.getName().lastIndexOf(".");
+		if(pos != -1)
+		   label = arquivo.getName().substring(0, pos);
+		else
+			label = arquivo.getName();
+		String conteudo[] = lerArquivo(arquivo).split("\n");
+		PetriNet petri = new PetriNet(label);
+		String[] lugares = conteudo[0].trim().split(",");
+		String[] transicoes = conteudo[1].trim().split(",");
+		String[] arcos = conteudo[2].trim().split(",");
+		String[] pesos = conteudo[3].trim().split(",");
+		String[] tokens = conteudo[4].trim().split(",");
+		
+		for (int i = 0; i < lugares.length; i++) {
+			petri.place(lugares[i], Integer.parseInt(tokens[i]));
+		}
+		
+		for (int i = 0; i < transicoes.length; i++) {
+			petri.transition(transicoes[i]);
+		}
+		
+		for (int i = 0; i < arcos.length; i++) {
+			String origem = arcos[i].substring(arcos[i].indexOf("(")+1, arcos[i].indexOf(";"));
+			String destino = arcos[i].substring(arcos[i].indexOf(";")+1, arcos[i].indexOf(")"));
+			
+			if(petri.getPlaces().containsKey(origem) && petri.getTransitions().containsKey(destino)){
+				petri.arc(pesos[i], petri.getPlaces().get(origem), petri.getTransitions().get(destino));
+			}else if(petri.getTransitions().containsKey(origem) && petri.getPlaces().containsKey(destino)){
+				petri.arc(pesos[i], petri.getTransitions().get(origem), petri.getPlaces().get(destino));
+			}
+			
+		}
+		return petri;
 	}
 	
 	public static String lerArquivo(File file) {
