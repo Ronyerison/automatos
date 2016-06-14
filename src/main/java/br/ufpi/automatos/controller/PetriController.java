@@ -15,6 +15,9 @@ import javax.inject.Named;
 import org.primefaces.component.tabview.Tab;
 import org.primefaces.event.FileUploadEvent;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import br.ufpi.automatos.modelo.petri.PetriNetObject;
 import br.ufpi.automatos.util.FileUtil;
 
@@ -57,6 +60,11 @@ public class PetriController implements Serializable{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public String getPetriJson() {
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		return gson.toJson(this.redesDePetri);
 	}
 
 	public List<Tab> getTabs() {

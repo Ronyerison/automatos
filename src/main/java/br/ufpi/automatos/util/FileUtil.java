@@ -94,21 +94,21 @@ public class FileUtil {
 		String[] tokens = conteudo[4].trim().split(",");
 		
 		for (int i = 0; i < lugares.length; i++) {
-			petri.place(lugares[i], Integer.parseInt(tokens[i]));
+			petri.place(lugares[i].trim(), Integer.parseInt(tokens[i]));
 		}
 		
 		for (int i = 0; i < transicoes.length; i++) {
-			petri.transition(transicoes[i]);
+			petri.transition(transicoes[i].trim());
 		}
 		
 		for (int i = 0; i < arcos.length; i++) {
-			String origem = arcos[i].substring(arcos[i].indexOf("(")+1, arcos[i].indexOf(";"));
-			String destino = arcos[i].substring(arcos[i].indexOf(";")+1, arcos[i].indexOf(")"));
+			String origem = arcos[i].substring(arcos[i].indexOf("(")+1, arcos[i].indexOf(";")).trim();
+			String destino = arcos[i].substring(arcos[i].indexOf(";")+1, arcos[i].indexOf(")")).trim();
 			
 			if(petri.getPlaces().containsKey(origem) && petri.getTransitions().containsKey(destino)){
-				petri.arc(pesos[i], petri.getPlaces().get(origem), petri.getTransitions().get(destino));
+				petri.arc(pesos[i].trim(), petri.getPlaces().get(origem), petri.getTransitions().get(destino));
 			}else if(petri.getTransitions().containsKey(origem) && petri.getPlaces().containsKey(destino)){
-				petri.arc(pesos[i], petri.getTransitions().get(origem), petri.getPlaces().get(destino));
+				petri.arc(pesos[i].trim(), petri.getTransitions().get(origem), petri.getPlaces().get(destino));
 			}
 			
 		}
