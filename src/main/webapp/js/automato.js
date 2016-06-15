@@ -24,7 +24,7 @@ function visualizaAutomato() {
 
 		var paper = new joint.dia.Paper({
 			el : $('.paper')[countTab],
-			width : 860,
+			width : 1200,
 			height : 750,
 			gridSize : 1,
 			model : graph

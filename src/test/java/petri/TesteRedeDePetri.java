@@ -12,7 +12,7 @@ public class TesteRedeDePetri {
 	}
 
 	public static void imprimeRede() {
-		PetriNet petriNet = FileUtil.file2Petri(new File("C:\\Users\\Ronyerison\\Desktop\\testes\\petri.txt"));
+		PetriNet petriNet = FileUtil.file2Petri(new File("C:\\Users\\Ronyerison\\Desktop\\testes\\NETTeste.txt"));
 		System.out.println(petriNet.toString());
 	}
 }

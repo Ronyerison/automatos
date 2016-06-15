@@ -7,46 +7,34 @@
 
 	<ui:define name="content">
 
-		<h:form id="form_petri" style="margin-top:30px"
+		<h:form id="form" style="margin-top:30px"
 			enctype="multipart/form-data">
-			<h:inputHidden id="petri_json" value="#{homeController.nodesJson}" />
+			<h:inputHidden id="petri" value="#{petriController.petriJson}" />
+			<h:inputHidden id="arvore" value="#{petriController.arvoreJson}" />
 
 			<p:panel styleClass="panel-externo">
-				<h:panelGrid columns="1" styleClass="panel-grid">
-					<p:outputLabel for="arq_petri" value="Arquivos Redes de Petri:"
+				<p:outputLabel for="arq_petri" value="Arquivos Redes de Petri:"
+					styleClass="label" />
+				<p:fileUpload id="arq_petri"
+					fileUploadListener="#{petriController.uploadArquivo}"
+					multiple="true" mode="advanced" dragDropSupport="true"
+					update=":#{p:component('form')}" sizeLimit="100000"
+					oncomplete="renderizarPetri()" />
+				<h:panelGrid columns="2" styleClass="panel-grid" columnClasses="coluna, coluna">
+					<p:outputLabel for="panel_petri" value="Rede de Petri"
 						styleClass="label" />
-					<p:fileUpload id="arq_petri"
-						fileUploadListener="#{homeController.uploadArquivo}"
-						multiple="true" mode="advanced" dragDropSupport="true"
-						update=":#{p:component('form_petri')}" sizeLimit="100000"
-						oncomplete="renderizarPetri()" />
-
-					<p:tabView id="tab_view_petri" value="#{homeController.tabs}" var="tab" widgetVar="widTabViewPetri"
-					 	onTabShow="renderizarPetri()"
-						dynamic="false">
-						<p:tab title="#{tab.title}" closable="false">
-							<p:panel id="panel_petri" styleClass="panel-interno">
-								<div class="paper_petri"></div>
-							</p:panel>
-						</p:tab>
-					</p:tabView>
-
-				</h:panelGrid>
-			</p:panel>
-
-			
-			
-		</h:form>
-		
-		
-		<h:form >
-			<p:panel styleClass="panel-externo">
-				<h:panelGrid columns="1" styleClass="panel-grid">
-					<p:commandButton value="With Icon" id="withIcon" icon="fa-circle-thin" />
+					<p:outputLabel for="panel_arv" value="Árvore de cobertura"
+						styleClass="label" />
+					<p:panel id="panel_petri" styleClass="panel-interno">
+						<div id="paper_petri"></div>
+					</p:panel>
+					<p:panel id="panel_arv" styleClass="panel-interno">
+						<div id="paper_arv"></div>
+					</p:panel>
 				</h:panelGrid>
 			</p:panel>
 		</h:form>
-		
+
 	</ui:define>
 
 </ui:composition>

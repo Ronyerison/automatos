@@ -1,17 +1,21 @@
+.coluna {
+	width: 50%;
+}
+
 .panel-grid {
 	width: 98%;
 	height: 100%;
 }
 
 .panel-interno {
-	width: 900px;
-	height: 800px;
+	width: 100%;
+	height: 100%;
 	background-image: none;
 }
 
 .panel-externo{
-	width: 950px;
-	height: 950px;
+	width: 98%;
+	height: 98%;
 	border: none;
 	background-color: white;
 	background-image: none;
@@ -20,4 +24,81 @@
 .label{
 	font-weight: bold;
 	padding-left: 15px;
+}
+
+/* jointjs elements */
+
+
+
+.element.Path path {
+    fill: #6a6c8a;
+    stroke-width: 0px;
+}
+
+.element.Path:hover path {
+    fill: #FEC582;
+}
+
+.element.Path text {
+    fill: #FFF;
+    font-size: 12px;
+    font-weight: lighter;
+}
+
+.link .connection {
+    stroke: #6a6c8a;
+    stroke-width: 2px;
+}
+
+.link * {
+    pointer-events: none;
+}
+
+/* svg */
+
+.bbox {
+    stroke: #16a085;
+    stroke-width: 2;
+    stroke-opacity: 0;
+    fill: none;
+    transition-property: stroke-opacity;
+    transition-duration: 0.5s;
+    pointer-events: none;
+}
+
+.axis {
+    stroke: #95a5a6;
+    stroke-dasharray: 2,4;
+    stroke-width: 1;
+    pointer-events: none;
+}
+
+.padding {
+    stroke: #1abc9c;
+    stroke-opacity: 0;
+    transition-property: stroke-opacity;
+    transition-duration: 1s;
+    pointer-events: none;
+}
+
+.grid {
+    stroke: #16a085;
+    stroke-width: 0.5;
+    stroke-opacity: 0;
+    transition-property: stroke-opacity;
+    transition-duration: 1s;
+    pointer-events: none;
+}
+
+.active {
+    stroke-opacity: 0.5;
+}
+
+.padding.active, .bbox.active {
+    stroke-opacity: 0.2;
+}
+
+/* IE can't handle paths without the `d` attribute for bounding box calculation */
+.marker-source, .marker-target {
+    display:none;
 }
