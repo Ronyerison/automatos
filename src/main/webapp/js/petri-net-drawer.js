@@ -1,9 +1,9 @@
 //Inicializa a RdP
 var graph = new joint.dia.Graph();
 var paper = new joint.dia.Paper({
-    el: $('#paper'),
-    width: 1024,
-    height: 500,
+    el: $('#paper_petri'),
+    width: 600,
+    height: 1000,
     gridSize: 10,
     perpendicularLinks: true,
     model: graph
@@ -26,6 +26,41 @@ var linkDestiny = undefined;
 
 //Identificador da simulacao
 var simulationId;
+
+function activeMove(){
+	placeBtnActive = false;
+	transitionBtnActive = false;
+	linkBtnActive = false;
+	tokenBtnActive = false;
+}
+
+function activePlace(){
+	placeBtnActive = true;
+	transitionBtnActive = false;
+	linkBtnActive = false;
+	tokenBtnActive = false;
+}
+
+function activeTransition(){
+	placeBtnActive = false;
+	transitionBtnActive = true;
+	linkBtnActive = false;
+	tokenBtnActive = false;
+}
+
+function activeLink(){
+	placeBtnActive = false;
+	transitionBtnActive = false;
+	linkBtnActive = true;
+	tokenBtnActive = false;
+}
+
+function activeTokens(){
+	placeBtnActive = false;
+	transitionBtnActive = false;
+	linkBtnActive = false;
+	tokenBtnActive = true;
+}
 
 //Desliga todos os botoes - Remover quando passar para o primefaces
 function turnOffAllButtons(){
@@ -83,91 +118,99 @@ function addToken(){
 	}
 }
 
-$(document).ready(function(e) {
-    $('#paper').click(function(e) {
-    	//Cria um lugar no clique
-    	if (placeBtnActive == true) {
-    		var posX = e.pageX - $(this).position().left -25, posY = e.pageY - $(this).position().top -25;
-        	jPrompt('Defina um nome para o lugar', 'L' + placeCounter++, function(e, value) {
-				var place = new pn.Place({
-		    		position: { x: posX, y: posY },
-		    		attrs: {
-			        	'.label': { text: value, fill: '#7c68fc' },
-			        	'.root' : { stroke: '#9586fd', 'stroke-width': 3 },
-			        	'.tokens > circle': { fill : '#7a7e9b' },
-			        	'.alot > text': {
-					        fill: '#fe854c',
-					        'font-family': 'Courier New',
-					        'font-size': 20,
-					        'font-weight': 'bold',
-					        'ref-x': 0.5,
-					        'ref-y': 0.5,
-					        'y-alignment': -0.5
+
+function vincularEventos(){
+	 $('#paper_petri').click(function(e) {
+	    	//Cria um lugar no clique
+	    	if (placeBtnActive == true) {
+	    		var posX = e.pageX - $(this).position().left -25, posY = e.pageY - $(this).position().top -25;
+	        	console.log(posX); console.log(posY);
+	    		jPrompt('Defina um nome para o lugar', 'L' + placeCounter++, function(e, value) {
+					var place = new pn.Place({
+			    		position: { x: posX, y: posY },
+			    		attrs: {
+				        	'.label': { text: value, fill: '#7c68fc' },
+				        	'.root' : { stroke: '#9586fd', 'stroke-width': 3 },
+				        	'.tokens > circle': { fill : '#7a7e9b' },
+				        	'.alot > text': {
+						        fill: '#fe854c',
+						        'font-family': 'Courier New',
+						        'font-size': 20,
+						        'font-weight': 'bold',
+						        'ref-x': 0.5,
+						        'ref-y': 0.5,
+						        'y-alignment': -0.5
+						    }
+			    		},
+			    		id: value,
+			    		tokens: 0
+					});
+					graph.addCell([place]);
+					console.log(graph);
+					
+					//Revincula os eventos de clique em lugar para atualizar a lista de elementos HTML
+					$('.element.pn.Place.joint-theme-default > .rotatable').off("click");
+					$('.element.pn.Place.joint-theme-default > .rotatable').on("click", function(e) {
+						if (linkBtnActive == true) {
+					    	if (linkOrigin === undefined) {
+					    		linkOrigin = graph.getCell($(this).children('text').children('tspan').text());
+					    	} else if (linkDestiny === undefined) {
+					    		var element = $(this);
+					    		jPrompt('Defina um peso para o arco', '1', function(e, value) {
+						    		linkDestiny = graph.getCell(element.children('text').children('tspan').text());
+						    		graph.addCell([link(linkOrigin, linkDestiny, value)]);
+						    		linkOrigin = undefined;
+						    		linkDestiny = undefined;
+						    	});
+					    	}
+					    } else if (tokenBtnActive == true) {
+					    	element = graph.getCell($(this).children('text').children('tspan').text())
+					    	element.set('tokens', element.get('tokens')+1);
 					    }
-		    		},
-		    		id: value,
-		    		tokens: 0
+					});
 				});
-				graph.addCell([place]);
-				//Revincula os eventos de clique em lugar para atualizar a lista de elementos HTML
-				$('.element.pn.Place.joint-theme-default > .rotatable').off("click");
-				$('.element.pn.Place.joint-theme-default > .rotatable').on("click", function(e) {
-					if (linkBtnActive == true) {
-				    	if (linkOrigin === undefined) {
-				    		linkOrigin = graph.getCell($(this).children('text').children('tspan').text());
-				    	} else if (linkDestiny === undefined) {
-				    		var element = $(this);
-				    		jPrompt('Defina um peso para o arco', '1', function(e, value) {
-					    		linkDestiny = graph.getCell(element.children('text').children('tspan').text());
-					    		graph.addCell([link(linkOrigin, linkDestiny, value)]);
-					    		linkOrigin = undefined;
-					    		linkDestiny = undefined;
-					    	});
-				    	}
-				    } else if (tokenBtnActive == true) {
-				    	element = graph.getCell($(this).children('text').children('tspan').text())
-				    	element.set('tokens', element.get('tokens')+1);
-				    }
-				});
-			});
-    	}
+	    		
+	    	}
 
-    	//Cria uma transicao no clique
-    	if (transitionBtnActive == true) {
-    		var posX = e.pageX - $(this).position().left -5, posY = e.pageY - $(this).position().top -25;
-        	jPrompt('Defina um nome para a transição', 'T' + transitionCounter++, function(e, value) {
-				var transition = new pn.Transition({
-					position: { x: posX, y: posY },
-					attrs: {
-						'.label': { text: value, fill: '#fe854f' },
-					    '.root' : { fill: '#9586fd', stroke: '#9586fd' }
-					},
-					id: value
+	    	//Cria uma transicao no clique
+	    	if (transitionBtnActive == true) {
+	    		var posX = e.pageX - $(this).position().left -5, posY = e.pageY - $(this).position().top -25;
+	        	jPrompt('Defina um nome para a transição', 'T' + transitionCounter++, function(e, value) {
+					var transition = new pn.Transition({
+						position: { x: posX, y: posY },
+						attrs: {
+							'.label': { text: value, fill: '#fe854f' },
+						    '.root' : { fill: '#9586fd', stroke: '#9586fd' }
+						},
+						id: value
+					});
+					graph.addCell([transition]);
+					//Revincula os eventos de clique em transicao para atualizar a lista de elementos HTML
+					$('.element.pn.Transition.joint-theme-default').off("click");
+					$('.element.pn.Transition.joint-theme-default').on("click", function(e) {
+						if (linkBtnActive == true) {
+					    	if (linkOrigin === undefined) {
+					    		linkOrigin = graph.getCell($(this).children('text').children('tspan').text());
+					    	} else if (linkDestiny === undefined) {
+					    		var element = $(this);
+					    		jPrompt('Defina um peso para o arco', '1', function(e, value) {
+						    		linkDestiny = graph.getCell(element.children('text').children('tspan').text());
+						    		console.log(link(linkOrigin, linkDestiny, value));
+						    		graph.addCell([link(linkOrigin, linkDestiny, value)]);
+						    		linkOrigin = undefined;
+						    		linkDestiny = undefined;
+						    	});
+					    	}
+					    }
+					});
 				});
-				graph.addCell([transition]);
-				//Revincula os eventos de clique em transicao para atualizar a lista de elementos HTML
-				$('.element.pn.Transition.joint-theme-default').off("click");
-				$('.element.pn.Transition.joint-theme-default').on("click", function(e) {
-					if (linkBtnActive == true) {
-				    	if (linkOrigin === undefined) {
-				    		linkOrigin = graph.getCell($(this).children('text').children('tspan').text());
-				    	} else if (linkDestiny === undefined) {
-				    		var element = $(this);
-				    		jPrompt('Defina um peso para o arco', '1', function(e, value) {
-					    		linkDestiny = graph.getCell(element.children('text').children('tspan').text());
-					    		graph.addCell([link(linkOrigin, linkDestiny, value)]);
-					    		linkOrigin = undefined;
-					    		linkDestiny = undefined;
-					    	});
-				    	}
-				    }
-				});
-			});
-    	}
+	    	}
 
-    });
+	    });
+	 
+}
 
-});
+$(document).ready(vincularEventos);
 
 //Converte a RdP para JSON
 function convert2JSON(){
@@ -200,7 +243,8 @@ function link(a, b, weight) {
         			'font-weight': 'bold' 
         		}
         	}
-        }]
+        }],
+        z: 1
     });
 }
 
@@ -261,3 +305,4 @@ function simulate() {
 function stopSimulation(simulationId) {
     clearInterval(simulationId);
 }
+

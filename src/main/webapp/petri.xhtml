@@ -9,7 +9,21 @@
 
 		<h:form id="form" style="margin-top:30px"
 			enctype="multipart/form-data">
-			<h:inputHidden id="petri" value="#{petriController.petriJson}" />
+
+			<p:contextMenu>
+				<p:menuitem value="Lugar" icon="ui-icon-radio-on"
+					onclick="activePlace()" />
+				<p:menuitem value="Transição" icon="ui-icon-grip-solid-vertical"
+					onclick="activeTransition()" />
+				<p:menuitem value="Arco" icon="ui-icon-arrowthick-1-e"
+					onclick="activeLink()" />
+				<p:menuitem value="Tokens" icon="ui-icon-bullet"
+					onclick="activeTokens()" />
+				<p:menuitem value="Mover" icon="ui-icon-arrow-4"
+					onclick="activeMove()" />
+			</p:contextMenu>
+
+			<!-- 			<h:inputHidden id="petri" value="#{petriController.petriJson}" /> -->
 			<h:inputHidden id="arvore" value="#{petriController.arvoreJson}" />
 
 			<p:panel styleClass="panel-externo">
@@ -18,21 +32,25 @@
 				<p:fileUpload id="arq_petri"
 					fileUploadListener="#{petriController.uploadArquivo}"
 					multiple="true" mode="advanced" dragDropSupport="true"
-					update=":#{p:component('form')}" sizeLimit="100000"
-					oncomplete="renderizarPetri()" />
-				<h:panelGrid columns="2" styleClass="panel-grid" columnClasses="coluna, coluna">
+					update=":#{p:component('form')}" sizeLimit="100000" />
+				<h:panelGrid columns="2" styleClass="panel-grid"
+					columnClasses="coluna, coluna">
 					<p:outputLabel for="panel_petri" value="Rede de Petri"
 						styleClass="label" />
 					<p:outputLabel for="panel_arv" value="Árvore de cobertura"
 						styleClass="label" />
-					<p:panel id="panel_petri" styleClass="panel-interno">
-						<div id="paper_petri"></div>
-					</p:panel>
-					<p:panel id="panel_arv" styleClass="panel-interno">
+					<p:outputPanel id="panel_petri" styleClass="panel-interno"
+						autoUpdate="true">
+						<div id="paper_petri" class="paper-petri"></div>
+					</p:outputPanel>
+					<p:outputPanel id="panel_arv" styleClass="panel-interno">
 						<div id="paper_arv"></div>
-					</p:panel>
+					</p:outputPanel>
 				</h:panelGrid>
 			</p:panel>
+			<p:remoteCommand name="refreshPanel" process="@this"
+				update=":#{p:component('panel_petri')}" />
+
 		</h:form>
 
 	</ui:define>

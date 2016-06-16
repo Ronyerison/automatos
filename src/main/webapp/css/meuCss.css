@@ -1,3 +1,19 @@
+.paper-petri{
+	width: 600px;
+	height: 1000px;
+}
+
+.ui-menu{
+	background-image: none !important;
+    background-color: bisque;
+    
+}
+
+.ui-menu .ui-menuitem-link{
+	color: #004276;
+	font-weight: bold !important;
+}
+
 .coluna {
 	width: 50%;
 }
@@ -100,5 +116,5 @@
 
 /* IE can't handle paths without the `d` attribute for bounding box calculation */
 .marker-source, .marker-target {
-    display:none;
+    
 }

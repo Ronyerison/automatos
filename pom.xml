@@ -10,6 +10,14 @@
 		<web-inf.lib>${basedir}/src/main/webapp/WEB-INF/lib</web-inf.lib>
 	</properties>
 
+	<repositories>
+		<repository>
+			<id>prime-repo</id>
+			<name>Prime Repo</name>
+			<url>http://repository.primefaces.org</url>
+		</repository>
+	</repositories>
+
 	<dependencies>
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
@@ -67,7 +75,7 @@
 		<dependency>
 			<groupId>org.primefaces</groupId>
 			<artifactId>primefaces</artifactId>
-			<version>5.0</version>
+			<version>6.0</version>
 		</dependency>
 
 		<!-- dependencia para a plataforma completa da JavaEE 7 -->
@@ -83,6 +91,12 @@
 			<groupId>org.primefaces.extensions</groupId>
 			<artifactId>all-themes</artifactId>
 			<version>1.0.8</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.primefaces.themes</groupId>
+			<artifactId>delta</artifactId>
+			<version>1.0.10</version>
 		</dependency>
 
 		<dependency>

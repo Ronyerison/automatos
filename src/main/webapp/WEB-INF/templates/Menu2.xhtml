@@ -3,13 +3,17 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui">
-	
+
 	<h:form>
 		<p:menubar>
-			<p:menuitem value="ARVORE DE ALCANCABILIDADE"/>
+			<p:menuitem value="ARVORE DE ALCANCABILIDADE" />
 			<p:menuitem value="OPÇÃO 2" />
 			<p:menuitem value="OPÇÃO 3" />
 			<p:menuitem value="OPÇÃO 4" />
+
+			<f:facet name="options">
+				<p:commandButton value="Simular" icon="ui-icon-play" />
+			</f:facet>
 		</p:menubar>
 	</h:form>
 </ui:composition>

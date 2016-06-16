@@ -3,14 +3,14 @@ $(function() {
 	var json = document.getElementById('form:arvore');
 	var automato = JSON.parse(json.value);
 
-	var graph = new joint.dia.Graph();
+	var arvore = new joint.dia.Graph();
 
-	var paper = new joint.dia.Paper({
+	var paperArv = new joint.dia.Paper({
 		el : $('#paper_arv'),
 		width : 600,
 		height : 1000,
 		gridSize : 1,
-		model : graph,
+		model : arvore,
 		linkConnectionPoint : function(linkView, view) {
 			// connection point is always in the center of an element
 			return view.model.getBBox().center();
@@ -66,11 +66,11 @@ $(function() {
 			});
 		}
 
-		graph.addCell(cell);
+		arvore.addCell(cell);
 		return cell;
 	}
 
-	function link(source, target) {
+	function aresta(source, target, label) {
 
 		var cell = new joint.dia.Link({
 			source : {
@@ -79,10 +79,19 @@ $(function() {
 			target : {
 				id : target.id
 			},
+			labels : [ {
+				position : 0.5,
+				attrs : {
+					text : {
+						text : label || '',
+						'font-weight' : 'bold'
+					}
+				}
+			} ],
 			z : -1,
 
 		});
-		graph.addCell(cell);
+		arvore.addCell(cell);
 		return cell;
 	}
 
@@ -109,7 +118,7 @@ $(function() {
 	i = 0;
 	while (i != automato.transicoes.length) {
 		if (automato.transicoes[i].origem.info !== automato.transicoes[i].destino.info) {
-			var l = link(estados[automato.transicoes[i].origem.info],
+			var l = aresta(estados[automato.transicoes[i].origem.info],
 					estados[automato.transicoes[i].destino.info],
 					automato.transicoes[i].info);
 		}

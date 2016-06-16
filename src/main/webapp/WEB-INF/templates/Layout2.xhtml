@@ -21,7 +21,7 @@
 	
 	<link rel="stylesheet" href="css/joint.css" />
 	<link rel="stylesheet" href="css/meuCss.css" />
-	
+	<link rel="stylesheet" href="css/jquery.dialog.css" />
 	
 	<script src="js/lodash.min.js"></script>
 	<script src="js/backbone-min.js"></script>
@@ -29,13 +29,15 @@
 	<script src="js/automato.js"></script>
 	<script src="js/arvore.js"></script>
 	<script src="js/petri-net.js"></script>
+	
+	<script src="js/jquery.dialog.js"></script>
 </h:head>
 
 <h:body>
 
 	<header class="aw-topbar">
 		<h1 class="aw-page-title">Algoritmos Rede de Petri</h1>
-		<a href="#" class="aw-toggle  js-toggle"><i class="fa  fa-bars"><ui:include src="Menu2.xhtml" /></i></a>
+		<ui:include src="Menu2.xhtml" />
 	</header>
 	
 <!-- 	<aside class="aw-sidebar  js-sidebar"> -->
@@ -45,7 +47,7 @@
 	<section class="aw-content  js-content">
 		<ui:insert name="content" />
 	</section>
-	
+	<script src="js/petri-net-drawer.js"></script>	
 </h:body>
 
 </html>
