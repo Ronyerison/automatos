@@ -1,50 +1,76 @@
 package br.ufpi.automatos.algoritmos.petri;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
 
-import br.ufpi.automatos.modelo.petri.Arc;
-import br.ufpi.automatos.modelo.petri.Direction;
 import br.ufpi.automatos.modelo.petri.PetriNet;
-import br.ufpi.automatos.modelo.petri.Place;
-import br.ufpi.automatos.modelo.petri.Transition;
+import br.ufpi.automatos.modelo.petri.tree.Node;
 
+
+/**
+ * @author Vanderson Moura
+ *
+ */
 public class CoverageTree {
+	Matrix matrix; 
 	
-	public int[][] incidenceMatrix(PetriNet petriNet){
-		int linesNum = petriNet.getTransitions().size();
-		int colunmNum = petriNet.getPlaces().size();
-		int[][] matrix = new int[linesNum][colunmNum];
-		
-		Collection<Place> places = petriNet.getPlaces().values();
-		Collection<Transition> transitions = petriNet.getTransitions().values();
-		
-		int i = 0, j = 0;
-		
-		for (Transition transition : transitions) {
-			for (Place place : places) {
-				matrix[i][j] = calculeValue(petriNet.getArcs(), place.getName(), transition.getName());
-				j++;
-			}
-			j=0;
-			i++;
-		}
-		return matrix;
+	public CoverageTree() {
+		this.matrix = new Matrix();
 	}
 	
-	private int calculeValue(List<Arc> arcs, String placeName, String transitionName){
-		int in = 0;
-		int out = 0;
-
-		for (Arc arc : arcs) {
-			if(arc.getPlace().getName().equals(placeName) && arc.getTransition().getName().equals(transitionName)){
-				if(arc.getDirection().equals(Direction.TRANSITION_TO_PLACE)){
-					out += arc.getWeight();
-				}else{
-					in += arc.getWeight(); 
+	public Node<int[]> coverageTreeBuide(PetriNet petriNet){
+		Node<int[]> nodeInitial;
+		int[] stateMatrix = matrix.stateMatrixBuilde(petriNet);
+		int[] activeTransitions = matrix.activeTransitionsMatrixBuilde(petriNet);
+		List<int[]> activeTransitionsList = activeTransitionsPartition(activeTransitions);
+		
+		nodeInitial = new Node<int[]>(stateMatrix);
+		
+		for (int[] activeTrans : activeTransitionsList) {
+			
+		}
+		return null;
+	}
+	
+	private int[] nextState(int[] stateMatrix, int[] activeTransitionsMatrix, int[][] incidenceMatrix){
+		int numLines = incidenceMatrix.length;
+		int numColumns = incidenceMatrix[0].length;
+		int sum = 0;
+		int a = 0;
+		int[] resultMult = new int[numColumns];
+		int[] resultSum = new int[numColumns];
+		
+		/** Multiplicando a matriz de transições ativas pela matriz de incidência **/
+		for (int j = 0; j < numColumns; j++) {
+			for (int i = 0; i < numLines; i++) {
+				sum += activeTransitionsMatrix[i] * incidenceMatrix[i][j];
+			}
+			resultMult[a] = sum;
+			sum=0;
+			a++;
+		}
+		
+		/** Somando o resultado da multiplicação anterior pelo estado atual da rede (stateMatrix)**/
+		for (int i = 0; i < resultMult.length; i++) {
+			resultSum[i] = resultMult[i] + stateMatrix[i]; 
+		}
+		
+		return resultSum;
+	}
+	
+	/** Retona uma lista de vetores, onde cada vetor representa uma transição ativa**/ 
+	private List<int[]> activeTransitionsPartition (int[] transitionsMatrix){
+		List<int[]> activeTransitionsList = new ArrayList<int[]>();
+		int[] transitionsMatrixAux = new int[transitionsMatrix.length];
+		
+		for (int i = 0; i < transitionsMatrix.length; i++) {
+			if(transitionsMatrix[i] == 1){
+				for (int j = 0; j < transitionsMatrix.length; j++) {
+					transitionsMatrixAux[j] = (j == i ? 1 : 0);   
 				}
+				activeTransitionsList.add(transitionsMatrixAux);
 			}
 		}
-		return out - in;
+		return activeTransitionsList;
 	}
 }
