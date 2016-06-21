@@ -136,27 +136,31 @@ public class PetriController implements Serializable{
 	public void teste(){
 		JsonParser parser = new JsonParser();
 		JsonObject object = parser.parse(jsonRedeDePetri).getAsJsonObject();
-		JsonArray cells = object.get("cells").getAsJsonArray();
+		JsonArray elements = object.get("elements").getAsJsonArray();
 		
-		for (JsonElement jsonElement : cells) {
+		for (JsonElement jsonElement : elements) {
 			String id = jsonElement.getAsJsonObject().get("id").getAsString();
 			String type = jsonElement.getAsJsonObject().get("type").getAsString();
 			if(type.toLowerCase().contains("place")){
 				String tokens = jsonElement.getAsJsonObject().get("tokens").getAsString();
 				this.redeDePetri.place(id, Integer.parseInt(tokens));
-			}else if(type.toLowerCase().contains("link")){
-				String idOrigin = jsonElement.getAsJsonObject().get("source").getAsJsonObject().get("id").getAsString();
-				String idDestiny = jsonElement.getAsJsonObject().get("target").getAsJsonObject().get("id").getAsString();
-				String peso = jsonElement.getAsJsonObject().get("labels").getAsJsonObject().get("attrs").getAsJsonObject().get("text").getAsJsonObject().get("text").getAsString();;
-				if(redeDePetri.getPlaces().containsKey(idOrigin) && redeDePetri.getTransitions().containsKey(idDestiny)){
-					redeDePetri.arc(peso, redeDePetri.getPlaces().get(idOrigin), redeDePetri.getTransitions().get(idDestiny));
-				}else if(redeDePetri.getTransitions().containsKey(idOrigin) && redeDePetri.getPlaces().containsKey(idDestiny)){
-					redeDePetri.arc(peso, redeDePetri.getTransitions().get(idOrigin), redeDePetri.getPlaces().get(idDestiny));
-				}
 			}else{
 				redeDePetri.transition(id);
 			}
 		}
+		
+		JsonArray links = object.get("links").getAsJsonArray();
+		for (JsonElement jsonElement : links) {
+			String idOrigin = jsonElement.getAsJsonObject().get("source").getAsJsonObject().get("id").getAsString();
+			String idDestiny = jsonElement.getAsJsonObject().get("target").getAsJsonObject().get("id").getAsString();
+			String peso = jsonElement.getAsJsonObject().get("labels").getAsJsonObject().get("attrs").getAsJsonObject().get("text").getAsJsonObject().get("text").getAsString();;
+			if(redeDePetri.getPlaces().containsKey(idOrigin) && redeDePetri.getTransitions().containsKey(idDestiny)){
+				redeDePetri.arc(peso, redeDePetri.getPlaces().get(idOrigin), redeDePetri.getTransitions().get(idDestiny));
+			}else if(redeDePetri.getTransitions().containsKey(idOrigin) && redeDePetri.getPlaces().containsKey(idDestiny)){
+				redeDePetri.arc(peso, redeDePetri.getTransitions().get(idOrigin), redeDePetri.getPlaces().get(idDestiny));
+			}
+		}
+			
 		System.out.println(jsonRedeDePetri);
 	}
 	
