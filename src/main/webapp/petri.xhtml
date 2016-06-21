@@ -23,9 +23,10 @@
 					onclick="activeMove()" />
 			</p:contextMenu>
 
-			<!-- 			<h:inputHidden id="petri" value="#{petriController.petriJson}" /> -->
+<!-- 			<input id="petri" type="hidden" class="jsonP" value="#{petriController.jsonRedeDePetri}" name="petri"/> -->
+			<h:inputHidden id="petri" value="#{petriController.jsonRedeDePetri}" />
 			<h:inputHidden id="arvore" value="#{petriController.arvoreJson}" />
-
+			<p:remoteCommand id="rm" name="atualiza"/>
 			<p:panel styleClass="panel-externo">
 				<p:outputLabel for="arq_petri" value="Arquivos Redes de Petri:"
 					styleClass="label" />
@@ -39,17 +40,14 @@
 						styleClass="label" />
 					<p:outputLabel for="panel_arv" value="Árvore de cobertura"
 						styleClass="label" />
-					<p:outputPanel id="panel_petri" styleClass="panel-interno"
-						autoUpdate="true">
+					<p:panel id="panel_petri" styleClass="panel-interno">
 						<div id="paper_petri" class="paper-petri"></div>
-					</p:outputPanel>
-					<p:outputPanel id="panel_arv" styleClass="panel-interno">
+					</p:panel>
+					<p:panel id="panel_arv" styleClass="panel-interno">
 						<div id="paper_arv"></div>
-					</p:outputPanel>
+					</p:panel>
 				</h:panelGrid>
 			</p:panel>
-			<p:remoteCommand name="refreshPanel" process="@this"
-				update=":#{p:component('panel_petri')}" />
 
 		</h:form>
 

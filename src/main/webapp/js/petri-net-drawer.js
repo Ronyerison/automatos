@@ -32,6 +32,8 @@ function activeMove(){
 	transitionBtnActive = false;
 	linkBtnActive = false;
 	tokenBtnActive = false;
+	linkDestiny = undefined;
+	linkOrigin = undefined;
 }
 
 function activePlace(){
@@ -39,6 +41,8 @@ function activePlace(){
 	transitionBtnActive = false;
 	linkBtnActive = false;
 	tokenBtnActive = false;
+	linkDestiny = undefined;
+	linkOrigin = undefined;
 }
 
 function activeTransition(){
@@ -46,6 +50,8 @@ function activeTransition(){
 	transitionBtnActive = true;
 	linkBtnActive = false;
 	tokenBtnActive = false;
+	linkDestiny = undefined;
+	linkOrigin = undefined;
 }
 
 function activeLink(){
@@ -53,6 +59,8 @@ function activeLink(){
 	transitionBtnActive = false;
 	linkBtnActive = true;
 	tokenBtnActive = false;
+	linkDestiny = undefined;
+	linkOrigin = undefined;
 }
 
 function activeTokens(){
@@ -60,6 +68,8 @@ function activeTokens(){
 	transitionBtnActive = false;
 	linkBtnActive = false;
 	tokenBtnActive = true;
+	linkDestiny = undefined;
+	linkOrigin = undefined;
 }
 
 //Desliga todos os botoes - Remover quando passar para o primefaces
@@ -293,9 +303,11 @@ function fireTransition(t, sec) {
 
 //Inicia a simulacao
 function simulate() {
-    var transitions = graph.getElements().filter(checkTransition);
+	var json = convert2JSON();
+	document.getElementById('form:petri').value = json;
+	atualiza();
+	var transitions = graph.getElements().filter(checkTransition);
     _.each(transitions, function(t) { if (Math.random() < 0.7) fireTransition(t, 1); });
-    
     return setInterval(function() {
         _.each(transitions, function(t) { if (Math.random() < 0.7) fireTransition(t, 1); });
     }, 2000);

@@ -6,13 +6,14 @@
 
 	<h:form>
 		<p:menubar>
-			<p:menuitem value="ARVORE DE ALCANCABILIDADE" />
+			
+			<p:menuitem value="ARVORE DE ALCANCABILIDADE" action="#{petriController.teste()}"/>
 			<p:menuitem value="OPÇÃO 2" />
 			<p:menuitem value="OPÇÃO 3" />
 			<p:menuitem value="OPÇÃO 4" />
 
 			<f:facet name="options">
-				<p:commandButton value="Simular" icon="ui-icon-play" />
+				<p:commandButton value="Simular" icon="ui-icon-play" onsuccess="simulationId = simulate()"/>
 			</f:facet>
 		</p:menubar>
 	</h:form>

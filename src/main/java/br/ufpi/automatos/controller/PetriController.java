@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
 import org.primefaces.component.tabview.Tab;
@@ -18,30 +18,38 @@ import org.primefaces.event.FileUploadEvent;
 import br.ufpi.automatos.modelo.Automato;
 import br.ufpi.automatos.modelo.Estado;
 import br.ufpi.automatos.modelo.Transicao;
-import br.ufpi.automatos.modelo.petri.PetriNetObject;
+import br.ufpi.automatos.modelo.petri.PetriNet;
 import br.ufpi.automatos.util.FileUtil;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 @Named
-@ViewScoped
+@SessionScoped
 public class PetriController implements Serializable{
 
 	private static final long serialVersionUID = 4330415809833989926L;
 
 	private List<Tab> tabs;
 	
-	private List<PetriNetObject> redesDePetri;
+	private PetriNet redeDePetri;
 
 	private List<File> arquivosEntrada;
 	
 	private Automato<String, String> arvore;
 	
+	private String jsonRedeDePetri;
+	
+	private Gson gson;
+	
 	@PostConstruct
 	private void init() {
 		this.arquivosEntrada = new ArrayList<File>();
-		this.redesDePetri = new ArrayList<PetriNetObject>();
+		this.redeDePetri = new PetriNet("PetriNet");
 		this.tabs = new ArrayList<Tab>();
 		this.arvore = new Automato<String, String>();
 		Estado<String> e1 = new Estado<String>("[0,1,0]", true, false);
@@ -54,6 +62,7 @@ public class PetriController implements Serializable{
 		this.arvore.addTransicao(new Transicao<String, String>("t2", e2, e4));
 		this.arvore.addTransicao(new Transicao<String, String>("t3", e1, e5));
 		
+		this.gson = new GsonBuilder().setPrettyPrinting().create();
 	}
 	
 	public void addTab(String titulo) {
@@ -69,21 +78,33 @@ public class PetriController implements Serializable{
 		try {
 			File arquivo = FileUtil.uploadedFileToFile(event.getFile());
 			this.arquivosEntrada.add(arquivo);
-			PetriNetObject petri = FileUtil.file2Petri(arquivo);
-			this.redesDePetri.add(petri);
+			PetriNet petri = FileUtil.file2Petri(arquivo);
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			this.jsonRedeDePetri = gson.toJson(petri); 
+			this.redeDePetri = petri;
 			addTab(petri.getName());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public String getPetriJson() {
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		return gson.toJson(this.redesDePetri);
+	public Automato<String, String> getArvore() {
+		return arvore;
 	}
-	
+
+	public void setArvore(Automato<String, String> arvore) {
+		this.arvore = arvore;
+	}
+
+	public String getJsonRedeDePetri() {
+		return jsonRedeDePetri;
+	}
+
+	public void setJsonRedeDePetri(String jsonRedeDePetri) {
+		this.jsonRedeDePetri = jsonRedeDePetri;
+	}
+
 	public String getArvoreJson() {
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		return gson.toJson(this.arvore);
 	}
 
@@ -95,12 +116,12 @@ public class PetriController implements Serializable{
 		this.tabs = tabs;
 	}
 
-	public List<PetriNetObject> getRedesDePetri() {
-		return redesDePetri;
+	public PetriNet getRedeDePetri() {
+		return redeDePetri;
 	}
 
-	public void setRedesDePetri(List<PetriNetObject> redesDePetri) {
-		this.redesDePetri = redesDePetri;
+	public void setRedeDePetri(PetriNet redeDePetri) {
+		this.redeDePetri = redeDePetri;
 	}
 
 	public List<File> getArquivosEntrada() {
@@ -109,6 +130,34 @@ public class PetriController implements Serializable{
 
 	public void setArquivosEntrada(List<File> arquivosEntrada) {
 		this.arquivosEntrada = arquivosEntrada;
+	}
+	
+	
+	public void teste(){
+		JsonParser parser = new JsonParser();
+		JsonObject object = parser.parse(jsonRedeDePetri).getAsJsonObject();
+		JsonArray cells = object.get("cells").getAsJsonArray();
+		
+		for (JsonElement jsonElement : cells) {
+			String id = jsonElement.getAsJsonObject().get("id").getAsString();
+			String type = jsonElement.getAsJsonObject().get("type").getAsString();
+			if(type.toLowerCase().contains("place")){
+				String tokens = jsonElement.getAsJsonObject().get("tokens").getAsString();
+				this.redeDePetri.place(id, Integer.parseInt(tokens));
+			}else if(type.toLowerCase().contains("link")){
+				String idOrigin = jsonElement.getAsJsonObject().get("source").getAsJsonObject().get("id").getAsString();
+				String idDestiny = jsonElement.getAsJsonObject().get("target").getAsJsonObject().get("id").getAsString();
+				String peso = jsonElement.getAsJsonObject().get("labels").getAsJsonObject().get("attrs").getAsJsonObject().get("text").getAsJsonObject().get("text").getAsString();;
+				if(redeDePetri.getPlaces().containsKey(idOrigin) && redeDePetri.getTransitions().containsKey(idDestiny)){
+					redeDePetri.arc(peso, redeDePetri.getPlaces().get(idOrigin), redeDePetri.getTransitions().get(idDestiny));
+				}else if(redeDePetri.getTransitions().containsKey(idOrigin) && redeDePetri.getPlaces().containsKey(idDestiny)){
+					redeDePetri.arc(peso, redeDePetri.getTransitions().get(idOrigin), redeDePetri.getPlaces().get(idDestiny));
+				}
+			}else{
+				redeDePetri.transition(id);
+			}
+		}
+		System.out.println(jsonRedeDePetri);
 	}
 	
 }
