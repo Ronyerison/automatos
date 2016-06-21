@@ -72,63 +72,6 @@ function activeTokens(){
 	linkOrigin = undefined;
 }
 
-//Desliga todos os botoes - Remover quando passar para o primefaces
-function turnOffAllButtons(){
-	placeBtnActive = false;
-	document.getElementById("placeBtn").innerHTML = document.getElementById("placeBtn").innerHTML.replace("On", "Off");
-	transitionBtnActive = false;
-	document.getElementById("transitionBtn").innerHTML = document.getElementById("transitionBtn").innerHTML.replace("On", "Off");
-	linkBtnActive = false;
-	document.getElementById("linkBtn").innerHTML = document.getElementById("linkBtn").innerHTML.replace("On", "Off");
-	tokenBtnActive = false;
-	document.getElementById("tokenBtn").innerHTML = document.getElementById("tokenBtn").innerHTML.replace("On", "Off");
-}
-
-//Manipula o comportamento dos botoes - Remover quando passar para o primefaces
-function addPlace(){
-	if (placeBtnActive == true) {
-		placeBtnActive = false;
-		document.getElementById("placeBtn").innerHTML = document.getElementById("placeBtn").innerHTML.replace("On", "Off");
-	} else {
-		turnOffAllButtons();
-		placeBtnActive = true;
-		document.getElementById("placeBtn").innerHTML = document.getElementById("placeBtn").innerHTML.replace("Off", "On");
-	}
-}
-function addTransition(){
-	if (transitionBtnActive == true) {
-		transitionBtnActive = false;
-		document.getElementById("transitionBtn").innerHTML = document.getElementById("transitionBtn").innerHTML.replace("On", "Off");
-	} else {
-		turnOffAllButtons();
-		transitionBtnActive = true;
-		document.getElementById("transitionBtn").innerHTML = document.getElementById("transitionBtn").innerHTML.replace("Off", "On");
-	}
-}
-function addLink(){
-	if (linkBtnActive == true) {
-		linkBtnActive = false;
-		document.getElementById("linkBtn").innerHTML = document.getElementById("linkBtn").innerHTML.replace("On", "Off");
-	} else {
-		turnOffAllButtons();
-		linkBtnActive = true;
-		document.getElementById("linkBtn").innerHTML = document.getElementById("linkBtn").innerHTML.replace("Off", "On");
-		linkOrigin = undefined;
-	}
-}
-function addToken(){
-	if (tokenBtnActive == true) {
-		tokenBtnActive = false;
-		document.getElementById("tokenBtn").innerHTML = document.getElementById("tokenBtn").innerHTML.replace("On", "Off");
-
-	} else {
-		turnOffAllButtons();
-		tokenBtnActive = true;
-		document.getElementById("tokenBtn").innerHTML = document.getElementById("tokenBtn").innerHTML.replace("Off", "On");
-	}
-}
-
-
 function vincularEventos(){
 	 $('#paper_petri').click(function(e) {
 	    	//Cria um lugar no clique
@@ -224,7 +167,9 @@ $(document).ready(vincularEventos);
 
 //Converte a RdP para JSON
 function convert2JSON(){
-	return JSON.stringify(graph);
+	var elements = JSON.stringify(graph.getElements());
+	var links = JSON.stringify(graph.getLinks());
+	return "{\"elements\": " + elements + ", \"links\": " + links + "}";
 }
 
 //Filtra a lista de elementos para retornar apenas as transicoes
