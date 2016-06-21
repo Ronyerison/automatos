@@ -153,7 +153,7 @@ public class PetriController implements Serializable{
 		for (JsonElement jsonElement : links) {
 			String idOrigin = jsonElement.getAsJsonObject().get("source").getAsJsonObject().get("id").getAsString();
 			String idDestiny = jsonElement.getAsJsonObject().get("target").getAsJsonObject().get("id").getAsString();
-			String peso = jsonElement.getAsJsonObject().get("labels").getAsJsonObject().get("attrs").getAsJsonObject().get("text").getAsJsonObject().get("text").getAsString();;
+			String peso = jsonElement.getAsJsonObject().get("labels").getAsJsonArray().get(0).getAsJsonObject().get("attrs").getAsJsonObject().get("text").getAsJsonObject().get("text").getAsString();;
 			if(redeDePetri.getPlaces().containsKey(idOrigin) && redeDePetri.getTransitions().containsKey(idDestiny)){
 				redeDePetri.arc(peso, redeDePetri.getPlaces().get(idOrigin), redeDePetri.getTransitions().get(idDestiny));
 			}else if(redeDePetri.getTransitions().containsKey(idOrigin) && redeDePetri.getPlaces().containsKey(idDestiny)){
