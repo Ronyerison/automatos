@@ -5,6 +5,7 @@ import java.util.List;
 
 import br.ufpi.automatos.modelo.petri.PetriNet;
 import br.ufpi.automatos.modelo.petri.tree.Node;
+import br.ufpi.automatos.modelo.petri.tree.NodeInfo;
 
 
 /**
@@ -19,20 +20,39 @@ public class CoverageTree {
 	}
 	
 	public Node<int[]> coverageTreeBuide(PetriNet petriNet){
-		Node<int[]> nodeInitial;
 		int[] stateMatrix = matrix.stateMatrixBuilde(petriNet);
 		int[] activeTransitions = matrix.activeTransitionsMatrixBuilde(petriNet);
+		
+		NodeInfo info = new NodeInfo(stateMatrix);
+		Node<NodeInfo> initialNode;
+		
+		List<Node<NodeInfo>> front = new ArrayList<>();	
+		List<Node<NodeInfo>> visitedList = new ArrayList<>();	
+		
 		List<int[]> activeTransitionsList = activeTransitionsPartition(activeTransitions);
 		
-		nodeInitial = new Node<int[]>(stateMatrix);
+		initialNode = new Node<NodeInfo>(info);
+		visitedList.add(initialNode);
 		
-		for (int[] activeTrans : activeTransitionsList) {
-			
-		}
 		return null;
 	}
 	
-	private int[] nextState(int[] stateMatrix, int[] activeTransitionsMatrix, int[][] incidenceMatrix){
+	public void generateChilds(Node<NodeInfo> node, List<int[]> activeTransitions, int[][] incidenceMatrix, List<Node<NodeInfo>> visetedList){
+		Node<NodeInfo> child;
+		for (int[] t : activeTransitions) {
+			child = nextState(node.getData().getStateMatrix(), t, incidenceMatrix);
+			
+			if(activeTransitions.size() == 0){
+				node.getData().setTerminal(true);
+			}
+			if(visetedList.contains(child)){
+				child.getData().setDuplicated(true);
+			}
+			
+		}
+	}
+	
+	private Node<NodeInfo> nextState(int[] stateMatrix, int[] activeTransitionsMatrix, int[][] incidenceMatrix){
 		int numLines = incidenceMatrix.length;
 		int numColumns = incidenceMatrix[0].length;
 		int sum = 0;
@@ -55,7 +75,7 @@ public class CoverageTree {
 			resultSum[i] = resultMult[i] + stateMatrix[i]; 
 		}
 		
-		return resultSum;
+		return new Node<NodeInfo>(new NodeInfo(resultSum));
 	}
 	
 	/** Retona uma lista de vetores, onde cada vetor representa uma transição ativa**/ 
