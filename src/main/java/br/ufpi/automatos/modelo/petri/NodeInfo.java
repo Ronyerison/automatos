@@ -1,4 +1,4 @@
-package br.ufpi.automatos.modelo.petri.tree;
+package br.ufpi.automatos.modelo.petri;
 
 import java.util.Arrays;
 
@@ -6,6 +6,7 @@ public class NodeInfo {
 	private int[] stateMatrix;
 	private boolean duplicated;
 	private boolean terminal;
+	private String parentLabel;
 	
 	public NodeInfo() {
 	}
@@ -47,17 +48,30 @@ public class NodeInfo {
 		this.terminal = terminal;
 	}
 	
+	public String getParentLabel() {
+		return parentLabel;
+	}
+
+	public void setParentLabel(String parentLabel) {
+		this.parentLabel = parentLabel;
+	}
+
 	public String getLabel(){
 		return Arrays.toString(stateMatrix);
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + (duplicated ? 1231 : 1237);
+		result = prime * result
+				+ ((parentLabel == null) ? 0 : parentLabel.hashCode());
 		result = prime * result + Arrays.hashCode(stateMatrix);
+		result = prime * result + (terminal ? 1231 : 1237);
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -67,11 +81,18 @@ public class NodeInfo {
 		if (getClass() != obj.getClass())
 			return false;
 		NodeInfo other = (NodeInfo) obj;
+		if (duplicated != other.duplicated)
+			return false;
+		if (parentLabel == null) {
+			if (other.parentLabel != null)
+				return false;
+		} else if (!parentLabel.equals(other.parentLabel))
+			return false;
 		if (!Arrays.equals(stateMatrix, other.stateMatrix))
+			return false;
+		if (terminal != other.terminal)
 			return false;
 		return true;
 	}
-	
-	
 	
 }

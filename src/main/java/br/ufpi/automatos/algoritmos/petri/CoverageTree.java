@@ -3,9 +3,10 @@ package br.ufpi.automatos.algoritmos.petri;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.ufpi.automatos.modelo.Automato;
+import br.ufpi.automatos.modelo.Estado;
+import br.ufpi.automatos.modelo.petri.NodeInfo;
 import br.ufpi.automatos.modelo.petri.PetriNet;
-import br.ufpi.automatos.modelo.petri.tree.Node;
-import br.ufpi.automatos.modelo.petri.tree.NodeInfo;
 
 
 /**
@@ -19,40 +20,41 @@ public class CoverageTree {
 		this.matrix = new Matrix();
 	}
 	
-	public Node<int[]> coverageTreeBuide(PetriNet petriNet){
+	public Automato<NodeInfo, String> coverageTreeBuide(PetriNet petriNet){
 		int[] stateMatrix = matrix.stateMatrixBuilde(petriNet);
 		int[] activeTransitions = matrix.activeTransitionsMatrixBuilde(petriNet);
+		int[][] incidenceMatrix = matrix.incidenceMatrixBuilde(petriNet);
 		
 		NodeInfo info = new NodeInfo(stateMatrix);
-		Node<NodeInfo> initialNode;
-		
-		List<Node<NodeInfo>> front = new ArrayList<>();	
-		List<Node<NodeInfo>> visitedList = new ArrayList<>();	
-		
+		Estado<NodeInfo> initialNode;
+		List<Estado<NodeInfo>> front = new ArrayList<>();	
+		List<Estado<NodeInfo>> visitedList = new ArrayList<>();	
 		List<int[]> activeTransitionsList = activeTransitionsPartition(activeTransitions);
 		
-		initialNode = new Node<NodeInfo>(info);
+		initialNode = new Estado<NodeInfo>(info);
 		visitedList.add(initialNode);
 		
-		return null;
-	}
-	
-	public void generateChilds(Node<NodeInfo> node, List<int[]> activeTransitions, int[][] incidenceMatrix, List<Node<NodeInfo>> visetedList){
-		Node<NodeInfo> child;
-		for (int[] t : activeTransitions) {
-			child = nextState(node.getData().getStateMatrix(), t, incidenceMatrix);
-			
-			if(activeTransitions.size() == 0){
-				node.getData().setTerminal(true);
+		while(true){// enquanto fronteira não for vazia
+			for (Estado<NodeInfo> child : generateChilds(initialNode, activeTransitionsList, incidenceMatrix)) {
+				
 			}
-			if(visetedList.contains(child)){
-				child.getData().setDuplicated(true);
-			}
-			
 		}
+		
+		
 	}
 	
-	private Node<NodeInfo> nextState(int[] stateMatrix, int[] activeTransitionsMatrix, int[][] incidenceMatrix){
+	public List<Estado<NodeInfo>> generateChilds(Estado<NodeInfo> node, List<int[]> activeTransitions, int[][] incidenceMatrix){
+		List<Estado<NodeInfo>> childs = new ArrayList<>();
+		Estado<NodeInfo> child;
+		
+		for (int[] t : activeTransitions) {
+			child = nextState(node.getInfo().getStateMatrix(), t, incidenceMatrix);
+			childs.add(child);
+		}
+		return childs;
+	}
+	
+	private Estado<NodeInfo> nextState(int[] stateMatrix, int[] activeTransitionsMatrix, int[][] incidenceMatrix){
 		int numLines = incidenceMatrix.length;
 		int numColumns = incidenceMatrix[0].length;
 		int sum = 0;
@@ -75,7 +77,7 @@ public class CoverageTree {
 			resultSum[i] = resultMult[i] + stateMatrix[i]; 
 		}
 		
-		return new Node<NodeInfo>(new NodeInfo(resultSum));
+		return new Estado<NodeInfo>(new NodeInfo(resultSum));
 	}
 	
 	/** Retona uma lista de vetores, onde cada vetor representa uma transição ativa**/ 
