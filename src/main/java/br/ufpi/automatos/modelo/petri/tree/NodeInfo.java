@@ -10,6 +10,14 @@ public class NodeInfo {
 	public NodeInfo() {
 	}
 	
+	public NodeInfo(String label){
+		String[] tokens = label.substring(label.indexOf("[")+1, label.indexOf("]")).split(",");
+		stateMatrix = new int[tokens.length];
+		for (int i = 0; i < tokens.length; i++) {
+			stateMatrix[i] = Integer.parseInt(tokens[i].trim());
+		}
+	}
+	
 	public NodeInfo(int[] stateMatrix) {
 		super();
 		this.stateMatrix = stateMatrix;
@@ -37,6 +45,10 @@ public class NodeInfo {
 	
 	public void setTerminal(boolean terminal) {
 		this.terminal = terminal;
+	}
+	
+	public String getLabel(){
+		return Arrays.toString(stateMatrix);
 	}
 	
 	@Override
