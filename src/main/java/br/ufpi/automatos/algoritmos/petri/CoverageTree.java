@@ -8,6 +8,7 @@ import br.ufpi.automatos.modelo.Estado;
 import br.ufpi.automatos.modelo.Transicao;
 import br.ufpi.automatos.modelo.petri.NodeInfo;
 import br.ufpi.automatos.modelo.petri.PetriNet;
+import br.ufpi.automatos.modelo.petri.Place;
 import br.ufpi.automatos.modelo.petri.Transition;
 
 
@@ -43,19 +44,18 @@ public class CoverageTree {
 		front.add(actualNode);
 		
 		List<Estado<NodeInfo>> childs;
-		Automato automato = new Automato<>();
+		Automato<NodeInfo, String> automato = new Automato<>();
 		List<Transicao<String, NodeInfo>> transitions = new ArrayList<>();
 		
-//		childs = generateChilds(actualNode, activeTransitionsList, incidenceMatrix);
-//		checkChilds(childs, visitedList);
-//		for (Transicao<String, NodeInfo> transicao : transitions) {
-//			
-//		}
+		PetriNet petriNetAux = new PetriNet(this.petriNet);
+		int[] activeTransitionsAux = activeTransitions;
+		List<int[]> activeTransitionsListAux = activeTransitionsPartition(activeTransitionsAux);
 		
 		while(front.size() > 0){// enquanto fronteira não for vazia
-			childs = generateChilds(actualNode, activeTransitionsList, incidenceMatrix);
+			childs = generateChilds(actualNode, activeTransitionsListAux, incidenceMatrix);
 			if(childs.size() > 0){
 				for (Estado<NodeInfo> child : childs) {
+					child.getInfo().setParentLabel(actualNode.getInfo().getLabel());
 					transitions.add(new Transicao<String, NodeInfo>(transitionLabelByIndex(child.getInfo().getGeneratorTransitionMatrix()), actualNode, child));
 					if(visitedList.contains(child)){
 						child.getInfo().setDuplicated(true);
@@ -68,18 +68,23 @@ public class CoverageTree {
 			}
 			front.remove(0);
 			actualNode = front.size() > 0 ? front.get(0).clone() : actualNode;
+			updateStateRdP(petriNetAux, actualNode.getInfo().getStateMatrix());
+			activeTransitionsAux = matrix.activeTransitionsMatrixBuilde(petriNetAux);
+			activeTransitionsListAux = activeTransitionsPartition(activeTransitionsAux);
 		}
 		
-		return null;
+		automato.setTransicoes(transitions);
+		return automato;
 	}
 	
-//	private void checkChilds(List<Estado<NodeInfo>> childs, List<Estado<NodeInfo>> visiteds){
-//		for (Estado<NodeInfo> child : childs) {
-//			if(visiteds.contains(child)){
-//				child.getInfo().setDuplicated(true);
-//			}
-//		}
-//	}
+	private void updateStateRdP(PetriNet petriNet, int[] state){
+		int i = 0;
+		for (Place place : petriNet.getPlaces().values()) {
+			place.setTokens(state[i]);
+			i++;
+		}
+	}
+	
 	
 	public List<Estado<NodeInfo>> generateChilds(Estado<NodeInfo> node, List<int[]> activeTransitions, int[][] incidenceMatrix){
 		List<Estado<NodeInfo>> childs = new ArrayList<>();
@@ -130,6 +135,7 @@ public class CoverageTree {
 					transitionsMatrixAux[j] = (j == i ? 1 : 0);   
 				}
 				activeTransitionsList.add(transitionsMatrixAux);
+				transitionsMatrixAux = new int[transitionsMatrix.length];
 			}
 		}
 		return activeTransitionsList;
