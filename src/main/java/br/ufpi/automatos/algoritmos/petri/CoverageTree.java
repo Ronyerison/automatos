@@ -5,8 +5,10 @@ import java.util.List;
 
 import br.ufpi.automatos.modelo.Automato;
 import br.ufpi.automatos.modelo.Estado;
+import br.ufpi.automatos.modelo.Transicao;
 import br.ufpi.automatos.modelo.petri.NodeInfo;
 import br.ufpi.automatos.modelo.petri.PetriNet;
+import br.ufpi.automatos.modelo.petri.Transition;
 
 
 /**
@@ -14,34 +16,70 @@ import br.ufpi.automatos.modelo.petri.PetriNet;
  *
  */
 public class CoverageTree {
-	Matrix matrix; 
+	private PetriNet petriNet;
+	private Matrix matrix; 
 	
-	public CoverageTree() {
+	public CoverageTree(PetriNet petriNet) {	
 		this.matrix = new Matrix();
+		this.petriNet = petriNet;
 	}
 	
-	public Automato<NodeInfo, String> coverageTreeBuide(PetriNet petriNet){
-		int[] stateMatrix = matrix.stateMatrixBuilde(petriNet);
-		int[] activeTransitions = matrix.activeTransitionsMatrixBuilde(petriNet);
+	public Automato<NodeInfo, String> coverageTreeBuide(){
+		int[] stateMatrix = matrix.stateMatrixBuilde(this.petriNet);
+		int[] activeTransitions = matrix.activeTransitionsMatrixBuilde(this.petriNet);
 		int[][] incidenceMatrix = matrix.incidenceMatrixBuilde(petriNet);
 		
 		NodeInfo info = new NodeInfo(stateMatrix);
 		Estado<NodeInfo> initialNode;
+		Estado<NodeInfo> actualNode;
 		List<Estado<NodeInfo>> front = new ArrayList<>();	
 		List<Estado<NodeInfo>> visitedList = new ArrayList<>();	
 		List<int[]> activeTransitionsList = activeTransitionsPartition(activeTransitions);
 		
 		initialNode = new Estado<NodeInfo>(info);
 		visitedList.add(initialNode);
+		actualNode = initialNode.clone();
+		actualNode.setInicial(true);
+		front.add(actualNode);
 		
-		while(true){// enquanto fronteira não for vazia
-			for (Estado<NodeInfo> child : generateChilds(initialNode, activeTransitionsList, incidenceMatrix)) {
-				
+		List<Estado<NodeInfo>> childs;
+		Automato automato = new Automato<>();
+		List<Transicao<String, NodeInfo>> transitions = new ArrayList<>();
+		
+//		childs = generateChilds(actualNode, activeTransitionsList, incidenceMatrix);
+//		checkChilds(childs, visitedList);
+//		for (Transicao<String, NodeInfo> transicao : transitions) {
+//			
+//		}
+		
+		while(front.size() > 0){// enquanto fronteira não for vazia
+			childs = generateChilds(actualNode, activeTransitionsList, incidenceMatrix);
+			if(childs.size() > 0){
+				for (Estado<NodeInfo> child : childs) {
+					transitions.add(new Transicao<String, NodeInfo>(transitionLabelByIndex(child.getInfo().getGeneratorTransitionMatrix()), actualNode, child));
+					if(visitedList.contains(child)){
+						child.getInfo().setDuplicated(true);
+					}else{
+						front.add(child);
+					}
+				}
+			}else{
+				actualNode.getInfo().setTerminal(true);
 			}
+			front.remove(0);
+			actualNode = front.size() > 0 ? front.get(0).clone() : actualNode;
 		}
 		
-		
+		return null;
 	}
+	
+//	private void checkChilds(List<Estado<NodeInfo>> childs, List<Estado<NodeInfo>> visiteds){
+//		for (Estado<NodeInfo> child : childs) {
+//			if(visiteds.contains(child)){
+//				child.getInfo().setDuplicated(true);
+//			}
+//		}
+//	}
 	
 	public List<Estado<NodeInfo>> generateChilds(Estado<NodeInfo> node, List<int[]> activeTransitions, int[][] incidenceMatrix){
 		List<Estado<NodeInfo>> childs = new ArrayList<>();
@@ -49,6 +87,7 @@ public class CoverageTree {
 		
 		for (int[] t : activeTransitions) {
 			child = nextState(node.getInfo().getStateMatrix(), t, incidenceMatrix);
+			child.getInfo().setGeneratorTransitionMatrix(t);
 			childs.add(child);
 		}
 		return childs;
@@ -94,5 +133,26 @@ public class CoverageTree {
 			}
 		}
 		return activeTransitionsList;
+	}
+	
+	/** Retorna o nome da transição pela seu indice correspondente na matrix que representa a transição ativa**/ 
+	private String transitionLabelByIndex(int[] matrixActiviteTransition){
+		int i = 0;
+		int index = 0;
+		
+		for (int j = 0; j < matrixActiviteTransition.length; j++) {
+			if(matrixActiviteTransition[j] == 1){
+				index = j;
+				break;
+			}
+		}
+		
+		for (Transition t : this.petriNet.getTransitions().values()) {
+			if(i == index){
+				return t.getName();
+			}
+			i++;
+		}
+		return "";
 	}
 }
