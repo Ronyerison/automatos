@@ -7,6 +7,7 @@ public class NodeInfo {
 	private boolean duplicated;
 	private boolean terminal;
 	private String parentLabel;
+	private int[] generatorTransitionMatrix;
 	
 	public NodeInfo() {
 	}
@@ -17,6 +18,15 @@ public class NodeInfo {
 		for (int i = 0; i < tokens.length; i++) {
 			stateMatrix[i] = Integer.parseInt(tokens[i].trim());
 		}
+	}
+	
+	public NodeInfo(String label, String parentLabel){
+		String[] tokens = label.substring(label.indexOf("[")+1, label.indexOf("]")).split(",");
+		stateMatrix = new int[tokens.length];
+		for (int i = 0; i < tokens.length; i++) {
+			stateMatrix[i] = Integer.parseInt(tokens[i].trim());
+		}
+		this.parentLabel = parentLabel;
 	}
 	
 	public NodeInfo(int[] stateMatrix) {
@@ -54,6 +64,14 @@ public class NodeInfo {
 
 	public void setParentLabel(String parentLabel) {
 		this.parentLabel = parentLabel;
+	}
+
+	public int[] getGeneratorTransitionMatrix() {
+		return generatorTransitionMatrix;
+	}
+
+	public void setGeneratorTransitionMatrix(int[] generatorTransitionMatrix) {
+		this.generatorTransitionMatrix = generatorTransitionMatrix;
 	}
 
 	public String getLabel(){
