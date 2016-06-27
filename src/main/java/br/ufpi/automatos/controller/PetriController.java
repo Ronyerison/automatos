@@ -15,18 +15,19 @@ import javax.inject.Named;
 import org.primefaces.component.tabview.Tab;
 import org.primefaces.event.FileUploadEvent;
 
-import br.ufpi.automatos.modelo.Automato;
-import br.ufpi.automatos.modelo.Estado;
-import br.ufpi.automatos.modelo.Transicao;
-import br.ufpi.automatos.modelo.petri.PetriNet;
-import br.ufpi.automatos.util.FileUtil;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import br.ufpi.automatos.modelo.Automato;
+import br.ufpi.automatos.modelo.Estado;
+import br.ufpi.automatos.modelo.Transicao;
+import br.ufpi.automatos.modelo.petri.NodeInfo;
+import br.ufpi.automatos.modelo.petri.PetriNet;
+import br.ufpi.automatos.util.FileUtil;
 
 @Named
 @SessionScoped
@@ -40,31 +41,56 @@ public class PetriController implements Serializable{
 
 	private List<File> arquivosEntrada;
 	
-	private Automato<String, String> arvore;
+	private Automato<NodeInfo, String> arvore;
 	
 	private String jsonRedeDePetri;
 	
+	private String jsonArvore;
+	
 	private Gson gson;
+	
+	private boolean simulating;
 	
 	@PostConstruct
 	private void init() {
 		this.arquivosEntrada = new ArrayList<File>();
 		this.redeDePetri = new PetriNet("PetriNet");
 		this.tabs = new ArrayList<Tab>();
-		this.arvore = new Automato<String, String>();
-		Estado<String> e1 = new Estado<String>("[0,1,0]", true, false);
-		Estado<String> e2 = new Estado<String>("[1,1,1]", false, false);
-		Estado<String> e3 = new Estado<String>("[2,1,0]", false, false);
-		Estado<String> e4 = new Estado<String>("[2,2,0]", false, false);
-		Estado<String> e5 = new Estado<String>("[1,0,0]", false, false);
-		this.arvore.addTransicao(new Transicao<String, String>("t0", e1, e2));
-		this.arvore.addTransicao(new Transicao<String, String>("t1", e2, e3));
-		this.arvore.addTransicao(new Transicao<String, String>("t2", e2, e4));
-		this.arvore.addTransicao(new Transicao<String, String>("t3", e1, e5));
+		this.arvore = new Automato<NodeInfo, String>();
+		Estado<NodeInfo> e1 = new Estado<NodeInfo>(new NodeInfo("[0,1,0]", null), true, false);
+		Estado<NodeInfo> e2 = new Estado<NodeInfo>(new NodeInfo("[1,1,1]", "[0,1,0]"), false, false);
+		Estado<NodeInfo> e3 = new Estado<NodeInfo>(new NodeInfo("[2,1,0]", "[1,1,1]"), false, false);
+		e3.getInfo().setTerminal(true);
+		Estado<NodeInfo> e4 = new Estado<NodeInfo>(new NodeInfo("[2,2,0]", "[1,1,1]"), false, false);
+		e4.getInfo().setTerminal(true);
+		Estado<NodeInfo> e5 = new Estado<NodeInfo>(new NodeInfo("[1,0,0]", "[0,1,0]"), false, false);
+		e5.getInfo().setDuplicated(true);
+		this.arvore.addTransicao(new Transicao<String, NodeInfo>("t0", e1, e2));
+		this.arvore.addTransicao(new Transicao<String, NodeInfo>("t1", e2, e3));
+		this.arvore.addTransicao(new Transicao<String, NodeInfo>("t2", e2, e4));
+		this.arvore.addTransicao(new Transicao<String, NodeInfo>("t3", e1, e5));
 		
 		this.gson = new GsonBuilder().setPrettyPrinting().create();
+		this.jsonArvore = gson.toJson(this.arvore);
+		this.simulating = false;
 	}
 	
+	public void simulate(){
+		this.simulating = true;
+	}
+	
+	public void stopSimulation(){
+		this.simulating = false;
+	}
+	
+	public boolean isSimulating() {
+		return simulating;
+	}
+
+	public void setSimulating(boolean simulating) {
+		this.simulating = simulating;
+	}
+
 	public void addTab(String titulo) {
 		Tab tab = new Tab();
 		tab.setTitle(titulo);
@@ -88,11 +114,11 @@ public class PetriController implements Serializable{
 		}
 	}
 	
-	public Automato<String, String> getArvore() {
+	public Automato<NodeInfo, String> getArvore() {
 		return arvore;
 	}
 
-	public void setArvore(Automato<String, String> arvore) {
+	public void setArvore(Automato<NodeInfo, String> arvore) {
 		this.arvore = arvore;
 	}
 
@@ -104,8 +130,12 @@ public class PetriController implements Serializable{
 		this.jsonRedeDePetri = jsonRedeDePetri;
 	}
 
-	public String getArvoreJson() {
-		return gson.toJson(this.arvore);
+	public String getJsonArvore() {
+		return jsonArvore;
+	}
+
+	public void setJsonArvore(String jsonArvore) {
+		this.jsonArvore = jsonArvore;
 	}
 
 	public List<Tab> getTabs() {

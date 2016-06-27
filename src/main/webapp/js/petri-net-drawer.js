@@ -165,13 +165,6 @@ function vincularEventos(){
 
 $(document).ready(vincularEventos);
 
-//Converte a RdP para JSON
-function convert2JSON(){
-	var elements = JSON.stringify(graph.getElements());
-	var links = JSON.stringify(graph.getLinks());
-	return "{\"elements\": " + elements + ", \"links\": " + links + "}";
-}
-
 //Filtra a lista de elementos para retornar apenas as transicoes
 function checkTransition(element) {
 	return element.get('type') == "pn.Transition";
@@ -246,11 +239,19 @@ function fireTransition(t, sec) {
     }
 }
 
+var graphJson;
+
 //Inicia a simulacao
 function simulate() {
-	var json = convert2JSON();
+	graphJson = JSON.stringify(graph);
+	
+	// Converte os elementos para JSON
+	var elements = JSON.stringify(graph.getElements());
+	var links = JSON.stringify(graph.getLinks());
+	var json = "{\"elements\": " + elements + ", \"links\": " + links + "}";
 	document.getElementById('form:petri').value = json;
 	atualiza();
+	
 	var transitions = graph.getElements().filter(checkTransition);
     _.each(transitions, function(t) { if (Math.random() < 0.7) fireTransition(t, 1); });
     return setInterval(function() {
@@ -261,5 +262,7 @@ function simulate() {
 //Para a simulacao
 function stopSimulation(simulationId) {
     clearInterval(simulationId);
+    graph.fromJSON(JSON.parse(graphJson));
+    atualiza();
 }
 

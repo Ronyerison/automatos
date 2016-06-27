@@ -23,10 +23,9 @@
 					onclick="activeMove()" />
 			</p:contextMenu>
 
-<!-- 			<input id="petri" type="hidden" class="jsonP" value="#{petriController.jsonRedeDePetri}" name="petri"/> -->
 			<h:inputHidden id="petri" value="#{petriController.jsonRedeDePetri}" />
-			<h:inputHidden id="arvore" value="#{petriController.arvoreJson}" />
-			<p:remoteCommand id="rm" name="atualiza"/>
+			<h:inputHidden id="arvore" value="#{petriController.jsonArvore}" />
+			<p:remoteCommand id="rm" name="atualiza" />
 			<p:panel styleClass="panel-externo">
 				<p:outputLabel for="arq_petri" value="Arquivos Redes de Petri:"
 					styleClass="label" />

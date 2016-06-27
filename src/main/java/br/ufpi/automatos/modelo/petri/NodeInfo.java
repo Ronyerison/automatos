@@ -8,11 +8,17 @@ public class NodeInfo {
 	private boolean terminal;
 	private String parentLabel;
 	private int[] generatorTransitionMatrix;
+	private String label;
 	
 	public NodeInfo() {
 	}
 	
+	public void setLabel(String label) {
+		this.label = label;
+	}
+
 	public NodeInfo(String label){
+		this.label = label;
 		String[] tokens = label.substring(label.indexOf("[")+1, label.indexOf("]")).split(",");
 		stateMatrix = new int[tokens.length];
 		for (int i = 0; i < tokens.length; i++) {
@@ -21,6 +27,7 @@ public class NodeInfo {
 	}
 	
 	public NodeInfo(String label, String parentLabel){
+		this.label = label;
 		String[] tokens = label.substring(label.indexOf("[")+1, label.indexOf("]")).split(",");
 		stateMatrix = new int[tokens.length];
 		for (int i = 0; i < tokens.length; i++) {
@@ -32,6 +39,7 @@ public class NodeInfo {
 	public NodeInfo(int[] stateMatrix) {
 		super();
 		this.stateMatrix = stateMatrix;
+		this.label = Arrays.toString(stateMatrix);
 	}
 	
 	public int[] getStateMatrix() {
@@ -75,7 +83,7 @@ public class NodeInfo {
 	}
 
 	public String getLabel(){
-		return Arrays.toString(stateMatrix);
+		return label;
 	}
 
 	@Override
