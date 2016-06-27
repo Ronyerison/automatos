@@ -5,6 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import br.ufpi.automatos.modelo.Automato;
+import br.ufpi.automatos.modelo.Estado;
+import br.ufpi.automatos.modelo.Transicao;
+
 /**
  * This class represents a Petri Network.
  * This code was inspired in Simple-java-petrinet.
@@ -31,7 +35,15 @@ public class PetriNet extends PetriNetObject {
 		this.places = new HashMap<String, Place>();
 		this.transitions = new HashMap<String, Transition>();
 	}
-
+	
+	public PetriNet(PetriNet petriNet) {
+		super(petriNet.getName());
+		this.arcs = new ArrayList<>(petriNet.getArcs());
+		this.places = new HashMap<>();
+		this.places.putAll(petriNet.getPlaces());
+		this.transitions = new HashMap<>();
+		this.transitions.putAll(petriNet.getTransitions());
+	}
 
 	/**
 	 * @return
@@ -126,6 +138,10 @@ public class PetriNet extends PetriNetObject {
 
 	public Map<String, Transition> getTransitions() {
 		return transitions;
+	}
+	
+	public PetriNet clone() {
+		return new PetriNet(this);
 	}
 
 	public List<Arc> getArcs() {

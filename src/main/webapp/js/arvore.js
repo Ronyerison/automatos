@@ -1,5 +1,5 @@
 $(function() {
-	
+
 	var json = document.getElementById('form:arvore');
 	var automato = JSON.parse(json.value);
 
@@ -17,15 +17,15 @@ $(function() {
 		}
 	});
 
-	function state(x, y, label, marcado) {
+	function state(x, y, label, duplicated, terminal) {
 		var cell;
-		if (marcado != true) {
+		if (terminal == true) {
 
-			cell = new joint.shapes.basic.Path({
+			cell = new joint.shapes.basic.Rect({
 				position : {
 					x : x,
-					y : y, 
-					parentRelative: true
+					y : y,
+					parentRelative : true
 				},
 				size : {
 					width : 100,
@@ -35,16 +35,17 @@ $(function() {
 					text : {
 						text : label,
 						'ref-y' : 0.5,
-						'y-alignment' : 'middle'
+						'y-alignment' : 'middle',
+						fill: 'white'
 					},
-					path : {
-						d : 'M 20 0 L 100 0 100 40 20 40 0 20 Z'
+					rect : {
+						fill: 'red'
 					}
 				}
 			});
-		} else {
+		} else if (duplicated == true){
 
-			cell = new joint.shapes.basic.Path({
+			cell = new joint.shapes.basic.Rect({
 				position : {
 					x : x,
 					y : y
@@ -57,13 +58,37 @@ $(function() {
 					text : {
 						text : label,
 						'ref-y' : 0.5,
-						'y-alignment' : 'middle'
+						'y-alignment' : 'middle',
+						fill: 'white'
 					},
-					path : {
-						d : 'M 20 0 L 100 0 100 40 20 40 0 20 Z'
+					rect : {
+						fill: 'blue'
 					}
 				}
 			});
+		} else {
+
+			cell = new joint.shapes.basic.Rect({
+				position : {
+					x : x,
+					y : y
+				},
+				size : {
+					width : 100,
+					height : 40
+				},
+				attrs : {
+					text : {
+						text : label,
+						'ref-y' : 0.5,
+						'y-alignment' : 'middle',
+						fill: 'white'
+					},
+					rect : {
+						fill: '#6a6c8a'
+					}
+				}
+			});	
 		}
 
 		arvore.addCell(cell);
@@ -95,32 +120,34 @@ $(function() {
 		return cell;
 	}
 
-	
 	var estados = new Array();
-	
-	var i = 0;
+
+	var i = 1;
 	var posX = 225;
 	var posY = 10;
+	var source = state(posX, posY, automato.estados[0].info.label,
+			automato.estados[0].info.duplicated, automato.estados[i].info.terminal);
+	estados[automato.estados[0].info.label] = source;
 	while (i != automato.estados.length) {
-		
-			var source = state(posX, posY, automato.estados[i].info,
-					automato.estados[i].marcado);
-			estados[automato.estados[i].info] = source;
-		
-		posY += 80;
-		if(i % 2 === 0){
-			posX -= 80;
-		}else{
-			posX += 80;
+		posY = estados[automato.estados[i].info.parentLabel].get('position').y + 80;
+		posX = estados[automato.estados[i].info.parentLabel].get('position').x + Math.floor((Math.random() * 320) - 160);
+		if (posX < 50) {
+			posX = 50;
+		} else if (posX > 550){
+			posX = 550;
 		}
+		var source = state(posX, posY, automato.estados[i].info.label,
+				automato.estados[i].info.duplicated, automato.estados[i].info.terminal);
+		estados[automato.estados[i].info.label] = source;
+
 		i++;
 	}
 	i = 0;
 	while (i != automato.transicoes.length) {
-		if (automato.transicoes[i].origem.info !== automato.transicoes[i].destino.info) {
-			var l = aresta(estados[automato.transicoes[i].origem.info],
-					estados[automato.transicoes[i].destino.info],
-					automato.transicoes[i].info);
+		if (automato.transicoes[i].origem.info.label !== automato.transicoes[i].destino.info.label) {
+			var l = aresta(estados[automato.transicoes[i].origem.info.label],
+					estados[automato.transicoes[i].destino.info.label],
+					automato.transicoes[i].info.label);
 		}
 		i++;
 	}
