@@ -12,7 +12,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 
-import org.primefaces.component.tabview.Tab;
 import org.primefaces.event.FileUploadEvent;
 
 import br.ufpi.automatos.modelo.Automato;
@@ -34,8 +33,6 @@ public class PetriController implements Serializable{
 
 	private static final long serialVersionUID = 4330415809833989926L;
 
-	private List<Tab> tabs;
-	
 	private PetriNet redeDePetri;
 
 	private List<File> arquivosEntrada;
@@ -44,13 +41,14 @@ public class PetriController implements Serializable{
 	
 	private String jsonRedeDePetri;
 	
+	private String jsonArvore;
+	
 	private Gson gson;
 	
 	@PostConstruct
-	private void init() {
+	public void init() {
 		this.arquivosEntrada = new ArrayList<File>();
 		this.redeDePetri = new PetriNet("PetriNet");
-		this.tabs = new ArrayList<Tab>();
 		this.arvore = new Automato<String, String>();
 		Estado<String> e1 = new Estado<String>("[0,1,0]", true, false);
 		Estado<String> e2 = new Estado<String>("[1,1,1]", false, false);
@@ -63,12 +61,7 @@ public class PetriController implements Serializable{
 		this.arvore.addTransicao(new Transicao<String, String>("t3", e1, e5));
 		
 		this.gson = new GsonBuilder().setPrettyPrinting().create();
-	}
-	
-	public void addTab(String titulo) {
-		Tab tab = new Tab();
-		tab.setTitle(titulo);
-		this.tabs.add(tab);
+		this.jsonArvore = gson.toJson(this.arvore);
 	}
 	
 	public void uploadArquivo(FileUploadEvent event) {
@@ -82,7 +75,6 @@ public class PetriController implements Serializable{
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			this.jsonRedeDePetri = gson.toJson(petri); 
 			this.redeDePetri = petri;
-			addTab(petri.getName());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -104,16 +96,12 @@ public class PetriController implements Serializable{
 		this.jsonRedeDePetri = jsonRedeDePetri;
 	}
 
-	public String getArvoreJson() {
-		return gson.toJson(this.arvore);
+	public String getJsonArvore() {
+		return jsonArvore;
 	}
 
-	public List<Tab> getTabs() {
-		return tabs;
-	}
-
-	public void setTabs(List<Tab> tabs) {
-		this.tabs = tabs;
+	public void setJsonArvore(String jsonArvore) {
+		this.jsonArvore = jsonArvore;
 	}
 
 	public PetriNet getRedeDePetri() {
