@@ -3,6 +3,8 @@ package br.ufpi.automatos.modelo;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.ufpi.automatos.modelo.petri.NodeInfo;
+
 public class Automato<E, T>{
 
 	private String label;
@@ -175,6 +177,17 @@ public class Automato<E, T>{
 		return null;
 	}
 	
+	public Estado<E> getEstadoNoDuplicateByLabel(String label) {
+		for (int i = 0; i < estados.size(); i++) {
+			if(((NodeInfo)estados.get(i).getInfo()).getLabel().equals(label)){
+				if(!((NodeInfo)estados.get(i).getInfo()).isDuplicated()){
+					return estados.get(i);
+				}
+			}
+		}
+		return null;
+	}
+	
 	public Estado<E> getEstadoCompostoByLabel(String label) {
 		for (int i = 0; i < estados.size(); i++) {
 			for (String nome : ((InfoEstado)estados.get(i).getInfo()).getLabel().split(",")) {
@@ -184,7 +197,7 @@ public class Automato<E, T>{
 		}
 		return null;
 	}
-
+	
 	@Override
 	public String toString() {
 		return "Automato [estados=" + estados + ", transicoes=" + transicoes

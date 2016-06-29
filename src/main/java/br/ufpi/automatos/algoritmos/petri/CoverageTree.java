@@ -5,6 +5,7 @@ import java.util.List;
 
 import br.ufpi.automatos.modelo.Automato;
 import br.ufpi.automatos.modelo.Estado;
+import br.ufpi.automatos.modelo.InfoEstado;
 import br.ufpi.automatos.modelo.Transicao;
 import br.ufpi.automatos.modelo.petri.NodeInfo;
 import br.ufpi.automatos.modelo.petri.PetriNet;
@@ -18,7 +19,8 @@ import br.ufpi.automatos.modelo.petri.Transition;
  */
 public class CoverageTree {
 	private PetriNet petriNet;
-	private Matrix matrix; 
+	private Matrix matrix;
+	private static final int w = -1; 
 	
 	public CoverageTree(PetriNet petriNet) {	
 		this.matrix = new Matrix();
@@ -41,11 +43,11 @@ public class CoverageTree {
 		visitedList.add(initialNode);
 		actualNode = initialNode.clone();
 		actualNode.setInicial(true);
+		a
 		front.add(actualNode);
 		
 		List<Estado<NodeInfo>> childs;
 		Automato<NodeInfo, String> automato = new Automato<>();
-		List<Transicao<String, NodeInfo>> transitions = new ArrayList<>();
 		
 		PetriNet petriNetAux = new PetriNet(this.petriNet);
 		int[] activeTransitionsAux = activeTransitions;
@@ -56,7 +58,8 @@ public class CoverageTree {
 			if(childs.size() > 0){
 				for (Estado<NodeInfo> child : childs) {
 					child.getInfo().setParentLabel(actualNode.getInfo().getLabel());
-					transitions.add(new Transicao<String, NodeInfo>(transitionLabelByIndex(child.getInfo().getGeneratorTransitionMatrix()), actualNode, child));
+					automato.addTransicao(new Transicao<String, NodeInfo>(transitionLabelByIndex(child.getInfo().getGeneratorTransitionMatrix()), actualNode, child));
+					checkDominance(child, automato);
 					if(visitedList.contains(child)){
 						child.getInfo().setDuplicated(true);
 					}else{
@@ -72,9 +75,44 @@ public class CoverageTree {
 			activeTransitionsAux = matrix.activeTransitionsMatrixBuilde(petriNetAux);
 			activeTransitionsListAux = activeTransitionsPartition(activeTransitionsAux);
 		}
-		
-		automato.setTransicoes(transitions);
+
 		return automato;
+	}
+	
+	private void checkDominance(Estado<NodeInfo> node, Automato<NodeInfo, String> automato){
+		Estado<NodeInfo> nodeParent = null; 
+		boolean dominate = true;
+		
+		if(node.getInfo().getParentLabel() != null){
+			nodeParent = automato.getEstadoNoDuplicateByLabel(node.getInfo().getParentLabel());
+		}
+		
+		while(nodeParent != null){
+			for (int i = 0; i < nodeParent.getInfo().getStateMatrix().length; i++) {
+				if(nodeParent.getInfo().getStateMatrix()[i] > node.getInfo().getStateMatrix()[i]){
+					dominate = false;
+					break;
+				}
+			}
+			if(dominate){
+				if(!compare(node, nodeParent) && nodeParent.getInfo().getParentLabel() != null){
+					nodeParent = automato.getEstadoNoDuplicateByLabel(nodeParent.getInfo().getParentLabel());
+				}else{
+					nodeParent = null;
+				}
+			}
+		}
+	}
+	
+	private boolean compare(Estado<NodeInfo> node, Estado<NodeInfo> nodeParent){
+		boolean dominate = false;
+		for (int i = 0; i < node.getInfo().getStateMatrix().length; i++) {
+			if(node.getInfo().getStateMatrix()[i] > nodeParent.getInfo().getStateMatrix()[i]){
+				node.getInfo().getStateMatrix()[i] = w;
+				dominate = true;
+			}
+		}
+		return dominate;
 	}
 	
 	private void updateStateRdP(PetriNet petriNet, int[] state){
@@ -118,7 +156,11 @@ public class CoverageTree {
 		
 		/** Somando o resultado da multiplicação anterior pelo estado atual da rede (stateMatrix)**/
 		for (int i = 0; i < resultMult.length; i++) {
-			resultSum[i] = resultMult[i] + stateMatrix[i]; 
+			if(stateMatrix[i] == w){
+				resultSum[i] = w;
+			}else{
+				resultSum[i] = resultMult[i] + stateMatrix[i]; 
+			}
 		}
 		
 		return new Estado<NodeInfo>(new NodeInfo(resultSum));
