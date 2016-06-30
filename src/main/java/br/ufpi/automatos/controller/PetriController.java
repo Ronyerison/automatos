@@ -22,6 +22,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import br.ufpi.automatos.algoritmos.petri.CoverageTree;
 import br.ufpi.automatos.modelo.Automato;
 import br.ufpi.automatos.modelo.Estado;
 import br.ufpi.automatos.modelo.Transicao;
@@ -55,23 +56,21 @@ public class PetriController implements Serializable{
 	private void init() {
 		this.arquivosEntrada = new ArrayList<File>();
 		this.redeDePetri = new PetriNet("PetriNet");
-		this.tabs = new ArrayList<Tab>();
-		this.arvore = new Automato<NodeInfo, String>();
-		Estado<NodeInfo> e1 = new Estado<NodeInfo>(new NodeInfo("[0,1,0]", null), true, false);
-		Estado<NodeInfo> e2 = new Estado<NodeInfo>(new NodeInfo("[1,1,1]", "[0,1,0]"), false, false);
-		Estado<NodeInfo> e3 = new Estado<NodeInfo>(new NodeInfo("[2,1,0]", "[1,1,1]"), false, false);
-		e3.getInfo().setTerminal(true);
-		Estado<NodeInfo> e4 = new Estado<NodeInfo>(new NodeInfo("[2,2,0]", "[1,1,1]"), false, false);
-		e4.getInfo().setTerminal(true);
-		Estado<NodeInfo> e5 = new Estado<NodeInfo>(new NodeInfo("[1,0,0]", "[0,1,0]"), false, false);
-		e5.getInfo().setDuplicated(true);
-		this.arvore.addTransicao(new Transicao<String, NodeInfo>("t0", e1, e2));
-		this.arvore.addTransicao(new Transicao<String, NodeInfo>("t1", e2, e3));
-		this.arvore.addTransicao(new Transicao<String, NodeInfo>("t2", e2, e4));
-		this.arvore.addTransicao(new Transicao<String, NodeInfo>("t3", e1, e5));
+//		this.tabs = new ArrayList<Tab>();
+//		Estado<NodeInfo> e1 = new Estado<NodeInfo>(new NodeInfo("[0,1,0]", null), true, false);
+//		Estado<NodeInfo> e2 = new Estado<NodeInfo>(new NodeInfo("[1,1,1]", "[0,1,0]"), false, false);
+//		Estado<NodeInfo> e3 = new Estado<NodeInfo>(new NodeInfo("[2,1,0]", "[1,1,1]"), false, false);
+//		e3.getInfo().setTerminal(true);
+//		Estado<NodeInfo> e4 = new Estado<NodeInfo>(new NodeInfo("[2,2,0]", "[1,1,1]"), false, false);
+//		e4.getInfo().setTerminal(true);
+//		Estado<NodeInfo> e5 = new Estado<NodeInfo>(new NodeInfo("[1,0,0]", "[0,1,0]"), false, false);
+//		e5.getInfo().setDuplicated(true);
+//		this.arvore.addTransicao(new Transicao<String, NodeInfo>("t0", e1, e2));
+//		this.arvore.addTransicao(new Transicao<String, NodeInfo>("t1", e2, e3));
+//		this.arvore.addTransicao(new Transicao<String, NodeInfo>("t2", e2, e4));
+//		this.arvore.addTransicao(new Transicao<String, NodeInfo>("t3", e1, e5));
 		
 		this.gson = new GsonBuilder().setPrettyPrinting().create();
-		this.jsonArvore = gson.toJson(this.arvore);
 		this.simulating = false;
 	}
 	
@@ -163,7 +162,7 @@ public class PetriController implements Serializable{
 	}
 	
 	
-	public void teste(){
+	public void getPetriNetFromJson(){
 		JsonParser parser = new JsonParser();
 		JsonObject object = parser.parse(jsonRedeDePetri).getAsJsonObject();
 		JsonArray elements = object.get("elements").getAsJsonArray();
@@ -190,8 +189,11 @@ public class PetriController implements Serializable{
 				redeDePetri.arc(peso, redeDePetri.getTransitions().get(idOrigin), redeDePetri.getPlaces().get(idDestiny));
 			}
 		}
-			
-		System.out.println(jsonRedeDePetri);
+		
+		CoverageTree coverageTree = new CoverageTree(redeDePetri);
+		this.arvore = coverageTree.coverageTreeBuide();
+//		System.out.println(jsonRedeDePetri);
+		this.jsonArvore = gson.toJson(this.arvore);
 	}
 	
 }

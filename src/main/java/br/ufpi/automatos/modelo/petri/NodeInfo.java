@@ -9,6 +9,7 @@ public class NodeInfo {
 	private String parentLabel;
 	private int[] generatorTransitionMatrix;
 	private String label;
+	private boolean w[];
 	
 	public NodeInfo() {
 	}
@@ -24,6 +25,7 @@ public class NodeInfo {
 		for (int i = 0; i < tokens.length; i++) {
 			stateMatrix[i] = Integer.parseInt(tokens[i].trim());
 		}
+		w = new boolean[]{false, false, false, false};
 	}
 	
 	public NodeInfo(String label, String parentLabel){
@@ -34,12 +36,21 @@ public class NodeInfo {
 			stateMatrix[i] = Integer.parseInt(tokens[i].trim());
 		}
 		this.parentLabel = parentLabel;
+		w = new boolean[]{false, false, false, false};
 	}
 	
 	public NodeInfo(int[] stateMatrix) {
 		super();
 		this.stateMatrix = stateMatrix;
 		this.label = Arrays.toString(stateMatrix);
+		w = new boolean[]{false, false, false, false};
+	}
+	
+	public NodeInfo(int[] stateMatrix, boolean[] w) {
+		super();
+		this.stateMatrix = stateMatrix;
+		this.label = Arrays.toString(stateMatrix);
+		this.w = w;
 	}
 	
 	public int[] getStateMatrix() {
@@ -72,6 +83,14 @@ public class NodeInfo {
 
 	public void setParentLabel(String parentLabel) {
 		this.parentLabel = parentLabel;
+	}
+
+	public boolean[] getW() {
+		return w;
+	}
+
+	public void setW(boolean[] w) {
+		this.w = w;
 	}
 
 	public int[] getGeneratorTransitionMatrix() {
@@ -109,13 +128,20 @@ public class NodeInfo {
 		NodeInfo other = (NodeInfo) obj;
 		if (duplicated != other.duplicated)
 			return false;
-		if (parentLabel == null) {
-			if (other.parentLabel != null)
+//		if (parentLabel == null) {
+//			if (other.parentLabel != null)
+//				return false;
+//		} else if (!parentLabel.equals(other.parentLabel))
+//			return false;
+//		if (!Arrays.equals(stateMatrix, other.stateMatrix))
+//			return false;
+		for (int i = 0; i < stateMatrix.length; i++) {
+			if(w[i] != other.w[i])
 				return false;
-		} else if (!parentLabel.equals(other.parentLabel))
-			return false;
-		if (!Arrays.equals(stateMatrix, other.stateMatrix))
-			return false;
+			else if (!w[i] && !other.w[i] && (stateMatrix[i] != other.stateMatrix[i])) {
+				return false;
+			}
+		}
 		if (terminal != other.terminal)
 			return false;
 		return true;

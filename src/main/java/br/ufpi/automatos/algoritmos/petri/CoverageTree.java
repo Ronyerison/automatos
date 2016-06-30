@@ -5,7 +5,6 @@ import java.util.List;
 
 import br.ufpi.automatos.modelo.Automato;
 import br.ufpi.automatos.modelo.Estado;
-import br.ufpi.automatos.modelo.InfoEstado;
 import br.ufpi.automatos.modelo.Transicao;
 import br.ufpi.automatos.modelo.petri.NodeInfo;
 import br.ufpi.automatos.modelo.petri.PetriNet;
@@ -20,7 +19,6 @@ import br.ufpi.automatos.modelo.petri.Transition;
 public class CoverageTree {
 	private PetriNet petriNet;
 	private Matrix matrix;
-	private static final int w = -1; 
 	
 	public CoverageTree(PetriNet petriNet) {	
 		this.matrix = new Matrix();
@@ -43,7 +41,7 @@ public class CoverageTree {
 		visitedList.add(initialNode);
 		actualNode = initialNode.clone();
 		actualNode.setInicial(true);
-		a
+		
 		front.add(actualNode);
 		
 		List<Estado<NodeInfo>> childs;
@@ -71,6 +69,7 @@ public class CoverageTree {
 			}
 			front.remove(0);
 			actualNode = front.size() > 0 ? front.get(0).clone() : actualNode;
+			visitedList.add(actualNode);
 			updateStateRdP(petriNetAux, actualNode.getInfo().getStateMatrix());
 			activeTransitionsAux = matrix.activeTransitionsMatrixBuilde(petriNetAux);
 			activeTransitionsListAux = activeTransitionsPartition(activeTransitionsAux);
@@ -89,9 +88,12 @@ public class CoverageTree {
 		
 		while(nodeParent != null){
 			for (int i = 0; i < nodeParent.getInfo().getStateMatrix().length; i++) {
+				if (nodeParent.getInfo().getW()[i]) {
+					node.getInfo().getW()[i] = true;
+				}
 				if(nodeParent.getInfo().getStateMatrix()[i] > node.getInfo().getStateMatrix()[i]){
 					dominate = false;
-					break;
+//					break;
 				}
 			}
 			if(dominate){
@@ -100,7 +102,11 @@ public class CoverageTree {
 				}else{
 					nodeParent = null;
 				}
-			}
+			} else if (nodeParent.getInfo().getParentLabel() != null){
+				nodeParent = automato.getEstadoNoDuplicateByLabel(nodeParent.getInfo().getParentLabel());
+				dominate = true;
+			} else
+				nodeParent = null;
 		}
 	}
 	
@@ -108,7 +114,7 @@ public class CoverageTree {
 		boolean dominate = false;
 		for (int i = 0; i < node.getInfo().getStateMatrix().length; i++) {
 			if(node.getInfo().getStateMatrix()[i] > nodeParent.getInfo().getStateMatrix()[i]){
-				node.getInfo().getStateMatrix()[i] = w;
+				node.getInfo().getW()[i] = true;
 				dominate = true;
 			}
 		}
@@ -129,20 +135,21 @@ public class CoverageTree {
 		Estado<NodeInfo> child;
 		
 		for (int[] t : activeTransitions) {
-			child = nextState(node.getInfo().getStateMatrix(), t, incidenceMatrix);
+			child = nextState(node.getInfo().getStateMatrix(), node.getInfo().getW(), t, incidenceMatrix);
 			child.getInfo().setGeneratorTransitionMatrix(t);
 			childs.add(child);
 		}
 		return childs;
 	}
 	
-	private Estado<NodeInfo> nextState(int[] stateMatrix, int[] activeTransitionsMatrix, int[][] incidenceMatrix){
+	private Estado<NodeInfo> nextState(int[] stateMatrix, boolean[] w, int[] activeTransitionsMatrix, int[][] incidenceMatrix){
 		int numLines = incidenceMatrix.length;
 		int numColumns = incidenceMatrix[0].length;
 		int sum = 0;
 		int a = 0;
 		int[] resultMult = new int[numColumns];
 		int[] resultSum = new int[numColumns];
+//		boolean[] resultW = new boolean[numColumns];
 		
 		/** Multiplicando a matriz de transições ativas pela matriz de incidência **/
 		for (int j = 0; j < numColumns; j++) {
@@ -156,11 +163,10 @@ public class CoverageTree {
 		
 		/** Somando o resultado da multiplicação anterior pelo estado atual da rede (stateMatrix)**/
 		for (int i = 0; i < resultMult.length; i++) {
-			if(stateMatrix[i] == w){
-				resultSum[i] = w;
-			}else{
-				resultSum[i] = resultMult[i] + stateMatrix[i]; 
-			}
+//			if(w[i]){
+//				resultW[i] = true;
+//			}
+			resultSum[i] = resultMult[i] + stateMatrix[i]; 
 		}
 		
 		return new Estado<NodeInfo>(new NodeInfo(resultSum));

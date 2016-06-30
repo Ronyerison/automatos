@@ -1,5 +1,7 @@
-$(function() {
-
+function drawTree() {
+	
+	atualiza();
+	
 	var json = document.getElementById('form:arvore');
 	var automato = JSON.parse(json.value);
 
@@ -16,7 +18,7 @@ $(function() {
 			return view.model.getBBox().center();
 		}
 	});
-
+	
 	function state(x, y, label, duplicated, terminal) {
 		var cell;
 		if (terminal == true) {
@@ -95,6 +97,19 @@ $(function() {
 		return cell;
 	}
 
+	function getNewLabel(estado){
+		var newLabel = "[";
+		for (var i = 0; i < estado.info.stateMatrix.length; i++) {
+			if (estado.info.w[i]) {
+				newLabel += "w,";
+			}else{
+				newLabel = newLabel + estado.info.stateMatrix[i] + ",";
+			}
+		}
+		newLabel = newLabel.slice(0, newLabel.length-1) + "]";
+		return newLabel;
+	}
+	
 	function aresta(source, target, label) {
 
 		var cell = new joint.dia.Link({
@@ -136,7 +151,8 @@ $(function() {
 		} else if (posX > 550){
 			posX = 550;
 		}
-		var source = state(posX, posY, automato.estados[i].info.label,
+		
+		var source = state(posX, posY, getNewLabel(automato.estados[i]),
 				automato.estados[i].info.duplicated, automato.estados[i].info.terminal);
 		estados[automato.estados[i].info.label] = source;
 
@@ -151,5 +167,5 @@ $(function() {
 		}
 		i++;
 	}
-
-});
+//		atualiza();
+}
