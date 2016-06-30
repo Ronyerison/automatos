@@ -1,9 +1,9 @@
 function drawTree() {
 	
-	atualiza();
+	atualizaArvore();
 	
 	var json = document.getElementById('form:arvore');
-	var automato = JSON.parse(json.value);
+	var objArvore = JSON.parse(json.value);
 
 	var arvore = new joint.dia.Graph();
 
@@ -140,30 +140,30 @@ function drawTree() {
 	var i = 1;
 	var posX = 225;
 	var posY = 10;
-	var source = state(posX, posY, automato.estados[0].info.label,
-			automato.estados[0].info.duplicated, automato.estados[i].info.terminal);
-	estados[automato.estados[0].info.label] = source;
-	while (i != automato.estados.length) {
-		posY = estados[automato.estados[i].info.parentLabel].get('position').y + 80;
-		posX = estados[automato.estados[i].info.parentLabel].get('position').x + Math.floor((Math.random() * 320) - 160);
+	var source = state(posX, posY, objArvore.estados[0].info.label,
+			objArvore.estados[0].info.duplicated, objArvore.estados[i].info.terminal);
+	estados[objArvore.estados[0].info.label] = source;
+	while (i != objArvore.estados.length) {
+		posY = estados[objArvore.estados[i].info.parentLabel].get('position').y + 80;
+		posX = estados[objArvore.estados[i].info.parentLabel].get('position').x + Math.floor((Math.random() * 320) - 160);
 		if (posX < 50) {
 			posX = 50;
 		} else if (posX > 550){
 			posX = 550;
 		}
 		
-		var source = state(posX, posY, getNewLabel(automato.estados[i]),
-				automato.estados[i].info.duplicated, automato.estados[i].info.terminal);
-		estados[automato.estados[i].info.label] = source;
+		var source = state(posX, posY, getNewLabel(objArvore.estados[i]),
+				objArvore.estados[i].info.duplicated, objArvore.estados[i].info.terminal);
+		estados[objArvore.estados[i].info.label] = source;
 
 		i++;
 	}
 	i = 0;
-	while (i != automato.transicoes.length) {
-		if (automato.transicoes[i].origem.info.label !== automato.transicoes[i].destino.info.label) {
-			var l = aresta(estados[automato.transicoes[i].origem.info.label],
-					estados[automato.transicoes[i].destino.info.label],
-					automato.transicoes[i].info.label);
+	while (i != objArvore.transicoes.length) {
+		if (objArvore.transicoes[i].origem.info.label !== objArvore.transicoes[i].destino.info.label) {
+			var l = aresta(estados[objArvore.transicoes[i].origem.info.label],
+					estados[objArvore.transicoes[i].destino.info.label],
+					objArvore.transicoes[i].info.label);
 		}
 		i++;
 	}

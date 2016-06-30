@@ -5,19 +5,28 @@
 	xmlns:p="http://primefaces.org/ui">
 
 	<h:form id="menu">
-		
+		<p:remoteCommand id="rmArv" name="atualizaArvore" />		
+
 		<p:menubar>
-			
-			<p:menuitem value="ARVORE DE ALCANCABILIDADE" action="#{petriController.getPetriNetFromJson()}"  onclick="drawTree()" disabled="#{petriController.simulating}">
-<!-- 				<f:ajax onevent="drawTree()"/> -->
+			<p:menuitem value="ARVORE DE ALCANCABILIDADE"
+				action="#{petriController.getPetriNetFromJson()}"
+				onsuccess="drawTree();" disabled="#{petriController.simulating}">
 			</p:menuitem>
-			<p:menuitem value="OPÇÃO 2" disabled="#{petriController.simulating}"/>
-			<p:menuitem value="OPÇÃO 3" disabled="#{petriController.simulating}"/>
-			<p:menuitem value="OPÇÃO 4" disabled="#{petriController.simulating}"/>
+			<p:menuitem value="OPÇÃO 2" disabled="#{petriController.simulating}" />
+			<p:menuitem value="OPÇÃO 3" disabled="#{petriController.simulating}" />
+			<p:menuitem value="OPÇÃO 4" disabled="#{petriController.simulating}" />
 
 			<f:facet name="options">
-				<p:commandButton value="Simular" icon="ui-icon-play" onclick="simulationId = simulate()" update=":#{p:component('menu')}" action="#{petriController.simulate()}" disabled="#{petriController.simulating}"/>
-				<p:commandButton value="Parar simulação" icon="ui-icon-stop" onclick="stopSimulation(simulationId)" update=":#{p:component('menu')}" disabled="#{!petriController.simulating}" action="#{petriController.stopSimulation()}"/>
+				<p:commandButton value="Simular" icon="ui-icon-play"
+					onclick="simulationId = simulate()"
+					update=":#{p:component('menu')}"
+					action="#{petriController.simulate()}"
+					disabled="#{petriController.simulating}" />
+				<p:commandButton value="Parar simulação" icon="ui-icon-stop"
+					onclick="stopSimulation(simulationId)"
+					update=":#{p:component('menu')}"
+					disabled="#{!petriController.simulating}"
+					action="#{petriController.stopSimulation()}" />
 			</f:facet>
 		</p:menubar>
 	</h:form>
