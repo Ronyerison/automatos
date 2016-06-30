@@ -97,7 +97,7 @@ public class CoverageTree {
 				}
 			}
 			if(dominate){
-				if(!compare(node, nodeParent) && nodeParent.getInfo().getParentLabel() != null){
+				if(!compareDominate(node, nodeParent) && nodeParent.getInfo().getParentLabel() != null){
 					nodeParent = automato.getEstadoNoDuplicateByLabel(nodeParent.getInfo().getParentLabel());
 				}else{
 					nodeParent = null;
@@ -110,7 +110,7 @@ public class CoverageTree {
 		}
 	}
 	
-	private boolean compare(Estado<NodeInfo> node, Estado<NodeInfo> nodeParent){
+	private boolean compareDominate(Estado<NodeInfo> node, Estado<NodeInfo> nodeParent){
 		boolean dominate = false;
 		for (int i = 0; i < node.getInfo().getStateMatrix().length; i++) {
 			if(node.getInfo().getStateMatrix()[i] > nodeParent.getInfo().getStateMatrix()[i]){
@@ -130,7 +130,7 @@ public class CoverageTree {
 	}
 	
 	
-	public List<Estado<NodeInfo>> generateChilds(Estado<NodeInfo> node, List<int[]> activeTransitions, int[][] incidenceMatrix){
+	private List<Estado<NodeInfo>> generateChilds(Estado<NodeInfo> node, List<int[]> activeTransitions, int[][] incidenceMatrix){
 		List<Estado<NodeInfo>> childs = new ArrayList<>();
 		Estado<NodeInfo> child;
 		
@@ -213,7 +213,7 @@ public class CoverageTree {
 	public boolean checkConservation(Automato<NodeInfo, String> automato, int[] y){
 		int [] results = new int[automato.getEstados().size()];
 		int sum = 0;
-		boolean isConservation = true;
+		boolean isConservated = true;
 		
 		for(int i = 0; i < automato.getEstados().size(); i++) {
 			for (int j = 0; j < automato.getEstados().get(i).getInfo().getStateMatrix().length; j++) {
@@ -227,12 +227,36 @@ public class CoverageTree {
 		
 		for (int i = 1; i < results.length; i++) {
 			if(nodeInitialConservation != results[i]){
-				isConservation = false;
+				isConservated = false;
 				break;
 			}
 		}
-		return isConservation;
+		return isConservated;
 	}
 	
+	public boolean checkAccessibility(int[] stateMatrix, Automato<NodeInfo, String> automato){
+		for (Estado<NodeInfo> e : automato.getEstados()) {
+			if(compareEquals(e, stateMatrix)){
+				return true;
+			}
+		}
+		return false;
+	}
 	
+	private boolean compareEquals (Estado<NodeInfo> state, int[] stateMatrix){
+		boolean equals = true;
+		for (int i = 0; i < stateMatrix.length; i++) {
+			if(state.getInfo().getW()[i]){
+				if(stateMatrix[i] < state.getInfo().getStateMatrix()[i]){
+					equals = false;
+					break;
+				}
+			}else{
+				if(stateMatrix[i] != state.getInfo().getStateMatrix()[i]){
+					equals = false;
+				}
+			}
+		}
+		return equals;
+	}
 }
