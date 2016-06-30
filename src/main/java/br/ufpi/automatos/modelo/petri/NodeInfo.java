@@ -25,7 +25,7 @@ public class NodeInfo {
 		for (int i = 0; i < tokens.length; i++) {
 			stateMatrix[i] = Integer.parseInt(tokens[i].trim());
 		}
-		w = new boolean[]{false, false, false, false};
+		w = new boolean[stateMatrix.length];
 	}
 	
 	public NodeInfo(String label, String parentLabel){
@@ -36,22 +36,22 @@ public class NodeInfo {
 			stateMatrix[i] = Integer.parseInt(tokens[i].trim());
 		}
 		this.parentLabel = parentLabel;
-		w = new boolean[]{false, false, false, false};
+		w = new boolean[stateMatrix.length];
 	}
 	
 	public NodeInfo(int[] stateMatrix) {
 		super();
 		this.stateMatrix = stateMatrix;
 		this.label = Arrays.toString(stateMatrix);
-		w = new boolean[]{false, false, false, false};
+		w = new boolean[stateMatrix.length];
 	}
 	
-	public NodeInfo(int[] stateMatrix, boolean[] w) {
-		super();
-		this.stateMatrix = stateMatrix;
-		this.label = Arrays.toString(stateMatrix);
-		this.w = w;
-	}
+//	public NodeInfo(int[] stateMatrix, boolean[] w) {
+//		super();
+//		this.stateMatrix = stateMatrix;
+//		this.label = Arrays.toString(stateMatrix);
+//		this.w = w;
+//	}
 	
 	public int[] getStateMatrix() {
 		return stateMatrix;

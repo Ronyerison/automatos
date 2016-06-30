@@ -97,6 +97,7 @@ public class PetriNet extends PetriNetObject {
 	 */
 	public Arc arc(String name, Place p, Transition t) {
 		Arc arc = new Arc(name, p, t);
+		arc.setWeight(Integer.valueOf(name));
 		this.arcs.add(arc);
 		return arc;
 	}
@@ -109,6 +110,7 @@ public class PetriNet extends PetriNetObject {
 	 */
 	public Arc arc(String name, Transition t, Place p) {
 		Arc arc = new Arc(name, t, p);
+		arc.setWeight(Integer.valueOf(name));
 		this.arcs.add(arc);
 		return arc;
 	}

@@ -35,7 +35,7 @@ public class CoverageTree {
 		Estado<NodeInfo> actualNode;
 		List<Estado<NodeInfo>> front = new ArrayList<>();	
 		List<Estado<NodeInfo>> visitedList = new ArrayList<>();	
-		List<int[]> activeTransitionsList = activeTransitionsPartition(activeTransitions);
+//		List<int[]> activeTransitionsList = activeTransitionsPartition(activeTransitions);
 		
 		initialNode = new Estado<NodeInfo>(info);
 		visitedList.add(initialNode);
@@ -209,4 +209,30 @@ public class CoverageTree {
 		}
 		return "";
 	}
+	
+	public boolean checkConservation(Automato<NodeInfo, String> automato, int[] y){
+		int [] results = new int[automato.getEstados().size()];
+		int sum = 0;
+		boolean isConservation = true;
+		
+		for(int i = 0; i < automato.getEstados().size(); i++) {
+			for (int j = 0; j < automato.getEstados().get(i).getInfo().getStateMatrix().length; j++) {
+				sum += automato.getEstados().get(i).getInfo().getStateMatrix()[j] * y[j]; 
+			}
+			results[i] = sum;
+			sum = 0;
+		}
+		
+		int nodeInitialConservation = results[0];
+		
+		for (int i = 1; i < results.length; i++) {
+			if(nodeInitialConservation != results[i]){
+				isConservation = false;
+				break;
+			}
+		}
+		return isConservation;
+	}
+	
+	
 }
