@@ -7,11 +7,9 @@
 	<h:form id="menu">
 		<p:remoteCommand id="rmArv" name="atualizaArvore" process="@this"/>
 		<p:menubar>
-			<p:menuitem value="ARVORE DE COBERTURA" onclick="drawTree()" disabled="#{petriController.simulating}" >
-			</p:menuitem>
+			<p:menuitem value="ARVORE DE COBERTURA" onclick="drawTree()" disabled="#{petriController.simulating}"/>
 			<p:menuitem value="VERIFICAR CONSERVAÇÃO" disabled="#{petriController.simulating}" onclick="PF('dlg').show();"/>
 			<p:menuitem value="VERIFICAR ALCANÇABILIDADE" disabled="#{petriController.simulating}" onclick="PF('dlg2').show();"/>
-			<p:menuitem value="OPÇÃO 4" disabled="#{petriController.simulating}" />
 
 			<f:facet name="options">
 				<p:commandButton value="Simular" icon="ui-icon-play"

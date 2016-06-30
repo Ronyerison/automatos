@@ -29,7 +29,7 @@ public class CoverageTree {
 		int[] stateMatrix = matrix.stateMatrixBuilde(this.petriNet);
 		int[] activeTransitions = matrix.activeTransitionsMatrixBuilde(this.petriNet);
 		int[][] incidenceMatrix = matrix.incidenceMatrixBuilde(petriNet);
-		
+		int actualId = 0;
 		NodeInfo info = new NodeInfo(stateMatrix);
 		Estado<NodeInfo> initialNode;
 		Estado<NodeInfo> actualNode;
@@ -41,7 +41,7 @@ public class CoverageTree {
 		visitedList.add(initialNode);
 		actualNode = initialNode.clone();
 		actualNode.setInicial(true);
-		
+		actualNode.getInfo().setId(actualId);
 		front.add(actualNode);
 		
 		List<Estado<NodeInfo>> childs;
@@ -56,9 +56,13 @@ public class CoverageTree {
 			if(childs.size() > 0){
 				for (Estado<NodeInfo> child : childs) {
 					child.getInfo().setParentLabel(actualNode.getInfo().getLabel());
+					child.getInfo().setParentId(actualId);
+					actualId++;
+					child.getInfo().setId(actualId);
+					
 					automato.addTransicao(new Transicao<String, NodeInfo>(transitionLabelByIndex(child.getInfo().getGeneratorTransitionMatrix()), actualNode, child));
 					checkDominance(child, automato);
-					if(visitedList.contains(child)){
+					if(contains(visitedList, child)){
 						child.getInfo().setDuplicated(true);
 					}else{
 						front.add(child);
@@ -78,8 +82,31 @@ public class CoverageTree {
 		return automato;
 	}
 	
+	private boolean contains (List<Estado<NodeInfo>> visitedList, Estado<NodeInfo> estado){
+		for (Estado<NodeInfo> visited : visitedList) {
+			boolean equal = true;
+//			if (visited == null || estado == null)
+//				continue;
+			if (visited.getInfo().isDuplicated() != estado.getInfo().isDuplicated())
+				continue;
+			for (int i = 0; i < estado.getInfo().getStateMatrix().length; i++) {
+				if(estado.getInfo().getW()[i] != visited.getInfo().getW()[i])
+					equal = false;
+				else if (!estado.getInfo().getW()[i] && !visited.getInfo().getW()[i] && (visited.getInfo().getStateMatrix()[i] != estado.getInfo().getStateMatrix()[i])) {
+					equal = false;
+				}
+			}
+			if(!equal)
+				continue;
+			if (visited.getInfo().isTerminal() != estado.getInfo().isTerminal())
+				continue;
+			return true;
+		}
+		return false;
+	}
+	
 	private void checkDominance(Estado<NodeInfo> node, Automato<NodeInfo, String> automato){
-		Estado<NodeInfo> nodeParent = null; 
+		Estado<NodeInfo> nodeParent = null;
 		boolean dominate = true;
 		
 		if(node.getInfo().getParentLabel() != null){

@@ -99,12 +99,12 @@ function drawTree() {
 		var newLabel = "[";
 		for (var i = 0; i < estado.info.stateMatrix.length; i++) {
 			if (estado.info.w[i]) {
-				newLabel += "w,";
+				newLabel += "w, ";
 			}else{
-				newLabel = newLabel + estado.info.stateMatrix[i] + ",";
+				newLabel = newLabel + estado.info.stateMatrix[i] + ", ";
 			}
 		}
-		newLabel = newLabel.slice(0, newLabel.length-1) + "]";
+		newLabel = newLabel.slice(0, newLabel.length-2) + "]";
 		return newLabel;
 	}
 	
@@ -139,14 +139,14 @@ function drawTree() {
 	var posX = 225;
 	var posY = 10;
 	var source = state(posX, posY, objArvore.estados[0].info.label,
-			objArvore.estados[0].info.duplicated, objArvore.estados[i].info.terminal);
-	estados[objArvore.estados[0].info.label] = source;
+			objArvore.estados[0].info.duplicated, objArvore.estados[0].info.terminal);
+	estados[objArvore.estados[0].info.id] = source;
 	while (i != objArvore.estados.length) {
-		posY = estados[objArvore.estados[i].info.parentLabel].get('position').y + 80;
+		posY = estados[objArvore.estados[i].info.parentId].get('position').y + 80;
 		if(posY > 950){
 			posY = 950;
 		}
-		posX = estados[objArvore.estados[i].info.parentLabel].get('position').x + Math.floor((Math.random() * 320) - 160);
+		posX = estados[objArvore.estados[i].info.parentId].get('position').x + Math.floor((Math.random() * 320) - 160);
 		if (posX < 50) {
 			posX = 50;
 		} else if (posX > 550){
@@ -155,16 +155,16 @@ function drawTree() {
 		
 		var source = state(posX, posY, getNewLabel(objArvore.estados[i]),
 				objArvore.estados[i].info.duplicated, objArvore.estados[i].info.terminal);
-		estados[objArvore.estados[i].info.label] = source;
+		estados[objArvore.estados[i].info.id] = source;
 
 		i++;
 	}
 	i = 0;
 	while (i != objArvore.transicoes.length) {
 		if (objArvore.transicoes[i].origem.info.label !== objArvore.transicoes[i].destino.info.label) {
-			var l = aresta(estados[objArvore.transicoes[i].origem.info.label],
-					estados[objArvore.transicoes[i].destino.info.label],
-					objArvore.transicoes[i].info.label);
+			var l = aresta(estados[objArvore.transicoes[i].origem.info.id],
+					estados[objArvore.transicoes[i].destino.info.id],
+					objArvore.transicoes[i].info);
 		}
 		i++;
 	}

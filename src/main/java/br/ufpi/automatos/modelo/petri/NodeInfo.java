@@ -3,6 +3,8 @@ package br.ufpi.automatos.modelo.petri;
 import java.util.Arrays;
 
 public class NodeInfo {
+	private int id;
+	private Integer parentId;
 	private int[] stateMatrix;
 	private boolean duplicated;
 	private boolean terminal;
@@ -104,6 +106,22 @@ public class NodeInfo {
 	public String getLabel(){
 		return label;
 	}
+	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public Integer getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(Integer parentId) {
+		this.parentId = parentId;
+	}
 
 	@Override
 	public int hashCode() {
@@ -128,11 +146,11 @@ public class NodeInfo {
 		NodeInfo other = (NodeInfo) obj;
 		if (duplicated != other.duplicated)
 			return false;
-//		if (parentLabel == null) {
-//			if (other.parentLabel != null)
-//				return false;
-//		} else if (!parentLabel.equals(other.parentLabel))
-//			return false;
+		if (parentLabel == null) {
+			if (other.parentLabel != null)
+				return false;
+		} else if (!parentLabel.equals(other.parentLabel))
+			return false;
 //		if (!Arrays.equals(stateMatrix, other.stateMatrix))
 //			return false;
 		for (int i = 0; i < stateMatrix.length; i++) {

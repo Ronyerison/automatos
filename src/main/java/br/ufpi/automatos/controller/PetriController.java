@@ -7,19 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
 import org.primefaces.component.tabview.Tab;
 import org.primefaces.event.FileUploadEvent;
-
-import br.ufpi.automatos.algoritmos.petri.CoverageTree;
-import br.ufpi.automatos.modelo.Automato;
-import br.ufpi.automatos.modelo.petri.NodeInfo;
-import br.ufpi.automatos.modelo.petri.PetriNet;
-import br.ufpi.automatos.util.FileUtil;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -28,8 +22,14 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import br.ufpi.automatos.algoritmos.petri.CoverageTree;
+import br.ufpi.automatos.modelo.Automato;
+import br.ufpi.automatos.modelo.petri.NodeInfo;
+import br.ufpi.automatos.modelo.petri.PetriNet;
+import br.ufpi.automatos.util.FileUtil;
+
 @Named
-@SessionScoped
+@ViewScoped
 public class PetriController implements Serializable{
 
 	private static final long serialVersionUID = 4330415809833989926L;
