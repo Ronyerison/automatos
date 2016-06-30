@@ -264,5 +264,6 @@ function stopSimulation(simulationId) {
     clearInterval(simulationId);
     graph.fromJSON(JSON.parse(graphJson));
     atualiza();
+    atualizaArvore();
 }
 

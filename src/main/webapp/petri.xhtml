@@ -9,7 +9,7 @@
 
 		<h:form id="form" style="margin-top:30px"
 			enctype="multipart/form-data">
-
+			<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
 			<p:contextMenu>
 				<p:menuitem value="Lugar" icon="ui-icon-radio-on"
 					onclick="activePlace()" />
@@ -47,6 +47,20 @@
 					</p:panel>
 				</h:panelGrid>
 			</p:panel>
+
+			<p:dialog header="Verificar Conservação" widgetVar="dlg" modal="true"
+				height="100">
+				<h:outputText value="Insira o vetor gama (Ex.: w,x,y,z):  " />
+				<h:inputText value="#{petriController.gamaString}" />
+				<p:commandButton value="Verificar" action="#{petriController.verificaConservacao()}" onsuccess="PF('dlg').hide();"/>
+			</p:dialog>
+			
+			<p:dialog header="Verificar Alcançabilidade" widgetVar="dlg2" modal="true"
+				height="100">
+				<h:outputText value="Insira o valor do estado (Ex.: w,x,y,z):  " />
+				<h:inputText value="#{petriController.estadoString}" />
+				<p:commandButton value="Verificar" action="#{petriController.verificaAlcancabilidade()}" onsuccess="PF('dlg2').hide();"/>
+			</p:dialog>
 
 		</h:form>
 

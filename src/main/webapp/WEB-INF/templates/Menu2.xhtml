@@ -5,15 +5,12 @@
 	xmlns:p="http://primefaces.org/ui">
 
 	<h:form id="menu">
-		<p:remoteCommand id="rmArv" name="atualizaArvore" />		
-
+		<p:remoteCommand id="rmArv" name="atualizaArvore" process="@this"/>
 		<p:menubar>
-			<p:menuitem value="ARVORE DE ALCANCABILIDADE"
-				action="#{petriController.getPetriNetFromJson()}"
-				onsuccess="drawTree();" disabled="#{petriController.simulating}">
+			<p:menuitem value="ARVORE DE COBERTURA" onclick="drawTree()" disabled="#{petriController.simulating}" >
 			</p:menuitem>
-			<p:menuitem value="OPÇÃO 2" disabled="#{petriController.simulating}" />
-			<p:menuitem value="OPÇÃO 3" disabled="#{petriController.simulating}" />
+			<p:menuitem value="VERIFICAR CONSERVAÇÃO" disabled="#{petriController.simulating}" onclick="PF('dlg').show();"/>
+			<p:menuitem value="VERIFICAR ALCANÇABILIDADE" disabled="#{petriController.simulating}" onclick="PF('dlg2').show();"/>
 			<p:menuitem value="OPÇÃO 4" disabled="#{petriController.simulating}" />
 
 			<f:facet name="options">
@@ -24,7 +21,7 @@
 					disabled="#{petriController.simulating}" />
 				<p:commandButton value="Parar simulação" icon="ui-icon-stop"
 					onclick="stopSimulation(simulationId)"
-					update=":#{p:component('menu')}"
+					update=":#{p:component('menu')}, form:arvore"
 					disabled="#{!petriController.simulating}"
 					action="#{petriController.stopSimulation()}" />
 			</f:facet>

@@ -1,7 +1,5 @@
 function drawTree() {
-	
 	atualizaArvore();
-	
 	var json = document.getElementById('form:arvore');
 	var objArvore = JSON.parse(json.value);
 
@@ -145,6 +143,9 @@ function drawTree() {
 	estados[objArvore.estados[0].info.label] = source;
 	while (i != objArvore.estados.length) {
 		posY = estados[objArvore.estados[i].info.parentLabel].get('position').y + 80;
+		if(posY > 950){
+			posY = 950;
+		}
 		posX = estados[objArvore.estados[i].info.parentLabel].get('position').x + Math.floor((Math.random() * 320) - 160);
 		if (posX < 50) {
 			posX = 50;

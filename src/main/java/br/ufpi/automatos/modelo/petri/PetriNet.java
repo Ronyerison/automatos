@@ -5,10 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import br.ufpi.automatos.modelo.Automato;
-import br.ufpi.automatos.modelo.Estado;
-import br.ufpi.automatos.modelo.Transicao;
-
 /**
  * This class represents a Petri Network.
  * This code was inspired in Simple-java-petrinet.

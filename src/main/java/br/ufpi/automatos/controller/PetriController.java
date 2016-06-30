@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
 import org.primefaces.component.tabview.Tab;
@@ -29,7 +29,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 @Named
-@ViewScoped
+@SessionScoped
 public class PetriController implements Serializable{
 
 	private static final long serialVersionUID = 4330415809833989926L;
@@ -50,24 +50,16 @@ public class PetriController implements Serializable{
 	
 	private boolean simulating;
 	
+	private CoverageTree coverageTree;
+	
+	private String gamaString;
+	
+	private String estadoString;
+	
 	@PostConstruct
 	private void init() {
 		this.arquivosEntrada = new ArrayList<File>();
 		this.redeDePetri = new PetriNet("PetriNet");
-//		this.tabs = new ArrayList<Tab>();
-//		Estado<NodeInfo> e1 = new Estado<NodeInfo>(new NodeInfo("[0,1,0]", null), true, false);
-//		Estado<NodeInfo> e2 = new Estado<NodeInfo>(new NodeInfo("[1,1,1]", "[0,1,0]"), false, false);
-//		Estado<NodeInfo> e3 = new Estado<NodeInfo>(new NodeInfo("[2,1,0]", "[1,1,1]"), false, false);
-//		e3.getInfo().setTerminal(true);
-//		Estado<NodeInfo> e4 = new Estado<NodeInfo>(new NodeInfo("[2,2,0]", "[1,1,1]"), false, false);
-//		e4.getInfo().setTerminal(true);
-//		Estado<NodeInfo> e5 = new Estado<NodeInfo>(new NodeInfo("[1,0,0]", "[0,1,0]"), false, false);
-//		e5.getInfo().setDuplicated(true);
-//		this.arvore.addTransicao(new Transicao<String, NodeInfo>("t0", e1, e2));
-//		this.arvore.addTransicao(new Transicao<String, NodeInfo>("t1", e2, e3));
-//		this.arvore.addTransicao(new Transicao<String, NodeInfo>("t2", e2, e4));
-//		this.arvore.addTransicao(new Transicao<String, NodeInfo>("t3", e1, e5));
-		
 		this.gson = new GsonBuilder().setPrettyPrinting().create();
 		this.simulating = false;
 	}
@@ -77,6 +69,7 @@ public class PetriController implements Serializable{
 	}
 	
 	public void stopSimulation(){
+		getPetriNetFromJson();
 		this.simulating = false;
 	}
 	
@@ -108,6 +101,33 @@ public class PetriController implements Serializable{
 			addTab(petri.getName());
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	public void verificaConservacao(){
+		String[] gama = gamaString.split(",");
+		int[] y  = new int[gama.length];
+		for (int i = 0; i < y.length; i++) {
+			y[i] = Integer.parseInt(gama[i]);
+			
+		}
+		if(this.coverageTree.checkConservation(arvore, y)){
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFO", "A rede é conservativa!"));
+		}else{
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFO", "A rede NÂO é conservativa!"));
+		}
+	}
+	
+	public void verificaAlcancabilidade(){
+		String[] estadoInput = estadoString.split(",");
+		int[] estado  = new int[estadoInput.length];
+		for (int i = 0; i < estado.length; i++) {
+			estado[i] = Integer.parseInt(estadoInput[i]);
+		}
+		if(this.coverageTree.checkAccessibility(estado, arvore)){
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFO", "O Estado é alcançavél!"));
+		}else{
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFO", "O estado NÃO é alcançavél!"));
 		}
 	}
 	
@@ -150,6 +170,22 @@ public class PetriController implements Serializable{
 	public void setRedeDePetri(PetriNet redeDePetri) {
 		this.redeDePetri = redeDePetri;
 	}
+	
+	public String getGamaString() {
+		return gamaString;
+	}
+
+	public void setGamaString(String gamaString) {
+		this.gamaString = gamaString;
+	}
+
+	public String getEstadoString() {
+		return estadoString;
+	}
+
+	public void setEstadoString(String estadoString) {
+		this.estadoString = estadoString;
+	}
 
 	public List<File> getArquivosEntrada() {
 		return arquivosEntrada;
@@ -189,7 +225,7 @@ public class PetriController implements Serializable{
 			}
 		}
 		
-		CoverageTree coverageTree = new CoverageTree(redeDePetri);
+		coverageTree = new CoverageTree(redeDePetri);
 		this.arvore = coverageTree.coverageTreeBuide();
 //		System.out.println(jsonRedeDePetri);
 		this.jsonArvore = gson.toJson(this.arvore);
