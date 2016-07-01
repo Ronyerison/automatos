@@ -56,7 +56,7 @@ public class CoverageTree {
 			if(childs.size() > 0){
 				for (Estado<NodeInfo> child : childs) {
 					child.getInfo().setParentLabel(actualNode.getInfo().getLabel());
-					child.getInfo().setParentId(actualId);
+					child.getInfo().setParentId(actualNode.getInfo().getId());
 					actualId++;
 					child.getInfo().setId(actualId);
 					
