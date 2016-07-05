@@ -32,7 +32,7 @@
 				<p:fileUpload id="arq_petri"
 					fileUploadListener="#{petriController.uploadArquivo}"
 					multiple="true" mode="advanced" dragDropSupport="true"
-					update=":#{p:component('form')}" sizeLimit="100000" />
+					update=":#{p:component('form')}" sizeLimit="100000" oncomplete="renderizarPetri()"/>
 				<h:panelGrid columns="2" styleClass="panel-grid"
 					columnClasses="coluna, coluna">
 					<p:outputLabel for="panel_petri" value="Rede de Petri"

@@ -12,8 +12,14 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
-import org.primefaces.component.tabview.Tab;
 import org.primefaces.event.FileUploadEvent;
+
+import br.ufpi.automatos.algoritmos.petri.CoverageTree;
+import br.ufpi.automatos.modelo.Automato;
+import br.ufpi.automatos.modelo.petri.NodeInfo;
+import br.ufpi.automatos.modelo.petri.PetriNet;
+import br.ufpi.automatos.modelo.vo.PetriNetVO;
+import br.ufpi.automatos.util.FileUtil;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -22,20 +28,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import br.ufpi.automatos.algoritmos.petri.CoverageTree;
-import br.ufpi.automatos.modelo.Automato;
-import br.ufpi.automatos.modelo.petri.NodeInfo;
-import br.ufpi.automatos.modelo.petri.PetriNet;
-import br.ufpi.automatos.util.FileUtil;
-
 @Named
 @ViewScoped
 public class PetriController implements Serializable{
 
 	private static final long serialVersionUID = 4330415809833989926L;
 
-	private List<Tab> tabs;
-	
 	private PetriNet redeDePetri;
 
 	private List<File> arquivosEntrada;
@@ -81,12 +79,6 @@ public class PetriController implements Serializable{
 		this.simulating = simulating;
 	}
 
-	public void addTab(String titulo) {
-		Tab tab = new Tab();
-		tab.setTitle(titulo);
-		this.tabs.add(tab);
-	}
-	
 	public void uploadArquivo(FileUploadEvent event) {
 		FacesMessage message = new FacesMessage("Succesful", event.getFile()
 				.getFileName() + " is uploaded.");
@@ -96,9 +88,8 @@ public class PetriController implements Serializable{
 			this.arquivosEntrada.add(arquivo);
 			PetriNet petri = FileUtil.file2Petri(arquivo);
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
-			this.jsonRedeDePetri = gson.toJson(petri); 
+			this.jsonRedeDePetri = gson.toJson(new PetriNetVO(petri)); 
 			this.redeDePetri = petri;
-			addTab(petri.getName());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -153,14 +144,6 @@ public class PetriController implements Serializable{
 
 	public void setJsonArvore(String jsonArvore) {
 		this.jsonArvore = jsonArvore;
-	}
-
-	public List<Tab> getTabs() {
-		return tabs;
-	}
-
-	public void setTabs(List<Tab> tabs) {
-		this.tabs = tabs;
 	}
 
 	public PetriNet getRedeDePetri() {
