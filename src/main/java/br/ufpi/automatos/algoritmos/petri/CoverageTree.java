@@ -60,13 +60,13 @@ public class CoverageTree {
 					actualId++;
 					child.getInfo().setId(actualId);
 					
-					automato.addTransicao(new Transicao<String, NodeInfo>(transitionLabelByIndex(child.getInfo().getGeneratorTransitionMatrix()), actualNode, child));
 					checkDominance(child, automato);
-					if(contains(visitedList, child)){
+					if(contains(automato.getEstados(), child)){
 						child.getInfo().setDuplicated(true);
 					}else{
 						front.add(child);
 					}
+					automato.addTransicao(new Transicao<String, NodeInfo>(transitionLabelByIndex(child.getInfo().getGeneratorTransitionMatrix()), actualNode, child));
 				}
 			}else{
 				actualNode.getInfo().setTerminal(true);
